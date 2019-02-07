@@ -1,7 +1,7 @@
 cloud-cli
 =========
 
-BloqCloud CLI
+> ☁️ 💻
 
 [![oclif](https://img.shields.io/badge/cli-oclif-brightgreen.svg)](https://oclif.io)
 [![Version](https://img.shields.io/npm/v/cloud-cli.svg)](https://npmjs.org/package/cloud-cli)

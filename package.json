@@ -1,8 +1,8 @@
 {
-  "name": "cloud-cli",
+  "name": "@bloq/cloud-cli",
   "description": "BloqCloud CLI",
   "version": "0.0.1",
-  "author": "Ignacio  Anaya @ianaya89",
+  "author": "Ignacio  Anaya <ignacio@bloq.com>",
   "bin": {
     "bcl": "./bin/run"
   },
