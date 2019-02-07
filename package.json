@@ -1,0 +1,68 @@
+{
+  "name": "cloud-cli",
+  "description": "BloqCloud CLI",
+  "version": "0.0.1",
+  "author": "Ignacio  Anaya @ianaya89",
+  "bin": {
+    "bcl": "./bin/run"
+  },
+  "bugs": "https://github.com/bloqpriv/cloud-cli/issues",
+  "dependencies": {
+    "@oclif/command": "^1.5.8",
+    "@oclif/config": "^1.12.4",
+    "@oclif/plugin-help": "^2.1.6",
+    "conf-cli": "^0.1.8",
+    "consola": "^2.4.0",
+    "request": "^2.88.0"
+  },
+  "devDependencies": {
+    "@oclif/dev-cli": "^1.21.0",
+    "@oclif/test": "^1.2.2",
+    "chai": "^4.1.2",
+    "eslint": "^5.11.1",
+    "eslint-config-bloq": "^1.2.2",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jsdoc": "^3.6.2",
+    "eslint-plugin-mocha": "^5.0.0",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-prefer-arrow": "^1.1.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "globby": "^8.0.2",
+    "mocha": "^5.2.0",
+    "nyc": "^13.0.1"
+  },
+  "engines": {
+    "node": ">=8.0.0"
+  },
+  "files": [
+    "/bin",
+    "/npm-shrinkwrap.json",
+    "/oclif.manifest.json",
+    "/src"
+  ],
+  "homepage": "https://github.com/bloqpriv/cloud-cli",
+  "keywords": [
+    "oclif"
+  ],
+  "license": "MIT",
+  "main": "src/index.js",
+  "oclif": {
+    "commands": "./src/commands",
+    "bin": "bcl",
+    "plugins": [
+      "@oclif/plugin-help",
+      "conf-cli"
+    ]
+  },
+  "repository": "bloqpriv/cloud-cli",
+  "scripts": {
+    "start": "node bin/run",
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint .",
+    "prepack": "oclif-dev manifest && oclif-dev readme",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
+    "version": "oclif-dev readme && git add README.md"
+  }
+}
