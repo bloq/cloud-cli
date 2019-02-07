@@ -2,6 +2,7 @@
 
 const Conf = require('conf')
 const config = new Conf()
+
 const request = require('request')
 const consola = require('consola')
 const accountsUrl = 'http://localhost:4000'

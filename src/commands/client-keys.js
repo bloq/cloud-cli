@@ -16,7 +16,7 @@ class ClientKeysCommand extends Command {
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error('User is not authenticated, use login command to start a new session')
+      return consola.error('User is not authenticated, use login command to start a new session.')
     }
 
     consola.info(`Getting client keys for user ${user}`)
@@ -38,12 +38,12 @@ class ClientKeysCommand extends Command {
       headers: { Authorization }
     }, function (err, data) {
       if (err) {
-        return consola.error(`Error trying to generate client keys: ${err}`)
+        return consola.error(`Error trying to generate client keys: ${err}.`)
       }
 
       const body = JSON.parse(data.body)
       if (!body.clientId || !body.clientSecret) {
-        return consola.error('Error trying to generate client key')
+        return consola.error('Error trying to generate client key.')
       }
 
       consola.success(`Generated new client keys:
@@ -61,6 +61,6 @@ class ClientKeysCommand extends Command {
   }
 }
 
-ClientKeysCommand.description = 'generates a new pair of keys (id + secret)'
+ClientKeysCommand.description = 'generates a new pair of keys (id + secret).'
 
 module.exports = ClientKeysCommand

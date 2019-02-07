@@ -6,7 +6,6 @@ const config = new Conf()
 const consola = require('consola')
 const request = require('request')
 const { Command } = require('@oclif/command')
-const inquirer = require('inquirer')
 
 const accountsUrl = 'http://localhost:4000'
 
@@ -16,7 +15,7 @@ class ProfileCommand extends Command {
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error('User is not authenticated, use login command to start a new session')
+      return consola.error('User is not authenticated, use login command to start a new session.')
     }
 
     consola.info(`Getting profile for user ${user}`)
@@ -30,7 +29,7 @@ class ProfileCommand extends Command {
         return consola.error(`Error trying to get user profile: ${err}`)
       }
 
-      const { verifiedAt, id, displayName, email, isAdmin, createdAt } = JSON.parse(data.body)
+      const { verifiedAt, id, displayName, email, isAdmin } = JSON.parse(data.body)
 
       consola.success(`Got user profile:
         * id:\t\t${id}
@@ -43,6 +42,6 @@ class ProfileCommand extends Command {
   }
 }
 
-ProfileCommand.description = 'gets user profile'
+ProfileCommand.description = 'gets user profile.'
 
 module.exports = ProfileCommand
