@@ -5,12 +5,14 @@ const config = new Conf()
 
 const request = require('request')
 const consola = require('consola')
+const inquirer = require('inquirer')
 const accountsUrl = 'http://localhost:4000'
 
 const { Command, flags } = require('@oclif/command')
 
 class LoginCommand extends Command {
   async run () {
+    consola.info('☁️  Welcome to BloqCloud!')
     const { flags } = this.parse(LoginCommand)
     let user = flags.user
 
@@ -24,7 +26,9 @@ class LoginCommand extends Command {
       }
     }
 
-    const password = flags.password || ''
+    const { password } = await inquirer.prompt([
+      { name: 'password', message: 'Enter your password', type: 'password' }
+    ])
     const Authorization = `Basic ${Buffer.from(`${user}:${password}`).toString('base64')}`
 
     const url = `${accountsUrl}/auth`
@@ -50,8 +54,7 @@ class LoginCommand extends Command {
 LoginCommand.description = 'logins you with your bloq-cloud account.'
 
 LoginCommand.flags = {
-  user: flags.string({ char: 'u', description: 'user id' }),
-  password: flags.string({ char: 'p', description: 'password' })
+  user: flags.string({ char: 'u', description: 'user id' })
 }
 
 module.exports = LoginCommand
