@@ -13,7 +13,10 @@
     "@oclif/plugin-help": "^2.1.6",
     "conf-cli": "^0.1.8",
     "consola": "^2.4.0",
-    "request": "^2.88.0"
+    "openurl": "^1.1.1",
+    "request": "^2.88.0",
+    "serve": "^10.1.2",
+    "stripe": "^6.23.1"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.0",

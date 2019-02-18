@@ -1,8 +1,5 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const request = require('request')
 const consola = require('consola')
 const inquirer = require('inquirer')
@@ -14,7 +11,7 @@ class VerifyCommand extends Command {
   async run () {
     consola.info('Verifyng your BloqCloud account.')
     const { user, token } = await inquirer.prompt([
-      { name: 'user', message: 'Enter your user id', type: 'input' },
+      { name: 'user', message: 'Enter your account id', type: 'input' },
       { name: 'token', message: 'Enter your verification token', type: 'input' }
     ])
 

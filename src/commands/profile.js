@@ -24,12 +24,16 @@ class ProfileCommand extends Command {
 
     request.get(url, {
       headers: { Authorization }
-    }, function (err, data) {
+    }, function (err, res) {
       if (err) {
         return consola.error(`Error trying to get user profile: ${err}`)
       }
 
-      const { verifiedAt, id, displayName, email, isAdmin } = JSON.parse(data.body)
+      if (res.statusCode === 401 || res.statusCode === 403) {
+        return consola.error('User is not authenticated, use login command to start a new session.')
+      }
+
+      const { verifiedAt, id, displayName, email, isAdmin } = JSON.parse(res.body)
 
       consola.success(`Got user profile:
         * id:\t\t${id}

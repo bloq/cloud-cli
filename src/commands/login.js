@@ -29,7 +29,7 @@ class LoginCommand extends Command {
     const { password } = await inquirer.prompt([
       { name: 'password', message: 'Enter your password', type: 'password' }
     ])
-    const Authorization = `Basic ${Buffer.from(`${user}:${password}`).toString('base64')}`
+    const Authorization = `Basic ${Buffer.from(`${user}:${password || ''}`).toString('base64')}`
 
     const url = `${accountsUrl}/auth`
     request.post(url, {
