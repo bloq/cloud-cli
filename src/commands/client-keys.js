@@ -34,7 +34,7 @@ class ClientKeysCommand extends Command {
     const Authorization = `Bearer ${accessToken}`
 
     const url = `${accountsUrl}/auth/client-keys`
-    request.post(url, {
+    request.get(url, {
       headers: { Authorization }
     }, function (err, data) {
       if (err) {
