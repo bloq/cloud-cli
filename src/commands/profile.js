@@ -7,7 +7,7 @@ const consola = require('consola')
 const request = require('request')
 const { Command } = require('@oclif/command')
 
-const accountsUrl = 'http://localhost:4000'
+const { accountsUrl } = require('../config')
 
 class ProfileCommand extends Command {
   async run () {

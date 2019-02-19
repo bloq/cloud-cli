@@ -3,7 +3,8 @@
 const request = require('request')
 const consola = require('consola')
 const inquirer = require('inquirer')
-const accountsUrl = 'http://localhost:4000'
+
+const { accountsUrl } = require('../config')
 
 const { Command } = require('@oclif/command')
 
