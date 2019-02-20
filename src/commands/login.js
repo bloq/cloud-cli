@@ -19,7 +19,7 @@ class LoginCommand extends Command {
 
     if (user) {
       config.set('user', user)
-      consola.info('Saved user id, next time you only needs -p (--password) to login.')
+      consola.info('Saved account id, next time you only needs -p (--password) to login.')
     } else {
       user = config.get('user')
       if (!user) {
@@ -55,7 +55,7 @@ class LoginCommand extends Command {
 LoginCommand.description = 'logins you with your bloq-cloud account.'
 
 LoginCommand.flags = {
-  user: flags.string({ char: 'u', description: 'user id' })
+  user: flags.string({ char: 'u', description: 'account id or email' })
 }
 
 module.exports = LoginCommand

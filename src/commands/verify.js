@@ -24,16 +24,16 @@ class VerifyCommand extends Command {
       }
 
       if (data.statusCode === 404) {
-        return consola.error('User does not exists.')
+        return consola.error('User does not exist')
       }
 
-      if (data.statusCode === 403) {
-        return consola.error('Invalid verification token.')
+      if (data.statusCode === 400) {
+        return consola.error('Invalid verification token')
       }
 
       const body = JSON.parse(data.body)
 
-      consola.success(`The account with id ${body.id} was validated`)
+      consola.success(`The account with id ${body.id} was validated.`)
       consola.info(`You can now start a new session running the command: bcl login -u ${body.id}`)
     })
   }
