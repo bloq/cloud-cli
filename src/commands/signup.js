@@ -59,6 +59,10 @@ class SignupCommand extends Command {
         return consola.error(`Error trying to create the BloqCloud account: ${err}`)
       }
 
+      if (data.statusCode !== 201) {
+        return consola.error(`Error trying to create the BloqCloud account: ${data.body.code}`)
+      }
+
       consola.success(`Generated new bloq account, you user id is: ${data.body.id}`)
       consola.info('We sent you an email to confirm your account.')
     })
