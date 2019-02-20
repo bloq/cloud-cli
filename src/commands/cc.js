@@ -11,10 +11,9 @@ const { open } = require('openurl')
 
 const request = require('request')
 const consola = require('consola')
-const { accountsUrl } = require('../config')
+const { accountsUrl, port, ccUrlBase } = require('../config')
 
-const port = 3000
-const ccUrl = `http://localhost:${port}`
+const ccUrl = `${ccUrlBase}:${port}`
 
 const { Command } = require('@oclif/command')
 
