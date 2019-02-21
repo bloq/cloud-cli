@@ -3,5 +3,6 @@
 module.exports = {
   accountsUrl: 'http://localhost:4000',
   port: 3000,
-  ccUrlBase: 'http://localhost'
+  ccUrlBase: 'http://localhost',
+  nodesUrl: 'http://localhost:4002'
 }
