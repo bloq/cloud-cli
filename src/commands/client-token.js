@@ -37,10 +37,10 @@ class ClientTokenCommand extends Command {
 
     const url = `${accountsUrl}/auth/token`
     const reqBody = {
-        'grantType': 'clientCredentials',
-        'clientId': clientId,
-        'clientSecret': clientSecret
-      }
+      grantType: 'clientCredentials',
+      clientId,
+      clientSecret
+    }
 
     request.post(url, {
       headers: { Authorization },

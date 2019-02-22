@@ -13,10 +13,10 @@ const { nodesUrl } = require('../config')
 class DeleteNodeCommand extends Command {
   async run () {
     const { flags } = this.parse(DeleteNodeCommand)
-    let id = flags.id
+    const id = flags.id
 
     if (!id) {
-        return consola.error('Missing id to delete (-i or --id)')
+      return consola.error('Missing id to delete (-i or --id)')
     }
 
     const user = config.get('user')
@@ -26,7 +26,7 @@ class DeleteNodeCommand extends Command {
       return consola.error('User is not authenticated, use login command to start a new session.')
     }
 
-    consola.info(`Delete blockchain node`)
+    consola.info('Delete blockchain node')
     consola.warn('This command will delete a blockchain node.')
 
     const Authorization = `Bearer ${clientAccessToken}`
