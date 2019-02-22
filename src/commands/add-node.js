@@ -37,7 +37,7 @@ class AddNodeCommand extends Command {
     }
     request.post(url, {
       headers: { Authorization },
-      json: JSON.stringify(reqBody)
+      json: reqBody
     }, function (err, data) {
       if (err) {
         return consola.error(`Error trying to create node: ${err}.`)
