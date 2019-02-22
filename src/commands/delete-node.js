@@ -6,7 +6,6 @@ const config = new Conf()
 const consola = require('consola')
 const request = require('request')
 const { Command, flags } = require('@oclif/command')
-const inquirer = require('inquirer')
 
 const { nodesUrl } = require('../config')
 
@@ -39,7 +38,6 @@ class DeleteNodeCommand extends Command {
         return consola.error(`Error trying to delete node: ${err}.`)
       }
 
-      const body = JSON.parse(data.body)
       consola.info(data.body)
     })
   }

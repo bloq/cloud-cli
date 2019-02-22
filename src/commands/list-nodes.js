@@ -6,7 +6,6 @@ const config = new Conf()
 const consola = require('consola')
 const request = require('request')
 const { Command, flags } = require('@oclif/command')
-const inquirer = require('inquirer')
 
 const { nodesUrl } = require('../config')
 
@@ -40,7 +39,7 @@ class ListNodesCommand extends Command {
         if (verbose) {
           consola.info(value)
         } else {
-          if (value.state != 'stopped') {
+          if (value.state !== 'stopped') {
             consola.info(value.image, value.id, value.startedAt, value.vendor.PublicDnsName)
           }
         }

@@ -6,7 +6,6 @@ const config = new Conf()
 const consola = require('consola')
 const request = require('request')
 const { Command, flags } = require('@oclif/command')
-const inquirer = require('inquirer')
 
 const { nodesUrl } = require('../config')
 

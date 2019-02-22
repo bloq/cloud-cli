@@ -70,7 +70,7 @@ class VerifyCommand extends Command {
       })
 
       server.listen(port, function () {
-        consola.info(`Open your browser and type the url: ${ccUrl}, to submit your credit card information`)
+        consola.info(`Open your browser and type the url: ${ccUrl}, to submit your credit card information`) // eslint-disable-line
         open(ccUrl)
       })
     })
