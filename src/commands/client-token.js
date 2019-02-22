@@ -26,7 +26,7 @@ class ClientTokenCommand extends Command {
 
     const { confirmation, save } = await inquirer.prompt([
       { name: 'confirmation', message: 'Do you want to continue?', type: 'confirm' },
-      { name: 'save', message: 'Do you want that blc stores your tokens locally for future usage?', type: 'confirm' }
+      { name: 'save', message: 'Do you want that blc stores your tokens locally for future usage?', type: 'confirm' } // eslint-disable-line
     ])
 
     if (!confirmation) {
@@ -37,10 +37,10 @@ class ClientTokenCommand extends Command {
 
     const url = `${accountsUrl}/auth/token`
     const reqBody = {
-        'grantType': 'clientCredentials',
-        'clientId': clientId,
-        'clientSecret': clientSecret
-      }
+      grantType: 'clientCredentials',
+      clientId,
+      clientSecret
+    }
 
     request.post(url, {
       headers: { Authorization },
@@ -65,7 +65,7 @@ class ClientTokenCommand extends Command {
         config.set('refreshToken', body.refreshToken)
       }
 
-      consola.warn('Be sure to copy and save these keys since it will not be possible to obtain them again.')
+      consola.warn('Be sure to copy and save these keys since it will not be possible to obtain them again.') // eslint-disable-line
     })
   }
 }

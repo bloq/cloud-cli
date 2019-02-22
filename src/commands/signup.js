@@ -30,7 +30,7 @@ class SignupCommand extends Command {
       { name: 'displayName', message: 'Enter your name', type: 'input' },
       { name: 'password', message: 'Enter your password', type: 'password' },
       { name: 'confirmPassword', message: 'Confirm enter new password', type: 'password' },
-      { name: 'confirm', message: 'Please check that your information is correct, do you want to continue?', type: 'confirm' }
+      { name: 'confirm', message: 'Please check that your information is correct, do you want to continue?', type: 'confirm' } // eslint-disable-line
     ])
 
     if (!confirm) {
