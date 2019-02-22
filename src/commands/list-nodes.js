@@ -5,13 +5,16 @@ const config = new Conf()
 
 const consola = require('consola')
 const request = require('request')
-const { Command } = require('@oclif/command')
+const { Command, flags } = require('@oclif/command')
 const inquirer = require('inquirer')
 
 const { nodesUrl } = require('../config')
 
 class ListNodesCommand extends Command {
   async run () {
+    const { flags } = this.parse(ListNodesCommand)
+    let verbose = flags.verbose
+
     const user = config.get('user')
     const clientAccessToken = config.get('clientAccessToken')
 
@@ -33,11 +36,23 @@ class ListNodesCommand extends Command {
       }
 
       const body = JSON.parse(data.body)
-      consola.info(data.body)
+      body.forEach(function(value){
+        if (verbose) {
+          consola.info(value)
+        } else {
+          if (value.state != 'stopped') {
+            consola.info(value.image, value.id, value.startedAt, value.vendor.PublicDnsName)
+          }
+        }
+      })
     })
   }
 }
 
 ListNodesCommand.description = 'list blockchain nodes'
+
+ListNodesCommand.flags = {
+  verbose: flags.boolean({ char: 'v', description: 'print all nodes (even stopped)' })
+}
 
 module.exports = ListNodesCommand
