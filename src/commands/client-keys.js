@@ -5,8 +5,9 @@ const config = new Conf()
 
 const consola = require('consola')
 const request = require('request')
-const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
+const clipboardy = require('clipboardy')
+const { Command } = require('@oclif/command')
 
 const { accountsUrl } = require('../config')
 
@@ -19,44 +20,43 @@ class ClientKeysCommand extends Command {
       return consola.error('User is not authenticated, use login command to start a new session.')
     }
 
-    consola.info(`Getting client keys for user ${user}`)
-    consola.warn('This command will generate a new pair of client keys, if you continue your current keys will be invalidated.') // eslint-disable-line
+    consola.info(`Creating new pair of client keys for user ${user}`)
 
-    const { confirmation, save } = await inquirer.prompt([
-      { name: 'confirmation', message: 'Do you want to continue?', type: 'confirm' },
-      { name: 'save', message: 'Do you want that blc stores your keys locally for future usage?', type: 'confirm' } // eslint-disable-line
+    const { save } = await inquirer.prompt([
+      {
+        name: 'save',
+        message: 'Do you want that blc stores your keys locally for future usage?',
+        type: 'confirm'
+      }
     ])
 
-    if (!confirmation) {
-      return consola.info('Generation of client keys aborted.')
-    }
-
     const Authorization = `Bearer ${accessToken}`
-
     const url = `${accountsUrl}/auth/client-keys`
-    request.get(url, {
-      headers: { Authorization }
-    }, function (err, data) {
+
+    request.post(url, { headers: { Authorization } }, function (err, data) {
       if (err) {
-        return consola.error(`Error trying to generate client keys: ${err}.`)
+        return consola.error(`Error trying to create new pair of client keys: ${err}.`)
       }
 
       const body = JSON.parse(data.body)
-      if (!body.clientId || !body.clientSecret) {
-        return consola.error('Error trying to generate client key.')
+
+      if (data.statusCode !== 200) {
+        return consola.error(`Error trying to create new pair of client keys: ${data.body.code}`)
       }
 
       consola.success(`Generated new client keys:
-      * clientId:\t${body.clientId}
-      * clientSecret:\t${body.clientSecret}
+      * Client ID:\t${body.clientId}
+      * Client Secret:\t${body.clientSecret}
       `)
+      consola.warn('You will be not able to see your client secret again, remember to copy it and keep it safe')
+
+      clipboardy.write(body.clientSecret)
+      consola.info('Client secret was copied to clipboard')
 
       if (save) {
         config.set('clientId', body.clientId)
         config.set('clientSecret', body.clientSecret)
       }
-
-      consola.warn('Be sure to copy and save these keys since it will not be possible to obtain them again.') // eslint-disable-line
     })
   }
 }
