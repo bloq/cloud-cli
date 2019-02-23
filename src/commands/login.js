@@ -25,14 +25,15 @@ class LoginCommand extends Command {
       if (!user) {
         return consola.error('Missing user parameter (-u or --user)')
       }
+      consola.info(`Login with user ${user}`)
     }
 
     const { password } = await inquirer.prompt([
       { name: 'password', message: 'Enter your password', type: 'password' }
     ])
     const Authorization = `Basic ${Buffer.from(`${user}:${password || ''}`).toString('base64')}`
-
     const url = `${accountsUrl}/auth`
+
     request.post(url, {
       headers: { Authorization }
     }, function (err, data) {
@@ -41,9 +42,8 @@ class LoginCommand extends Command {
       }
 
       const body = JSON.parse(data.body)
-
-      if (!body.accessToken) {
-        return consola.error('Invalid credentials')
+      if (data.statusCode !== 200) {
+        return consola.error(`Error trying to get access token: ${body.code}`)
       }
 
       config.set('accessToken', body.accessToken)
