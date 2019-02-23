@@ -14,12 +14,12 @@ async function createClientKeys (user, accessToken) {
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
-      return consola.error(`Error trying to list new pair of client keys: ${err}.`)
+      return consola.error(`Error trying to list lient keys: ${err}.`)
     }
 
     const body = JSON.parse(data.body)
     if (data.statusCode !== 200) {
-      return consola.error(`Error trying to list new pair of client keys: ${data.body.code}.`)
+      return consola.error(`Error trying to list client keys: ${body.code}.`)
     }
 
     consola.success(`Got ${body.length} client-keys:`)

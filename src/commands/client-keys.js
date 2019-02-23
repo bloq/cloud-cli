@@ -21,6 +21,8 @@ class ClientKeysCommand extends Command {
     switch (args.operation) {
       case 'create':
         return clientKeys.create(user, accessToken)
+      case 'remove':
+        return clientKeys.remove(user, accessToken)
       default:
         return clientKeys.list(user, accessToken)
     }
