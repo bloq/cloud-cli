@@ -29,7 +29,7 @@ class ClientKeysCommand extends Command {
   }
 }
 
-ClientKeysCommand.description = 'Handle your bloq cloud client keys'
+ClientKeysCommand.description = 'Manage your bloq cloud client keys.'
 
 ClientKeysCommand.args = [
   {

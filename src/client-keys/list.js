@@ -6,7 +6,7 @@ require('console.table')
 
 const { accountsUrl } = require('../config')
 
-async function createClientKeys (user, accessToken) {
+async function listClientKeys (user, accessToken) {
   consola.info(`Getting client keys for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
@@ -28,4 +28,4 @@ async function createClientKeys (user, accessToken) {
   })
 }
 
-module.exports = createClientKeys
+module.exports = listClientKeys

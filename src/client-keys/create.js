@@ -10,7 +10,7 @@ const clipboardy = require('clipboardy')
 
 const { accountsUrl } = require('../config')
 
-async function createClientKeys (user, accessToken) {
+async function createClientKey (user, accessToken) {
   consola.info(`Creating new pair of client keys for user ${user}.`)
 
   const { save } = await inquirer.prompt([
@@ -52,4 +52,4 @@ async function createClientKeys (user, accessToken) {
   })
 }
 
-module.exports = createClientKeys
+module.exports = createClientKey

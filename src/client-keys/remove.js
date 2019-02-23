@@ -6,7 +6,7 @@ const inquirer = require('inquirer')
 
 const { accountsUrl } = require('../config')
 
-async function createClientKeys (user, accessToken) {
+async function removeClientKey (user, accessToken) {
   consola.info(`Removing client key for user ${user}.`)
 
   const { clientId } = await inquirer.prompt([
@@ -40,4 +40,4 @@ async function createClientKeys (user, accessToken) {
   })
 }
 
-module.exports = createClientKeys
+module.exports = removeClientKey
