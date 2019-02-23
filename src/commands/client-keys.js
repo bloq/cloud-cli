@@ -6,7 +6,7 @@ const config = new Conf()
 const clientKeys = require('../client-keys')
 
 const consola = require('consola')
-const { Command, flags } = require('@oclif/command')
+const { Command } = require('@oclif/command')
 
 class ClientKeysCommand extends Command {
   async run () {

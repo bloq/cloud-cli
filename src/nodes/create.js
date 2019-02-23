@@ -14,7 +14,11 @@ async function createNode (user, accessToken, chain) {
 
   request.post(url, { headers: { Authorization }, json }, function (err, data) {
     if (err) {
-      return consola.error(`Error trying to create a new ${chain} node: ${err}.`)
+      return consola.error(`Error trying to create a new ${chain} node: ${err}`)
+    }
+
+    if (data.statusCode !== 204) {
+      return consola.error(`Error trying to create a new ${chain} node: ${data.code}`)
     }
 
     const { id, state, instance } = data.body

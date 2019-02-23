@@ -20,7 +20,7 @@ async function removeClientKey (user, accessToken) {
   }])
 
   if (!confirmation) {
-    return consola.error('Remove client key canceled.')
+    return consola.error('Remove client key was canceled.')
   }
 
   const Authorization = `Bearer ${accessToken}`
@@ -28,12 +28,12 @@ async function removeClientKey (user, accessToken) {
 
   request.del(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
-      return consola.error(`Error trying to remove the client keys: ${err}.`)
+      return consola.error(`Error trying to remove the client-key: ${err}.`)
     }
 
     if (data.statusCode !== 204) {
       const body = JSON.parse(data.body)
-      return consola.error(`Error trying to list client keys: ${body.code}.`)
+      return consola.error(`Error trying to remove client-key: ${body.code}.`)
     }
 
     consola.success(`Removed client key with id ${clientId}`)
