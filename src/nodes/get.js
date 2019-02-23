@@ -30,22 +30,6 @@ async function listNodes (user, accessToken) {
     consola.success(`Got node with id ${nodeId}`)
     process.stdout.write('\n')
 
-    /*
-    [ {
-
-    instance:
-     { id: 'i-0430eb611fb3fb7f7',
-       imageId: 'ami-00ee2209362bb9aab',
-       type: 't2.large',
-       vendor: 'aws' },
-
-    vendor:
-     { LaunchTime: '2019-02-23T20:01:48.000Z',
-       : 'x86_64',
-       State: [Object],
-       Placement: [Object],
-       PublicDnsName: '' } } ]*/
-
     consola.success(`
     * Image: \t\t${image}
     * Started At:\t${startedAt}
