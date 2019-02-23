@@ -36,11 +36,12 @@ function getClientToken (cb) {
 class NodesCommand extends Command {
   async run () {
     const _this = this
-    getClientToken(function (err, { accessToken }) {
+    getClientToken(function (err, data) {
       if (err) {
         return consola.error(err.message)
       }
 
+      const { accessToken } = data
       const user = config.get('clientId')
       const { args, flags } = _this.parse(NodesCommand)
 

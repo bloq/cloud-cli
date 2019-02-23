@@ -1,5 +1,6 @@
 'use strict'
 
+const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
 const { promisify } = require('util')
@@ -10,6 +11,7 @@ const { accountsUrl, nodesUrl } = require('../config')
 class StatusCommand extends Command {
   async run () {
     consola.info('Getting bloq cloud status')
+    const spinner = ora().start()
     const get = promisify(request.get)
 
     Promise.all([
@@ -17,6 +19,7 @@ class StatusCommand extends Command {
       get(nodesUrl)
     ])
       .then(function ([accounts, nodes]) {
+        spinner.stop()
         consola.info(`Bloq Cloud Status
         * cloud-acounts:\t${accounts.statusCode === 200 ? '👍' : '❌'}
         * cloud-nodes: \t\t${nodes.statusCode === 200 ? '👍' : '❌'}

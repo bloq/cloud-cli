@@ -16,6 +16,7 @@
     "consola": "^2.4.0",
     "console.table": "^0.10.0",
     "openurl": "^1.1.1",
+    "ora": "^3.1.0",
     "request": "^2.88.0",
     "serve": "^10.1.2",
     "stripe": "^6.23.1"
