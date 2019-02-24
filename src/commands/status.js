@@ -31,6 +31,6 @@ class StatusCommand extends Command {
   }
 }
 
-StatusCommand.description = 'Clear local user data'
+StatusCommand.description = 'Get bloq cloud services status'
 
 module.exports = StatusCommand

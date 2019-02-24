@@ -29,11 +29,12 @@ class ProfileCommand extends Command {
         return consola.error(`Error trying to get user profile: ${err}`)
       }
 
-      if (res.statusCode === 401 || res.statusCode === 403) {
-        return consola.error('User is not authenticated, use login command to start a new session.')
+      const body = JSON.parse(res.body)
+      if (res.statusCode !== 200) {
+        return consola.error(`Error trying to get user profile: ${body.code}`)
       }
 
-      const { verifiedAt, id, displayName, email, isAdmin } = JSON.parse(res.body)
+      const { verifiedAt, id, displayName, email, isAdmin } = body
 
       consola.success(`Got user profile:
         * id:\t\t${id}
