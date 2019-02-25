@@ -7,7 +7,7 @@ require('console.table')
 
 const { nodesUrl } = require('../config')
 
-async function listNodes (user, accessToken) {
+async function listNodes (user, accessToken, flags) {
   consola.info(`Getting all nodes node for user ${user}.`)
   const spinner = ora().start()
 
@@ -31,6 +31,14 @@ async function listNodes (user, accessToken) {
       delete n.vendor
       return n
     })
+
+    if (!flags.all) {
+      body = body.filter(n => n.state !== 'stopped')
+    }
+
+    if (!body.length) {
+      return consola.success(`No nodes were found for user ${user}`)
+    }
 
     consola.success(`Got ${body.length} nodes:`)
     process.stdout.write('\n')

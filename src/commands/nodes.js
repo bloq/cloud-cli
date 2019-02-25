@@ -56,7 +56,7 @@ class NodesCommand extends Command {
         case 'get':
           return nodes.get(user, accessToken)
         default:
-          return nodes.list(user, accessToken)
+          return nodes.list(user, accessToken, flags)
       }
     })
   }
@@ -64,7 +64,8 @@ class NodesCommand extends Command {
 
 NodesCommand.description = 'Manage your bloq cloud nodes.'
 NodesCommand.flags = {
-  chain: flags.string({ char: 'c', description: 'chain type', options: ['btc'] })
+  chain: flags.string({ char: 'c', description: 'chain type', options: ['btc'] }),
+  all: flags.boolean({ char: 'a', description: 'list all nodes', default: false, required: false })
 }
 
 NodesCommand.args = [
