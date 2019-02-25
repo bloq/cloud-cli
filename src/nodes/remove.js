@@ -9,7 +9,6 @@ const { nodesUrl } = require('../config')
 
 async function listNodes (user, accessToken) {
   consola.info(`Removing node for user ${user}.`)
-  const spinner = ora().start()
 
   const { nodeId } = await inquirer.prompt([
     { name: 'nodeId', message: 'Enter the node id', type: 'text' }
@@ -25,6 +24,7 @@ async function listNodes (user, accessToken) {
     return consola.error('Remove node  was canceled.')
   }
 
+  const spinner = ora().start()
   const Authorization = `Bearer ${accessToken}`
   const url = `${nodesUrl}/nodes/${nodeId}`
   request.del(url, { headers: { Authorization } }, function (err, data) {

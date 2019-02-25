@@ -15,7 +15,7 @@ async function createNode (user, accessToken, chain) {
   const json = { image: chain }
 
   request.post(url, { headers: { Authorization }, json }, function (err, data) {
-    spinner().stop()
+    spinner.stop()
     if (err) {
       return consola.error(`Error trying to create a new ${chain} node: ${err}`)
     }
