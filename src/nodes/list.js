@@ -28,6 +28,7 @@ async function listNodes (user, accessToken, flags) {
     body = body.map(function (n) {
       delete n.user
       delete n.instance
+      n.PublicDnsName = n.vendor.PublicDnsName
       delete n.vendor
       return n
     })
