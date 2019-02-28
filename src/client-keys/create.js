@@ -30,9 +30,8 @@ async function createClientKey (user, accessToken) {
     }
 
     const body = JSON.parse(data.body)
-
     if (data.statusCode !== 200) {
-      return consola.error(`Error trying to create new pair of client keys: ${data.body.code}.`)
+      return consola.error(`Error trying to create new pair of client keys: ${body.code || body.message}.`)
     }
 
     process.stdout.write('\n')

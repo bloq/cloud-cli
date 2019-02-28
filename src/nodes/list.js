@@ -9,10 +9,10 @@ const { nodesUrl } = require('../config')
 
 async function listNodes (user, accessToken, flags) {
   consola.info(`Getting all nodes node for user ${user}.`)
-  const spinner = ora().start()
 
   const Authorization = `Bearer ${accessToken}`
   const url = `${nodesUrl}/nodes`
+  const spinner = ora().start()
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     spinner.stop()

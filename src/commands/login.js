@@ -3,6 +3,7 @@
 const Conf = require('conf')
 const config = new Conf()
 
+const ora = require('ora')
 const request = require('request')
 const consola = require('consola')
 const inquirer = require('inquirer')
@@ -33,17 +34,19 @@ class LoginCommand extends Command {
     ])
     const Authorization = `Basic ${Buffer.from(`${user}:${password || ''}`).toString('base64')}`
     const url = `${accountsUrl}/auth`
+    const spinner = ora().start()
 
     request.post(url, {
       headers: { Authorization }
     }, function (err, data) {
+      spinner.stop()
       if (err) {
         return consola.error(`Error trying to get access token: ${err}`)
       }
 
       const body = JSON.parse(data.body)
       if (data.statusCode !== 200) {
-        return consola.error(`Error trying to get access token: ${body.code}`)
+        return consola.error(`Error trying to get access token: ${body.code || body.message}`)
       }
 
       config.set('accessToken', body.accessToken)

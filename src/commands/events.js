@@ -3,6 +3,7 @@
 const Conf = require('conf')
 const config = new Conf()
 
+const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
 const { Command } = require('@oclif/command')
@@ -22,8 +23,10 @@ class EventsCommand extends Command {
     consola.info(`Getting events for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
     const url = `${accountsUrl}/events`
+    const spinner = ora().start()
 
     request.get(url, { headers: { Authorization } }, function (err, data) {
+      spinner.stop()
       if (err) {
         return consola.error(`Error trying to get events: ${err}`)
       }

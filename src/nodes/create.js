@@ -8,11 +8,11 @@ const { nodesUrl } = require('../config')
 
 async function createNode (user, accessToken, chain) {
   consola.info(`Creating a new ${chain} node for user ${user}.`)
-  const spinner = ora().start()
 
   const Authorization = `Bearer ${accessToken}`
   const url = `${nodesUrl}/nodes`
   const json = { image: chain }
+  const spinner = ora().start()
 
   request.post(url, { headers: { Authorization }, json }, function (err, data) {
     spinner.stop()
@@ -20,7 +20,7 @@ async function createNode (user, accessToken, chain) {
       return consola.error(`Error trying to create a new ${chain} node: ${err}`)
     }
 
-    if (data.statusCode !== 204) {
+    if (data.statusCode !== 200) {
       return consola.error(`Error trying to create a new ${chain} node: ${data.code}`)
     }
 

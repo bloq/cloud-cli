@@ -18,8 +18,9 @@ async function listClientKeys (user, accessToken) {
     }
 
     const body = JSON.parse(data.body)
+    console.log(data.body)
     if (data.statusCode !== 200) {
-      return consola.error(`Error trying to list client keys: ${body.code}.`)
+      return consola.error(`Error trying to list client keys: ${body.code || body.message} | ${data.statusCode}.`)
     }
 
     consola.success(`Got ${body.length} client-keys:`)

@@ -9,7 +9,6 @@ const { nodesUrl } = require('../config')
 
 async function listNodes (user, accessToken) {
   consola.info(`Getting node for user ${user}.`)
-  const spinner = ora().start()
 
   const { nodeId } = await inquirer.prompt([
     { name: 'nodeId', message: 'Enter the node id', type: 'text' }
@@ -17,6 +16,8 @@ async function listNodes (user, accessToken) {
 
   const Authorization = `Bearer ${accessToken}`
   const url = `${nodesUrl}/nodes/${nodeId}`
+  const spinner = ora().start()
+
   request.get(url, { headers: { Authorization } }, function (err, data) {
     spinner.stop()
     if (err) {

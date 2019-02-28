@@ -24,9 +24,10 @@ async function listNodes (user, accessToken) {
     return consola.error('Remove node  was canceled.')
   }
 
-  const spinner = ora().start()
   const Authorization = `Bearer ${accessToken}`
   const url = `${nodesUrl}/nodes/${nodeId}`
+  const spinner = ora().start()
+
   request.del(url, { headers: { Authorization } }, function (err, data) {
     spinner.stop()
     if (err) {
