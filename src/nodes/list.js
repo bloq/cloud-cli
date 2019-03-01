@@ -8,7 +8,7 @@ require('console.table')
 const { nodesUrl } = require('../config')
 
 async function listNodes (user, accessToken, flags) {
-  consola.info(`Getting all nodes node for user ${user}.`)
+  consola.info(`Retrieving all nodes node for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const url = `${nodesUrl}/nodes`
@@ -17,11 +17,11 @@ async function listNodes (user, accessToken, flags) {
   request.get(url, { headers: { Authorization } }, function (err, data) {
     spinner.stop()
     if (err) {
-      return consola.error(`Error trying to get all nodes: ${err}.`)
+      return consola.error(`Error retrieving all nodes: ${err}.`)
     }
 
     if (data.statusCode !== 200) {
-      return consola.error(`Error trying to get all nodes: ${data.code}`)
+      return consola.error(`Error retrieving all nodes: ${data.code}`)
     }
 
     let body = JSON.parse(data.body)

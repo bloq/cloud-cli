@@ -21,7 +21,7 @@ async function listNodes (user, accessToken) {
   }])
 
   if (!confirmation) {
-    return consola.error('Remove node  was canceled.')
+    return consola.error('Remove node was canceled.')
   }
 
   const Authorization = `Bearer ${accessToken}`
@@ -31,12 +31,12 @@ async function listNodes (user, accessToken) {
   request.del(url, { headers: { Authorization } }, function (err, data) {
     spinner.stop()
     if (err) {
-      return consola.error(`Error trying to remove the node: ${err}.`)
+      return consola.error(`Error removing the node: ${err}.`)
     }
 
     if (data.statusCode !== 204) {
       const body = JSON.parse(data.body)
-      return consola.error(`Error trying to remove the node: ${body.code}.`)
+      return consola.error(`Error removing the node: ${body.code}.`)
     }
 
     consola.success(`Removed node with id ${nodeId}`)

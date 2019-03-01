@@ -14,16 +14,16 @@ async function listClientKeys (user, accessToken) {
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
-      return consola.error(`Error trying to list lient keys: ${err}.`)
+      return consola.error(`Error listing client keys: ${err}.`)
     }
 
     const body = JSON.parse(data.body)
     console.log(data.body)
     if (data.statusCode !== 200) {
-      return consola.error(`Error trying to list client keys: ${body.code || body.message} | ${data.statusCode}.`)
+      return consola.error(`Error listing client keys: ${body.code || body.message} | ${data.statusCode}.`)
     }
 
-    consola.success(`Got ${body.length} client-keys:`)
+    consola.success(`Retrieved ${body.length} client-keys:`)
     process.stdout.write('\n')
     console.table(body)
   })

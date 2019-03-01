@@ -16,7 +16,7 @@ async function createClientKey (user, accessToken) {
   const { save } = await inquirer.prompt([
     {
       name: 'save',
-      message: 'Do you want that blc stores your keys locally for future usage?',
+      message: 'Do you want blc to store your tokens locally for future usage?',
       type: 'confirm'
     }
   ])
@@ -26,12 +26,12 @@ async function createClientKey (user, accessToken) {
 
   request.post(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
-      return consola.error(`Error trying to create new pair of client keys: ${err}.`)
+      return consola.error(`Error creating new pair of client keys: ${err}.`)
     }
 
     const body = JSON.parse(data.body)
     if (data.statusCode !== 200) {
-      return consola.error(`Error trying to create new pair of client keys: ${body.code || body.message}.`)
+      return consola.error(`Error creating new pair of client keys: ${body.code || body.message}.`)
     }
 
     process.stdout.write('\n')
@@ -42,7 +42,7 @@ async function createClientKey (user, accessToken) {
 
     clipboardy.write(body.clientSecret)
     consola.info('Client secret was copied to clipboard.')
-    consola.warn('You will be not able to see your client secret again, remember to copy it and keep it safe.')
+    consola.warn('You will be not able to see your client secret again. Remember to copy it and keep it safe.')
 
     if (save) {
       config.set('clientId', body.clientId)

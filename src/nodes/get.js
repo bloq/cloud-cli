@@ -8,7 +8,7 @@ const inquirer = require('inquirer')
 const { nodesUrl } = require('../config')
 
 async function listNodes (user, accessToken) {
-  consola.info(`Getting node for user ${user}.`)
+  consola.info(`Retrieving node for user ${user}.`)
 
   const { nodeId } = await inquirer.prompt([
     { name: 'nodeId', message: 'Enter the node id', type: 'text' }
@@ -21,23 +21,23 @@ async function listNodes (user, accessToken) {
   request.get(url, { headers: { Authorization } }, function (err, data) {
     spinner.stop()
     if (err) {
-      return consola.error(`Error trying to get the node: ${err}.`)
+      return consola.error(`Error retrieving the node: ${err}.`)
     }
 
     let body = JSON.parse(data.body)
     if (data.statusCode !== 200) {
-      return consola.error(`Error trying to get the node: ${body.code}.`)
+      return consola.error(`Error retrieving the node: ${body.code}.`)
     }
 
     body = body[0]
     const { image, state, instance, startedAt, stopedAt, vendor } = body
-    consola.success(`Got node with id ${nodeId}`)
+    consola.success(`Retrieved node with id ${nodeId}`)
     process.stdout.write('\n')
 
     consola.success(`
     * Image: \t\t${image}
     * Started At:\t${startedAt}
-    * Stoped At:\t${stopedAt || '-'}
+    * Stopped At:\t${stopedAt || '-'}
     * State:\t\t${state.toUpperCase()}
 
     * Instance:
