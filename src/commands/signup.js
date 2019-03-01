@@ -65,7 +65,7 @@ class SignupCommand extends Command {
       }
 
       consola.success(`Generated new BloqCloud account. Your user id is: ${data.body.id}`)
-      consola.info('We have sent an email for you to confirm your account.')
+      consola.info('Email sent to confirm your account.')
     })
   }
 }
