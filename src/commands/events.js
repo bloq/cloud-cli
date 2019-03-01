@@ -17,10 +17,10 @@ class EventsCommand extends Command {
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error('User is not authenticated, use login command to start a new session.')
+      return consola.error('User is not authenticated. Use login command to start a new session.')
     }
 
-    consola.info(`Getting events for user ${user}`)
+    consola.info(`Retrieving events for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
     const url = `${accountsUrl}/events`
     const spinner = ora().start()
@@ -28,15 +28,15 @@ class EventsCommand extends Command {
     request.get(url, { headers: { Authorization } }, function (err, data) {
       spinner.stop()
       if (err) {
-        return consola.error(`Error trying to get events: ${err}`)
+        return consola.error(`Error retrieving events: ${err}`)
       }
 
       const body = JSON.parse(data.body)
       if (data.statusCode !== 200) {
-        return consola.error(`Error trying to get events: ${body.code}`)
+        return consola.error(`Error retrieving events: ${body.code}`)
       }
 
-      consola.success(`Got ${body.length} events:`)
+      consola.success(`Retrieved ${body.length} events:`)
       process.stdout.write('\n')
       console.table(body.map(function ({ service, serviceData, createdAt }) {
         return {
@@ -49,6 +49,6 @@ class EventsCommand extends Command {
   }
 }
 
-EventsCommand.description = 'gets bloq cloud events'
+EventsCommand.description = 'Get BloqCloud events'
 
 module.exports = EventsCommand

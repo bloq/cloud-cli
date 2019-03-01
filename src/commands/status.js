@@ -10,7 +10,7 @@ const { accountsUrl, nodesUrl } = require('../config')
 
 class StatusCommand extends Command {
   async run () {
-    consola.info('Getting bloq cloud status')
+    consola.info('Retrieving BloqCloud status')
     const spinner = ora().start()
     const get = promisify(request.get)
 
@@ -20,7 +20,7 @@ class StatusCommand extends Command {
     ])
       .then(function ([accounts, nodes]) {
         spinner.stop()
-        consola.info(`Bloq Cloud Status
+        consola.info(`BloqCloud Status
         * cloud-acounts:\t${accounts.statusCode === 200 ? '👍' : '❌'}
         * cloud-nodes: \t\t${nodes.statusCode === 200 ? '👍' : '❌'}
         `)
@@ -31,6 +31,6 @@ class StatusCommand extends Command {
   }
 }
 
-StatusCommand.description = 'Get bloq cloud services status'
+StatusCommand.description = 'Get BloqCloud services status'
 
 module.exports = StatusCommand

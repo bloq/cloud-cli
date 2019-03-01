@@ -20,7 +20,7 @@ class VerifyCommand extends Command {
     request.post(url, {
     }, function (err, data) {
       if (err) {
-        return consola.error(`Error trying to verify your account: ${err}`)
+        return consola.error(`Error verifying your account: ${err}`)
       }
 
       if (data.statusCode === 404) {
@@ -33,12 +33,12 @@ class VerifyCommand extends Command {
 
       const body = JSON.parse(data.body)
 
-      consola.success(`The account with id ${body.id} was validated.`)
+      consola.success(`The account with id ${body.id} has been validated.`)
       consola.info(`You can now start a new session running the command: bcl login -u ${body.id}`)
     })
   }
 }
 
-VerifyCommand.description = 'verifies your account and finish signup process'
+VerifyCommand.description = 'Verifies your BloqCloud account and complete signup process'
 
 module.exports = VerifyCommand

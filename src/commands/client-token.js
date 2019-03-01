@@ -18,15 +18,15 @@ class ClientTokenCommand extends Command {
     const clientSecret = config.get('clientSecret')
 
     if (!user || !accessToken) {
-      return consola.error('User is not authenticated, use login command to start a new session.')
+      return consola.error('User is not authenticated. Use login command to start a new session.')
     }
 
-    consola.info(`Getting new client accessToken for ${user}`)
+    consola.info(`Retrieving new client accessToken for ${user}`)
     consola.warn('This command will generate a new client accessToken and refreshToken.')
 
     const { confirmation, save } = await inquirer.prompt([
       { name: 'confirmation', message: 'Do you want to continue?', type: 'confirm' },
-      { name: 'save', message: 'Do you want that blc stores your tokens locally for future usage?', type: 'confirm' } // eslint-disable-line
+      { name: 'save', message: 'Do you want blc to store your tokens locally for future usage?', type: 'confirm' } // eslint-disable-line
     ])
 
     if (!confirmation) {
@@ -47,12 +47,12 @@ class ClientTokenCommand extends Command {
       json: JSON.stringify(reqBody)
     }, function (err, data) {
       if (err) {
-        return consola.error(`Error trying to generate client accessToken: ${err}.`)
+        return consola.error(`Error generating client accessToken: ${err}.`)
       }
 
       const body = JSON.parse(JSON.stringify(data.body))
       if (!body.accessToken || !body.refreshToken) {
-        return consola.error('Error trying to generate client accessToken.')
+        return consola.error('Error generating client accessToken.')
       }
 
       consola.success(`Generated new tokens:
@@ -70,6 +70,6 @@ class ClientTokenCommand extends Command {
   }
 }
 
-ClientTokenCommand.description = 'generates a new client tokens.'
+ClientTokenCommand.description = 'Generate new client token(s)'
 
 module.exports = ClientTokenCommand

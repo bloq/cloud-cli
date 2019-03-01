@@ -20,7 +20,7 @@ class LoginCommand extends Command {
 
     if (user) {
       config.set('user', user)
-      consola.info('Saved account id, next time you only needs -p (--password) to login.')
+      consola.info('Saved account id. Next time you only need -p (--password) to login.')
     } else {
       user = config.get('user')
       if (!user) {
@@ -41,21 +41,21 @@ class LoginCommand extends Command {
     }, function (err, data) {
       spinner.stop()
       if (err) {
-        return consola.error(`Error trying to get access token: ${err}`)
+        return consola.error(`Error retrieving access token: ${err}`)
       }
 
       const body = JSON.parse(data.body)
       if (data.statusCode !== 200) {
-        return consola.error(`Error trying to get access token: ${body.code || body.message}`)
+        return consola.error(`Error retrieving access token: ${body.code || body.message}`)
       }
 
       config.set('accessToken', body.accessToken)
-      consola.success('Loggin success, your session expires in 12h.')
+      consola.success('Login success. Your session expires in 12h.')
     })
   }
 }
 
-LoginCommand.description = 'logins you with your bloq-cloud account.'
+LoginCommand.description = 'Login to your BloqCloud account'
 
 LoginCommand.flags = {
   user: flags.string({ char: 'u', description: 'account id or email' })

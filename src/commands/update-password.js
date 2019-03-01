@@ -16,13 +16,13 @@ class UpdatePasswordCommand extends Command {
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error('User is not authenticated, use login command to start a new session')
+      return consola.error('User is not authenticated. Use login command to start a new session.')
     }
 
     const { oldPassword, newPassword, confirmPassword } = await inquirer.prompt([
       { name: 'oldPassword', message: 'Enter old password', type: 'password' },
       { name: 'newPassword', message: 'Enter new password', type: 'password' },
-      { name: 'confirmPassword', message: 'Confirm enter new password', type: 'password' }
+      { name: 'confirmPassword', message: 'Confirm new password', type: 'password' }
     ])
 
     if (oldPassword === newPassword) {
@@ -30,7 +30,7 @@ class UpdatePasswordCommand extends Command {
     }
 
     if (newPassword !== confirmPassword) {
-      return consola.error('The new password you entered does not match each oder')
+      return consola.error('The passwords you have entered do not match')
     }
 
     consola.info(`Updating password for user ${user}`)
@@ -45,7 +45,7 @@ class UpdatePasswordCommand extends Command {
       }
     }, function (err, data) {
       if (err) {
-        return consola.error(`Error trying to update user password: ${err}`)
+        return consola.error(`Error updating user password: ${err}`)
       }
 
       if (data.statusCode === 400) {
@@ -53,14 +53,14 @@ class UpdatePasswordCommand extends Command {
       }
 
       if (data.statusCode !== 204) {
-        return consola.error('Error trying to update user password.')
+        return consola.error('Error updating user password.')
       }
 
-      consola.success('User password was updated.')
+      consola.success('User password updated')
     })
   }
 }
 
-UpdatePasswordCommand.description = 'updates user password.'
+UpdatePasswordCommand.description = 'Update user password'
 
 module.exports = UpdatePasswordCommand
