@@ -64,7 +64,7 @@ class NodesCommand extends Command {
 
 NodesCommand.description = 'Manage your BloqCloud nodes'
 NodesCommand.flags = {
-  chain: flags.string({ char: 'c', description: 'chain type', options: ['btc'] }),
+  chain: flags.string({ char: 'c', description: 'chain type', options: ['btc', 'bch'] }),
   all: flags.boolean({ char: 'a', description: 'list all nodes', default: false, required: false })
 }
 
