@@ -53,8 +53,8 @@ class NodesCommand extends Command {
           return nodes.create(user, accessToken, flags.chain)
         case 'remove':
           return nodes.remove(user, accessToken)
-        case 'get':
-          return nodes.get(user, accessToken)
+        case 'info':
+          return nodes.info(user, accessToken)
         default:
           return nodes.list(user, accessToken, flags)
       }
@@ -74,7 +74,7 @@ NodesCommand.args = [
     required: true,
     description: 'Specify the type of nodes operation to run',
     default: 'list',
-    options: ['create', 'list', 'remove', 'get']
+    options: ['create', 'list', 'remove', 'info']
   }
 ]
 

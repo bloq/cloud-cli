@@ -1,8 +1,8 @@
 'use strict'
 
 const list = require('./list')
-const get = require('./get')
+const info = require('./info')
 const create = require('./create')
 const remove = require('./remove')
 
-module.exports = { get, create, list, remove }
+module.exports = { info, create, list, remove }
