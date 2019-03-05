@@ -26,6 +26,7 @@
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.0",
     "@oclif/test": "^1.2.2",
+    "@bloq/cloud-sdk": "git@github.com:bloqpriv/cloud-sdk.git",
     "chai": "^4.1.2",
     "eslint": "^5.11.1",
     "eslint-config-bloq": "^1.2.2",
