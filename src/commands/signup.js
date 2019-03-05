@@ -59,7 +59,6 @@ class SignupCommand extends Command {
         return consola.error(`Error trying to create the BloqCloud account: ${err}`)
       }
 
-      console.log(data.body)
       if (data.statusCode !== 201) {
         return consola.error(`Error trying to create the BloqCloud account: ${data.body.code || data.body.message}`)
       }

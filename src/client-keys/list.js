@@ -17,8 +17,11 @@ async function listClientKeys (user, accessToken) {
       return consola.error(`Error trying to list lient keys: ${err}.`)
     }
 
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
+    }
+
     const body = JSON.parse(data.body)
-    console.log(data.body)
     if (data.statusCode !== 200) {
       return consola.error(`Error trying to list client keys: ${body.code || body.message} | ${data.statusCode}.`)
     }
