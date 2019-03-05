@@ -24,6 +24,10 @@ async function listNodes (user, accessToken) {
       return consola.error(`Error retrieving the node: ${err}.`)
     }
 
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
+    }
+
     let body = JSON.parse(data.body)
     if (data.statusCode !== 200) {
       return consola.error(`Error retrieving the node: ${body.code}.`)

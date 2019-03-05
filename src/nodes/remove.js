@@ -7,12 +7,15 @@ const inquirer = require('inquirer')
 
 const { nodesUrl } = require('../config')
 
-async function listNodes (user, accessToken) {
+async function removeNode (user, accessToken, flags) {
   consola.info(`Removing node for user ${user}.`)
+  let { nodeId } = flags
 
-  const { nodeId } = await inquirer.prompt([
-    { name: 'nodeId', message: 'Enter the node id', type: 'text' }
-  ])
+  if (!nodeId) {
+    nodeId = await inquirer.prompt([
+      { name: 'nodeId', message: 'Enter the node id', type: 'text' }
+    ])
+  }
 
   const { confirmation } = await inquirer.prompt([{
     name: 'confirmation',
@@ -34,6 +37,14 @@ async function listNodes (user, accessToken) {
       return consola.error(`Error removing the node: ${err}.`)
     }
 
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
+    }
+
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
+    }
+
     if (data.statusCode !== 204) {
       const body = JSON.parse(data.body)
       return consola.error(`Error removing the node: ${body.code}.`)
@@ -43,4 +54,4 @@ async function listNodes (user, accessToken) {
   })
 }
 
-module.exports = listNodes
+module.exports = removeNode
