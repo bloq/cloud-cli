@@ -6,7 +6,7 @@ const request = require('request')
 
 const { nodesUrl } = require('../config')
 
-async function createNode (user, accessToken, chain) {
+async function createNode (user, accessToken, { chain }) {
   consola.info(`Initializing a new ${chain} node for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
