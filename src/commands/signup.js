@@ -31,11 +31,11 @@ class SignupCommand extends Command {
       { name: 'displayName', message: 'Enter your name', type: 'input' },
       { name: 'password', message: 'Enter your password', type: 'password' },
       { name: 'confirmPassword', message: 'Confirm new password', type: 'password' },
-      { name: 'acceptTerms', message: 'Do you accept our terms & conditions? You can read them at https://terms.bloq.cloud', type: 'confirm' }, // eslint-disable-line
+      { name: 'acceptTerms', message: 'Please confirm that you have read and accept the terms and conditions found at https://terms.bloq.cloud', type: 'confirm' }, // eslint-disable-line
     ])
 
     if (!acceptTerms) {
-      return consola.error('Termsn & Conditions must be accepted in order to create a bloq cloud account.') // eslint-disable-line
+      return consola.error('Terms & Conditions must be accepted in order to create a BloqCloud account and access BloqCloud services.') // eslint-disable-line
     }
 
     if (!isEmailValid(email)) {
