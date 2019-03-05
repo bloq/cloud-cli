@@ -19,7 +19,7 @@ $ npm install -g @bloq/cloud-cli
 $ bcl COMMAND
 running command...
 $ bcl (-v|--version|version)
-@bloq/cloud-cli/0.0.2 darwin-x64 node-v8.9.4
+@bloq/cloud-cli/0.0.3 darwin-x64 node-v8.9.4
 $ bcl --help [COMMAND]
 USAGE
   $ bcl COMMAND
@@ -45,39 +45,39 @@ USAGE
 
 ## `bcl cc`
 
-setup your credit card information
+Setup your credit card information
 
 ```
 USAGE
   $ bcl cc
 ```
 
-_See code: [src/commands/cc.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/cc.js)_
+_See code: [src/commands/cc.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/cc.js)_
 
 ## `bcl client-keys OPERATION`
 
-Manage your bloq cloud client keys.
+Manage your BloqCloud client key(s)
 
 ```
 USAGE
   $ bcl client-keys OPERATION
 
 ARGUMENTS
-  OPERATION  (create|list|remove) [default: list] Specify the kind of client-keys operation to run
+  OPERATION  (create|list|remove) [default: list] Specify the type of client-keys operation to run
 ```
 
-_See code: [src/commands/client-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/client-keys.js)_
+_See code: [src/commands/client-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/client-keys.js)_
 
 ## `bcl client-token`
 
-generates a new client tokens.
+Generate new client token(s)
 
 ```
 USAGE
   $ bcl client-token
 ```
 
-_See code: [src/commands/client-token.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/client-token.js)_
+_See code: [src/commands/client-token.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/client-token.js)_
 
 ## `bcl conf [KEY] [VALUE]`
 
@@ -105,14 +105,14 @@ _See code: [conf-cli](https://github.com/natzcam/conf-cli/blob/v0.1.8/src/comman
 
 ## `bcl events`
 
-gets bloq cloud events
+Get BloqCloud events
 
 ```
 USAGE
   $ bcl events
 ```
 
-_See code: [src/commands/events.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/events.js)_
+_See code: [src/commands/events.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/events.js)_
 
 ## `bcl help [COMMAND]`
 
@@ -133,7 +133,7 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6
 
 ## `bcl login`
 
-logins you with your bloq-cloud account.
+Login to your BloqCloud account
 
 ```
 USAGE
@@ -143,7 +143,7 @@ OPTIONS
   -u, --user=user  account id or email
 ```
 
-_See code: [src/commands/login.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/login.js)_
+_See code: [src/commands/login.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/login.js)_
 
 ## `bcl logout`
 
@@ -154,78 +154,78 @@ USAGE
   $ bcl logout
 ```
 
-_See code: [src/commands/logout.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/logout.js)_
+_See code: [src/commands/logout.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/logout.js)_
 
 ## `bcl nodes OPERATION`
 
-Manage your bloq cloud nodes.
+Manage your BloqCloud nodes
 
 ```
 USAGE
   $ bcl nodes OPERATION
 
 ARGUMENTS
-  OPERATION  (create|list|remove|get) [default: list] Specify the kind of nodes operation to run
+  OPERATION  (create|list|remove|get) [default: list] Specify the type of nodes operation to run
 
 OPTIONS
-  -a, --all        list all nodes
-  -c, --chain=btc  chain type
+  -a, --all            list all nodes
+  -c, --chain=btc|bch  chain type
 ```
 
-_See code: [src/commands/nodes.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/nodes.js)_
+_See code: [src/commands/nodes.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/nodes.js)_
 
 ## `bcl profile`
 
-gets user profile.
+Retrieve user profile
 
 ```
 USAGE
   $ bcl profile
 ```
 
-_See code: [src/commands/profile.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/profile.js)_
+_See code: [src/commands/profile.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/profile.js)_
 
 ## `bcl signup`
 
-setup a new bloqcloud account
+Setup a new BloqCloud account
 
 ```
 USAGE
   $ bcl signup
 ```
 
-_See code: [src/commands/signup.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/signup.js)_
+_See code: [src/commands/signup.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/signup.js)_
 
 ## `bcl status`
 
-Get bloq cloud services status
+Get BloqCloud services status
 
 ```
 USAGE
   $ bcl status
 ```
 
-_See code: [src/commands/status.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/status.js)_
+_See code: [src/commands/status.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/status.js)_
 
 ## `bcl update-password`
 
-updates user password.
+Update user password
 
 ```
 USAGE
   $ bcl update-password
 ```
 
-_See code: [src/commands/update-password.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/update-password.js)_
+_See code: [src/commands/update-password.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/update-password.js)_
 
 ## `bcl verify`
 
-verifies your account and finish signup process
+Verifies your BloqCloud account and complete signup process
 
 ```
 USAGE
   $ bcl verify
 ```
 
-_See code: [src/commands/verify.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.2/src/commands/verify.js)_
+_See code: [src/commands/verify.js](https://github.com/bloqpriv/cloud-cli/blob/v0.0.3/src/commands/verify.js)_
 <!-- commandsstop -->
