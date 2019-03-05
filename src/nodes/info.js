@@ -7,12 +7,15 @@ const inquirer = require('inquirer')
 
 const { nodesUrl } = require('../config')
 
-async function listNodes (user, accessToken) {
+async function infoNode (user, accessToken, flags) {
   consola.info(`Retrieving node for user ${user}.`)
+  let { nodeId } = flags
 
-  const { nodeId } = await inquirer.prompt([
-    { name: 'nodeId', message: 'Enter the node id', type: 'text' }
-  ])
+  if (!nodeId) {
+    nodeId = await inquirer.prompt([
+      { name: 'nodeId', message: 'Enter the node id', type: 'text' }
+    ])
+  }
 
   const Authorization = `Bearer ${accessToken}`
   const url = `${nodesUrl}/nodes/${nodeId}`
@@ -22,6 +25,10 @@ async function listNodes (user, accessToken) {
     spinner.stop()
     if (err) {
       return consola.error(`Error retrieving the node: ${err}.`)
+    }
+
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
     }
 
     let body = JSON.parse(data.body)
@@ -39,13 +46,11 @@ async function listNodes (user, accessToken) {
     * Started At:\t${startedAt}
     * Stopped At:\t${stopedAt || '-'}
     * State:\t\t${state.toUpperCase()}
-
     * Instance:
     \t- Vendor:\t${instance.vendor}
     \t- ${instance.vendor.toUpperCase()} ID:\t${instance.id}
     \t- Type:\t\t${instance.type}
     \t- Image ID:\t${instance.imageId}
-
     * Vendor:
     \t- LaunchTime:\t${vendor.LaunchTime}
     \t- Architecture:\t${vendor.Architecture}
@@ -54,4 +59,4 @@ async function listNodes (user, accessToken) {
   })
 }
 
-module.exports = listNodes
+module.exports = infoNode

@@ -50,11 +50,11 @@ class NodesCommand extends Command {
           if (!flags.chain) {
             return consola.error('Missing chain type (-c or --chain)')
           }
-          return nodes.create(user, accessToken, flags.chain)
+          return nodes.create(user, accessToken, flags)
         case 'remove':
-          return nodes.remove(user, accessToken)
-        case 'get':
-          return nodes.get(user, accessToken)
+          return nodes.remove(user, accessToken, flags)
+        case 'info':
+          return nodes.info(user, accessToken, flags)
         default:
           return nodes.list(user, accessToken, flags)
       }
@@ -65,7 +65,8 @@ class NodesCommand extends Command {
 NodesCommand.description = 'Manage your BloqCloud nodes'
 NodesCommand.flags = {
   chain: flags.string({ char: 'c', description: 'chain type', options: ['btc', 'bch'] }),
-  all: flags.boolean({ char: 'a', description: 'list all nodes', default: false, required: false })
+  all: flags.boolean({ char: 'a', description: 'list all nodes', default: false, required: false }),
+  nodeId: flags.string({ char: 'i', description: 'node id' })
 }
 
 NodesCommand.args = [
@@ -74,7 +75,7 @@ NodesCommand.args = [
     required: true,
     description: 'Specify the type of nodes operation to run',
     default: 'list',
-    options: ['create', 'list', 'remove', 'get']
+    options: ['create', 'list', 'remove', 'info']
   }
 ]
 
