@@ -22,11 +22,11 @@ function getClientToken (cb) {
   const json = { grantType: 'clientCredentials', clientId, clientSecret }
   request.post(url, { json }, function (err, data) {
     if (err) {
-      return cb(new Error(`Error trying to get client token: ${err}`))
+      return cb(new Error(`Error retrieving client token: ${err}`))
     }
 
     if (data.statusCode !== 200) {
-      return cb(new Error(`Error trying to generate client token: ${data.body.code}`))
+      return cb(new Error(`Error generating client token: ${data.body.code}`))
     }
 
     return cb(null, data.body)
@@ -62,9 +62,9 @@ class NodesCommand extends Command {
   }
 }
 
-NodesCommand.description = 'Manage your bloq cloud nodes.'
+NodesCommand.description = 'Manage your BloqCloud nodes'
 NodesCommand.flags = {
-  chain: flags.string({ char: 'c', description: 'chain type', options: ['btc'] }),
+  chain: flags.string({ char: 'c', description: 'chain type', options: ['btc', 'bch'] }),
   all: flags.boolean({ char: 'a', description: 'list all nodes', default: false, required: false })
 }
 
@@ -72,7 +72,7 @@ NodesCommand.args = [
   {
     name: 'operation',
     required: true,
-    description: 'Specify the kind of nodes operation to run',
+    description: 'Specify the type of nodes operation to run',
     default: 'list',
     options: ['create', 'list', 'remove', 'get']
   }

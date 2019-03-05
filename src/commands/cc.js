@@ -25,7 +25,7 @@ class VerifyCommand extends Command {
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error('User is not authenticated, use login command to start a new session.')
+      return consola.error('User is not authenticated. Use login command to start a new session.')
     }
 
     consola.info(`Getting information for user ${user}`)
@@ -38,7 +38,7 @@ class VerifyCommand extends Command {
       }
 
       if (data.statusCode === 401 || data.statusCode === 403) {
-        return consola.error('User is not authenticated, use login command to start a new session.')
+        return consola.error('User is not authenticated. Use login command to start a new session.')
       }
 
       const { email } = JSON.parse(data.body)
@@ -77,6 +77,6 @@ class VerifyCommand extends Command {
   }
 }
 
-VerifyCommand.description = 'setup your credit card information'
+VerifyCommand.description = 'Setup your credit card information'
 
 module.exports = VerifyCommand

@@ -29,8 +29,8 @@ class SignupCommand extends Command {
       { name: 'email', message: 'Enter your email address', type: 'input' },
       { name: 'displayName', message: 'Enter your name', type: 'input' },
       { name: 'password', message: 'Enter your password', type: 'password' },
-      { name: 'confirmPassword', message: 'Confirm enter new password', type: 'password' },
-      { name: 'confirm', message: 'Please check that your information is correct, do you want to continue?', type: 'confirm' } // eslint-disable-line
+      { name: 'confirmPassword', message: 'Confirm new password', type: 'password' },
+      { name: 'confirm', message: 'Please check that your information is correct. Do you want to continue?', type: 'confirm' } // eslint-disable-line
     ])
 
     if (!confirm) {
@@ -42,7 +42,7 @@ class SignupCommand extends Command {
     }
 
     if (password !== confirmPassword) {
-      return consola.error('The password you entered does not match each oder')
+      return consola.error('The passwords you entered do not match')
     }
 
     consola.info('Creating your new BloqCloud account')
@@ -56,19 +56,19 @@ class SignupCommand extends Command {
       }
     }, function (err, data) {
       if (err) {
-        return consola.error(`Error trying to create the BloqCloud account: ${err}`)
+        return consola.error(`Error creating BloqCloud account: ${err}`)
       }
 
       if (data.statusCode !== 201) {
-        return consola.error(`Error trying to create the BloqCloud account: ${data.body.code || data.body.message}`)
+        return consola.error(`Error creating BloqCloud account: ${data.body.code || data.body.message}`)
       }
 
-      consola.success(`Generated new bloq account, you user id is: ${data.body.id}`)
-      consola.info('We sent you an email to confirm your account.')
+      consola.success(`Generated new BloqCloud account. Your user id is: ${data.body.id}`)
+      consola.info('Email sent to confirm your account.')
     })
   }
 }
 
-SignupCommand.description = 'setup a new bloqcloud account'
+SignupCommand.description = 'Setup a new BloqCloud account'
 
 module.exports = SignupCommand

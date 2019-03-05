@@ -28,12 +28,12 @@ async function removeClientKey (user, accessToken) {
 
   request.del(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
-      return consola.error(`Error trying to remove the client-key: ${err}.`)
+      return consola.error(`Error removing the client-key: ${err}.`)
     }
 
     if (data.statusCode !== 204) {
       const body = JSON.parse(data.body)
-      return consola.error(`Error trying to remove client-key: ${body.code}.`)
+      return consola.error(`Error removing client-key: ${body.code}.`)
     }
 
     consola.success(`Removed client key with id ${clientId}`)

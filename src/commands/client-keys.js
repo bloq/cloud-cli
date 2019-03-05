@@ -14,7 +14,7 @@ class ClientKeysCommand extends Command {
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error('User is not authenticated, use login command to start a new session.')
+      return consola.error('User is not authenticated. Use login command to start a new session.')
     }
 
     const { args } = this.parse(ClientKeysCommand)
@@ -29,13 +29,13 @@ class ClientKeysCommand extends Command {
   }
 }
 
-ClientKeysCommand.description = 'Manage your bloq cloud client keys.'
+ClientKeysCommand.description = 'Manage your BloqCloud client key(s)'
 
 ClientKeysCommand.args = [
   {
     name: 'operation',
     required: true,
-    description: 'Specify the kind of client-keys operation to run',
+    description: 'Specify the type of client-keys operation to run',
     default: 'list',
     options: ['create', 'list', 'remove']
   }
