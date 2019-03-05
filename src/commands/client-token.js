@@ -33,36 +33,33 @@ class ClientTokenCommand extends Command {
       return consola.info('Generation of client keys aborted.')
     }
 
-    const Authorization = `Bearer ${accessToken}`
-
-    const url = `${accountsUrl}/auth/token`
-    const reqBody = {
-      grantType: 'clientCredentials',
-      clientId,
-      clientSecret
-    }
-
-    request.post(url, {
-      headers: { Authorization },
-      json: JSON.stringify(reqBody)
+    request.post(`${accountsUrl}/auth/token`, {
+      headers: {
+        Authorization: `Bearer ${accessToken}`
+      },
+      json: {
+        grantType: 'clientCredentials',
+        clientId,
+        clientSecret
+      }
     }, function (err, data) {
       if (err) {
         return consola.error(`Error generating client accessToken: ${err}.`)
       }
 
-      const body = JSON.parse(JSON.stringify(data.body))
-      if (!body.accessToken || !body.refreshToken) {
+      if (!data.body.accessToken || !data.body.refreshToken) {
         return consola.error('Error generating client accessToken.')
       }
 
-      consola.success(`Generated new tokens:
-      * clientAccresToken:\t${body.accessToken}
-      * refreshToken:\t${body.refreshToken}
-      `)
+      consola.success(
+        'Generated new tokens: \n\n' +
+        `* clientAccresToken:  ${data.body.accessToken} \n\n` +
+        `* refreshToken:  ${data.body.refreshToken}`
+      )
 
       if (save) {
-        config.set('clientAccessToken', body.accessToken)
-        config.set('refreshToken', body.refreshToken)
+        config.set('clientAccessToken', data.body.accessToken)
+        config.set('refreshToken', data.body.refreshToken)
       }
 
       consola.warn('Be sure to copy and save these keys since it will not be possible to obtain them again.') // eslint-disable-line
