@@ -20,6 +20,10 @@ async function listNodes (user, accessToken, flags) {
       return consola.error(`Error retrieving all nodes: ${err}.`)
     }
 
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
+    }
+
     if (data.statusCode !== 200) {
       return consola.error(`Error retrieving all nodes: ${data.code}`)
     }

@@ -6,7 +6,7 @@ const request = require('request')
 
 const { nodesUrl } = require('../config')
 
-async function createNode (user, accessToken, chain) {
+async function createNode (user, accessToken, { chain }) {
   consola.info(`Initializing a new ${chain} node for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
@@ -18,6 +18,10 @@ async function createNode (user, accessToken, chain) {
     spinner.stop()
     if (err) {
       return consola.error(`Error initializing a new ${chain} node: ${err}`)
+    }
+
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
     }
 
     if (data.statusCode !== 200) {

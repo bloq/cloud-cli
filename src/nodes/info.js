@@ -7,12 +7,15 @@ const inquirer = require('inquirer')
 
 const { nodesUrl } = require('../config')
 
-async function listNodes (user, accessToken) {
+async function listNodes (user, accessToken, flags) {
   consola.info(`Retrieving node for user ${user}.`)
+  let { nodeId } = flags
 
-  const { nodeId } = await inquirer.prompt([
-    { name: 'nodeId', message: 'Enter the node id', type: 'text' }
-  ])
+  if (!nodeId) {
+    nodeId = await inquirer.prompt([
+      { name: 'nodeId', message: 'Enter the node id', type: 'text' }
+    ])
+  }
 
   const Authorization = `Bearer ${accessToken}`
   const url = `${nodesUrl}/nodes/${nodeId}`
@@ -22,6 +25,10 @@ async function listNodes (user, accessToken) {
     spinner.stop()
     if (err) {
       return consola.error(`Error retrieving the node: ${err}.`)
+    }
+
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
     }
 
     let body = JSON.parse(data.body)
