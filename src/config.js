@@ -1,7 +1,7 @@
 'use strict'
 
 module.exports = {
-  accountsUrl: 'http://localhost:4000',
+  accountsUrl: 'https://accounts.bloq.cloud',
   port: 3000,
   ccUrlBase: 'http://localhost',
   nodesUrl: 'http://localhost:4002'

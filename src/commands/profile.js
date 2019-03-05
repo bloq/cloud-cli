@@ -24,14 +24,18 @@ class ProfileCommand extends Command {
 
     request.get(url, {
       headers: { Authorization }
-    }, function (err, res) {
+    }, function (err, data) {
       if (err) {
         return consola.error(`Error retrieving user profile: ${err}`)
       }
 
-      const body = JSON.parse(res.body)
-      if (res.statusCode !== 200) {
-        return consola.error(`Error retrieving user profile: ${body.code}`)
+      if (data.statusCode === 401 || data.statusCode === 403) {
+        return consola.error('Your session has expired')
+      }
+
+      const body = JSON.parse(data.body)
+      if (data.statusCode !== 200) {
+        return consola.error(`Error trying to get user profile: ${body.code}`)
       }
 
       const { verifiedAt, id, displayName, email, isAdmin } = body
