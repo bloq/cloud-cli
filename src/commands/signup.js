@@ -3,6 +3,7 @@
 const Conf = require('conf')
 const config = new Conf()
 
+const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
@@ -25,16 +26,16 @@ class SignupCommand extends Command {
     config.delete('clientId')
     config.delete('clientSecret')
 
-    const { email, displayName, password, confirmPassword, confirm } = await inquirer.prompt([
+    const { email, displayName, password, confirmPassword, acceptTerms } = await inquirer.prompt([
       { name: 'email', message: 'Enter your email address', type: 'input' },
       { name: 'displayName', message: 'Enter your name', type: 'input' },
       { name: 'password', message: 'Enter your password', type: 'password' },
       { name: 'confirmPassword', message: 'Confirm new password', type: 'password' },
-      { name: 'confirm', message: 'Please check that your information is correct. Do you want to continue?', type: 'confirm' } // eslint-disable-line
+      { name: 'acceptTerms', message: 'Do you accept our terms & conditions? You can read them at https://terms.bloq.cloud', type: 'confirm' }, // eslint-disable-line
     ])
 
-    if (!confirm) {
-      return consola.error('BloqCloud signup aborted')
+    if (!acceptTerms) {
+      return consola.error('Termsn & Conditions must be accepted in order to create a bloq cloud account.') // eslint-disable-line
     }
 
     if (!isEmailValid(email)) {
@@ -45,16 +46,19 @@ class SignupCommand extends Command {
       return consola.error('The passwords you entered do not match')
     }
 
-    consola.info('Creating your new BloqCloud account')
     const url = `${accountsUrl}/user/signup`
+    const { confirm } = await inquirer.prompt([
+      { name: 'confirm', message: 'Please check that your information is correct. Do you want to continue?', type: 'confirm' } // eslint-disable-line
+    ])
 
-    request.post(url, {
-      json: {
-        email,
-        displayName,
-        password
-      }
-    }, function (err, data) {
+    if (!confirm) {
+      return consola.error('BloqCloud signup aborted')
+    }
+
+    consola.info('Creating your new BloqCloud account')
+    const spinner = ora().start()
+    request.post(url, { json: { email, displayName, password } }, function (err, data) {
+      spinner.stop()
       if (err) {
         return consola.error(`Error creating BloqCloud account: ${err}`)
       }
