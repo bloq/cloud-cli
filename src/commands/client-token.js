@@ -53,8 +53,8 @@ class ClientTokenCommand extends Command {
 
       consola.success(
         'Generated new tokens: \n\n' +
-        `* clientAccresToken:  ${data.body.accessToken} \n\n` +
-        `* refreshToken:  ${data.body.refreshToken}`
+        `\t* clientAccresToken:  ${data.body.accessToken} \n` +
+        `\t* refreshToken:  ${data.body.refreshToken}`
       )
 
       if (save) {
