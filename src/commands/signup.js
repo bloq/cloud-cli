@@ -9,8 +9,6 @@ const request = require('request')
 const inquirer = require('inquirer')
 const { Command } = require('@oclif/command')
 
-const { accountsUrl } = require('../config')
-
 function isEmailValid (email) {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // eslint-disable-line
   return regex.test(String(email).toLowerCase())
@@ -46,7 +44,7 @@ class SignupCommand extends Command {
       return consola.error('The passwords you entered do not match')
     }
 
-    const url = `${accountsUrl}/user/signup`
+    const url = `${config.get('accountsUrl')}/user/signup`
     const { confirm } = await inquirer.prompt([
       { name: 'confirm', message: 'Please check that your information is correct. Do you want to continue?', type: 'confirm' } // eslint-disable-line
     ])

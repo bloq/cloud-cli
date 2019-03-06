@@ -8,6 +8,7 @@
   },
   "bugs": "https://github.com/bloqpriv/cloud-cli/issues",
   "dependencies": {
+    "@bloq/cloud-sdk": "git@github.com:bloqpriv/cloud-sdk.git",
     "@oclif/command": "^1.5.8",
     "@oclif/config": "^1.12.4",
     "@oclif/plugin-help": "^2.1.6",
@@ -20,12 +21,12 @@
     "ora": "^3.1.0",
     "request": "^2.88.0",
     "serve": "^10.1.2",
-    "stripe": "^6.23.1"
+    "stripe": "^6.23.1",
+    "update-notifier": "^2.5.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "^1.21.0",
     "@oclif/test": "^1.2.2",
-    "@bloq/cloud-sdk": "git@github.com:bloqpriv/cloud-sdk.git",
     "chai": "^4.1.2",
     "eslint": "^5.11.1",
     "eslint-config-bloq": "^1.2.2",

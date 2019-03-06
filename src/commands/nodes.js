@@ -8,7 +8,6 @@ const request = require('request')
 const { Command, flags } = require('@oclif/command')
 
 const nodes = require('../nodes')
-const { accountsUrl } = require('../config')
 
 const CHAIN_OPTIONS = ['btc', 'bch']
 
@@ -24,7 +23,7 @@ function getClientToken (cb) {
     return consola.error('You must provide a valid client-keys pair in order to manage nodes.')
   }
 
-  const url = `${accountsUrl}/auth/token`
+  const url = `${config.get('accountsUrl')}/auth/token`
   const json = { grantType: 'clientCredentials', clientId, clientSecret }
   request.post(url, { json }, function (err, data) {
     if (err) {

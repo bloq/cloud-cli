@@ -8,8 +8,6 @@ const request = require('request')
 const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
 
-const { accountsUrl } = require('../config')
-
 class UpdatePasswordCommand extends Command {
   async run () {
     const user = config.get('user')
@@ -35,7 +33,7 @@ class UpdatePasswordCommand extends Command {
 
     consola.info(`Updating password for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
-    const url = `${accountsUrl}/profile/password`
+    const url = `${config.get('accountsUrl')}/profile/password`
 
     request.put(url, {
       headers: { Authorization },

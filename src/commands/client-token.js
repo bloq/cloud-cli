@@ -8,8 +8,6 @@ const request = require('request')
 const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
 
-const { accountsUrl } = require('../config')
-
 class ClientTokenCommand extends Command {
   async run () {
     const user = config.get('user')
@@ -33,7 +31,7 @@ class ClientTokenCommand extends Command {
       return consola.info('Generation of client keys aborted.')
     }
 
-    request.post(`${accountsUrl}/auth/token`, {
+    request.post(`${config.get('accountsUrl')}/auth/token`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       },

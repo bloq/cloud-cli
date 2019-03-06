@@ -9,8 +9,6 @@ const request = require('request')
 const { Command } = require('@oclif/command')
 require('console.table')
 
-const { accountsUrl } = require('../config')
-
 class EventsCommand extends Command {
   async run () {
     const user = config.get('user')
@@ -22,7 +20,7 @@ class EventsCommand extends Command {
 
     consola.info(`Retrieving events for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
-    const url = `${accountsUrl}/events`
+    const url = `${config.get('accountsUrl')}/events`
     const spinner = ora().start()
 
     request.get(url, { headers: { Authorization } }, function (err, data) {

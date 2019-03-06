@@ -11,7 +11,7 @@ const { open } = require('openurl')
 
 const request = require('request')
 const consola = require('consola')
-const { accountsUrl, port, ccUrlBase } = require('../config')
+const { port, ccUrlBase } = require('../config')
 
 const ccUrl = `${ccUrlBase}:${port}`
 
@@ -30,7 +30,7 @@ class VerifyCommand extends Command {
 
     consola.info(`Getting information for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
-    const url = `${accountsUrl}/profile`
+    const url = `${config.get('accountsUrl')}/profile`
 
     request.get(url, { headers: { Authorization } }, function (err, data) {
       if (err) {
@@ -54,7 +54,7 @@ class VerifyCommand extends Command {
           body = parse(body)
           body.email = email
 
-          const url = `${accountsUrl}/stripe`
+          const url = `${config.get('accountsUrl')}/stripe`
           request.post(url, { headers: { Authorization }, json: body }, function (err, data) {
             if (err || data.statusCode !== 204) {
               consola.error('Error trying to update your credit card information')
