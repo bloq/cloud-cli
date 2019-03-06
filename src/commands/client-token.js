@@ -26,7 +26,7 @@ class ClientTokenCommand extends Command {
 
     const { confirmation, save } = await inquirer.prompt([
       { name: 'confirmation', message: 'Do you want to continue?', type: 'confirm' },
-      { name: 'save', message: 'Do you want blc to store your tokens locally for future usage?', type: 'confirm' } // eslint-disable-line
+      { name: 'save', message: 'Do you want bcl to store your tokens locally for future usage?', type: 'confirm' } // eslint-disable-line
     ])
 
     if (!confirmation) {
