@@ -10,6 +10,12 @@ const { Command, flags } = require('@oclif/command')
 const nodes = require('../nodes')
 const { accountsUrl } = require('../config')
 
+const CHAIN_OPTIONS = ['btc', 'bch']
+
+function isChainValid (chain) {
+  return CHAIN_OPTIONS.find(c => c === chain)
+}
+
 function getClientToken (cb) {
   const clientId = config.get('clientId')
   const clientSecret = config.get('clientSecret')
@@ -50,11 +56,20 @@ class NodesCommand extends Command {
           if (!flags.chain) {
             return consola.error('Missing chain type (-c or --chain)')
           }
-          return nodes.create(user, accessToken, flags)
+
+          const chain = flags.chain.toLowerCase() // eslint-disable-line
+          if (!isChainValid(chain)) {
+            return consola.error(`Invalida chain value, expected to be one of: ${CHAIN_OPTIONS.join(', ')}`)
+          }
+
+          return nodes.create(user, accessToken, { chain })
+
         case 'remove':
           return nodes.remove(user, accessToken, flags)
+
         case 'info':
           return nodes.info(user, accessToken, flags)
+
         default:
           return nodes.list(user, accessToken, flags)
       }
@@ -64,7 +79,7 @@ class NodesCommand extends Command {
 
 NodesCommand.description = 'Manage your BloqCloud nodes'
 NodesCommand.flags = {
-  chain: flags.string({ char: 'c', description: 'chain type', options: ['btc', 'bch'] }),
+  chain: flags.string({ char: 'c', description: 'chain type' }),
   all: flags.boolean({ char: 'a', description: 'list all nodes', default: false, required: false }),
   nodeId: flags.string({ char: 'i', description: 'node id' })
 }
