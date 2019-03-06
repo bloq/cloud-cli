@@ -57,12 +57,11 @@ class NodesCommand extends Command {
             return consola.error('Missing chain type (-c or --chain)')
           }
 
-          const chain = flags.chain.toLowerCase() // eslint-disable-line
-          if (!isChainValid(chain)) {
+          if (!isChainValid(flags.chain)) {
             return consola.error(`Invalida chain value, expected to be one of: ${CHAIN_OPTIONS.join(', ')}`)
           }
 
-          return nodes.create(user, accessToken, { chain })
+          return nodes.create(user, accessToken, flags)
 
         case 'remove':
           return nodes.remove(user, accessToken, flags)
