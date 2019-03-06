@@ -5,20 +5,19 @@ const consola = require('consola')
 const inquirer = require('inquirer')
 
 const { accountsUrl } = require('../config')
-
 const { Command } = require('@oclif/command')
+const { isUserValid, isUuidValid } = require('../validator')
 
 class VerifyCommand extends Command {
   async run () {
     consola.info('Verifyng your BloqCloud account.')
     const { user, token } = await inquirer.prompt([
-      { name: 'user', message: 'Enter your account id', type: 'input' },
-      { name: 'token', message: 'Enter your verification token', type: 'input' }
+      { name: 'user', message: 'Enter your account id', type: 'input', validate: isUserValid },
+      { name: 'token', message: 'Enter your verification token', type: 'input', validate: isUuidValid }
     ])
 
     const url = `${accountsUrl}/user/${user}/token/${token}`
-    request.post(url, {
-    }, function (err, data) {
+    request.post(url, {}, function (err, data) {
       if (err) {
         return consola.error(`Error verifying your account: ${err}`)
       }
