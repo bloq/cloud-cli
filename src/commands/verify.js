@@ -1,10 +1,12 @@
 'use strict'
 
+const Conf = require('conf')
+const config = new Conf()
+
 const request = require('request')
 const consola = require('consola')
 const inquirer = require('inquirer')
 
-const { accountsUrl } = require('../config')
 const { Command } = require('@oclif/command')
 const { isUserValid, isUuidValid } = require('../validator')
 
@@ -16,7 +18,7 @@ class VerifyCommand extends Command {
       { name: 'token', message: 'Enter your verification token', type: 'input', validate: isUuidValid }
     ])
 
-    const url = `${accountsUrl}/user/${user}/token/${token}`
+    const url = `${config.get('accountsUrl')}/user/${user}/token/${token}`
     request.post(url, {}, function (err, data) {
       if (err) {
         return consola.error(`Error verifying your account: ${err}`)

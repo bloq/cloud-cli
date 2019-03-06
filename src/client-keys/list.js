@@ -1,16 +1,17 @@
 'use strict'
 
+const Conf = require('conf')
+const config = new Conf()
+
 const consola = require('consola')
 const request = require('request')
 require('console.table')
-
-const { accountsUrl } = require('../config')
 
 async function listClientKeys (user, accessToken) {
   consola.info(`Getting client keys for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${accountsUrl}/client-keys`
+  const url = `${config.get('accountsUrl')}/client-keys`
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     if (err) {

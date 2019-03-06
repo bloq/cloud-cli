@@ -8,8 +8,6 @@ const request = require('request')
 const consola = require('consola')
 const inquirer = require('inquirer')
 
-const { accountsUrl } = require('../config')
-
 const { Command, flags } = require('@oclif/command')
 
 class LoginCommand extends Command {
@@ -33,7 +31,7 @@ class LoginCommand extends Command {
       { name: 'password', message: 'Enter your password', type: 'password' }
     ])
     const Authorization = `Basic ${Buffer.from(`${user}:${password || ''}`).toString('base64')}`
-    const url = `${accountsUrl}/auth`
+    const url = `${config.get('accountsUrl')}/auth`
     const spinner = ora().start()
 
     request.post(url, {

@@ -1,12 +1,15 @@
 'use strict'
 
+const Conf = require('conf')
+const config = new Conf()
+
 const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
 const { promisify } = require('util')
 const { Command } = require('@oclif/command')
 
-const { accountsUrl, nodesUrl } = require('../config')
+const { nodesUrl } = require('../config')
 
 class StatusCommand extends Command {
   async run () {
@@ -15,7 +18,7 @@ class StatusCommand extends Command {
     const get = promisify(request.get)
 
     Promise.all([
-      get(accountsUrl),
+      get(config.get('accountsUrl')),
       get(nodesUrl)
     ])
       .then(function ([accounts, nodes]) {

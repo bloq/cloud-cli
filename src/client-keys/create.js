@@ -8,8 +8,6 @@ const request = require('request')
 const inquirer = require('inquirer')
 const clipboardy = require('clipboardy')
 
-const { accountsUrl } = require('../config')
-
 async function createClientKey (user, accessToken) {
   consola.info(`Creating new pair of client keys for user ${user}.`)
 
@@ -22,7 +20,7 @@ async function createClientKey (user, accessToken) {
   ])
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${accountsUrl}/client-keys`
+  const url = `${config.get('accountsUrl')}/client-keys`
 
   request.post(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
