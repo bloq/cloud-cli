@@ -7,8 +7,6 @@ const consola = require('consola')
 const request = require('request')
 const { Command } = require('@oclif/command')
 
-const { accountsUrl } = require('../config')
-
 class ProfileCommand extends Command {
   async run () {
     const user = config.get('user')
@@ -20,7 +18,7 @@ class ProfileCommand extends Command {
 
     consola.info(`Retrieving profile for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
-    const url = `${accountsUrl}/profile`
+    const url = `${config.get('accountsUrl')}/profile`
 
     request.get(url, {
       headers: { Authorization }
