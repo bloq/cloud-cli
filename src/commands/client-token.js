@@ -1,12 +1,10 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const consola = require('consola')
 const request = require('request')
 const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
+const config = require('../config')
 
 class ClientTokenCommand extends Command {
   async run () {
@@ -31,7 +29,7 @@ class ClientTokenCommand extends Command {
       return consola.info('Generation of client keys aborted.')
     }
 
-    request.post(`${config.get('accountsUrl')}/auth/token`, {
+    request.post(`${config.get('services.accounts.url')}/auth/token`, {
       headers: {
         Authorization: `Bearer ${accessToken}`
       },

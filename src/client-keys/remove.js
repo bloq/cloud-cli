@@ -3,9 +3,7 @@
 const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
-
-const Conf = require('conf')
-const config = new Conf()
+const config = require('../config')
 
 async function removeClientKey (user, accessToken) {
   consola.info(`Removing client key for user ${user}.`)
@@ -25,7 +23,7 @@ async function removeClientKey (user, accessToken) {
   }
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${config.get('accountsUrl')}/client-keys/${clientId}`
+  const url = `${config.get('services.accounts.url')}/client-keys/${clientId}`
 
   request.del(url, { headers: { Authorization } }, function (err, data) {
     if (err) {

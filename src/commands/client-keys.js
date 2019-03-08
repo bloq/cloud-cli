@@ -1,12 +1,9 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
-const clientKeys = require('../client-keys')
-
 const consola = require('consola')
 const { Command } = require('@oclif/command')
+const clientKeys = require('../client-keys')
+const config = require('../config')
 
 class ClientKeysCommand extends Command {
   async run () {

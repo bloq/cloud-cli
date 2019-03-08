@@ -1,12 +1,10 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const consola = require('consola')
 const request = require('request')
 const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
+const config = require('../config')
 
 class UpdatePasswordCommand extends Command {
   async run () {
@@ -33,7 +31,7 @@ class UpdatePasswordCommand extends Command {
 
     consola.info(`Updating password for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
-    const url = `${config.get('accountsUrl')}/profile/password`
+    const url = `${config.get('services.accounts.url')}/profile/password`
 
     request.put(url, {
       headers: { Authorization },

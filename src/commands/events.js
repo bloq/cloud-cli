@@ -1,12 +1,10 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
 const { Command } = require('@oclif/command')
+const config = require('../config')
 require('console.table')
 
 class EventsCommand extends Command {
@@ -20,7 +18,7 @@ class EventsCommand extends Command {
 
     consola.info(`Retrieving events for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
-    const url = `${config.get('accountsUrl')}/events`
+    const url = `${config.get('services.accounts.url')}/events`
     const spinner = ora().start()
 
     request.get(url, { headers: { Authorization } }, function (err, data) {

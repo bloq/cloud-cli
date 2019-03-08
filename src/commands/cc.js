@@ -1,18 +1,16 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const http = require('http')
 const path = require('path')
 const handler = require('serve-handler')
 const { parse } = require('querystring')
 const { open } = require('openurl')
-
 const request = require('request')
 const consola = require('consola')
-const { port, ccUrlBase } = require('../config')
+const config = require('../config')
 
+const port = config.get('port')
+const ccUrlBase = config.get('ccUrlBase')
 const ccUrl = `${ccUrlBase}:${port}`
 
 const { Command } = require('@oclif/command')
@@ -30,7 +28,7 @@ class VerifyCommand extends Command {
 
     consola.info(`Getting information for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
-    const url = `${config.get('accountsUrl')}/profile`
+    const url = `${config.get('services.accounts.url')}/profile`
 
     request.get(url, { headers: { Authorization } }, function (err, data) {
       if (err) {
@@ -54,7 +52,7 @@ class VerifyCommand extends Command {
           body = parse(body)
           body.email = email
 
-          const url = `${config.get('accountsUrl')}/stripe`
+          const url = `${config.get('services.accounts.url')}/stripe`
           request.post(url, { headers: { Authorization }, json: body }, function (err, data) {
             if (err || data.statusCode !== 204) {
               consola.error('Error trying to update your credit card information')

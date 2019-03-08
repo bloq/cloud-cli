@@ -1,12 +1,9 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const consola = require('consola')
 const request = require('request')
 const { Command, flags } = require('@oclif/command')
-
+const config = require('../config')
 const nodes = require('../nodes')
 
 const CHAIN_OPTIONS = ['btc', 'bch']
@@ -23,7 +20,7 @@ function getClientToken (cb) {
     return consola.error('You must provide a valid client-keys pair in order to manage nodes.')
   }
 
-  const url = `${config.get('accountsUrl')}/auth/token`
+  const url = `${config.get('services.accounts.url')}/auth/token`
   const json = { grantType: 'clientCredentials', clientId, clientSecret }
   request.post(url, { json }, function (err, data) {
     if (err) {

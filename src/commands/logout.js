@@ -1,11 +1,9 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const consola = require('consola')
 const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
+const config = require('../config')
 
 class LogoutCommand extends Command {
   async run () {

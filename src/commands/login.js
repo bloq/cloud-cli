@@ -1,12 +1,10 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const ora = require('ora')
 const request = require('request')
 const consola = require('consola')
 const inquirer = require('inquirer')
+const config = require('../config')
 
 const { Command, flags } = require('@oclif/command')
 
@@ -31,7 +29,7 @@ class LoginCommand extends Command {
       { name: 'password', message: 'Enter your password', type: 'password' }
     ])
     const Authorization = `Basic ${Buffer.from(`${user}:${password || ''}`).toString('base64')}`
-    const url = `${config.get('accountsUrl')}/auth`
+    const url = `${config.get('services.accounts.url')}/auth`
     const spinner = ora().start()
 
     request.post(url, {
