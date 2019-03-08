@@ -1,6 +1,6 @@
 'use strict'
 
-const url = require('url')
+const URL = require('url').URL
 const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
@@ -27,10 +27,10 @@ class StatusCommand extends Command {
 
     const spinner = ora().start()
     Promise.all([
-      getStatus(new url.URL(services.accounts.statusEndpoint, services.accounts.url)),
-      getStatus(new url.URL(services.nodes.statusEndpoint, services.nodes.url)),
-      getStatus(new url.URL(services.insight.btc.statusEndpoint, services.insight.btc.url)),
-      getStatus(new url.URL(services.insight.bch.statusEndpoint, services.insight.bch.url))
+      getStatus(new URL(services.accounts.statusEndpoint, services.accounts.url)),
+      getStatus(new URL(services.nodes.statusEndpoint, services.nodes.url)),
+      getStatus(new URL(services.insight.btc.statusEndpoint, services.insight.btc.url)),
+      getStatus(new URL(services.insight.bch.statusEndpoint, services.insight.bch.url))
     ])
       .then(function (statuses) {
         const [
