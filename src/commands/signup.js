@@ -1,13 +1,11 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
 const { Command } = require('@oclif/command')
+const config = require('../config')
 
 function isEmailValid (email) {
   const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // eslint-disable-line
@@ -44,7 +42,7 @@ class SignupCommand extends Command {
       return consola.error('The passwords you entered do not match')
     }
 
-    const url = `${config.get('accountsUrl')}/user/signup`
+    const url = `${config.get('services.accounts.url')}/user/signup`
     const { confirm } = await inquirer.prompt([
       { name: 'confirm', message: 'Please check that your information is correct. Do you want to continue?', type: 'confirm' } // eslint-disable-line
     ])
@@ -62,7 +60,9 @@ class SignupCommand extends Command {
       }
 
       if (data.statusCode !== 201) {
-        return consola.error(`Error creating BloqCloud account: ${data.body.code || data.body.message}`)
+        return consola.error(
+          `Error creating BloqCloud account: ${data.body.code || data.body.message}`
+        )
       }
 
       consola.success(`Generated new BloqCloud account. Your user id is: ${data.body.id}`)

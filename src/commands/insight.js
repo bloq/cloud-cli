@@ -1,11 +1,10 @@
 'use strict'
 
-const Conf = require('conf')
 const consola = require('consola')
 const { Command } = require('@oclif/command')
 const { insight } = require('@bloq/cloud-sdk')
+const config = require('../config')
 
-const config = new Conf()
 const methods = {
   'block': 'block',
   'blocks': 'blocks',

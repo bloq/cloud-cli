@@ -1,12 +1,10 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
 const clipboardy = require('clipboardy')
+const config = require('../config')
 
 async function createClientKey (user, accessToken) {
   consola.info(`Creating new pair of client keys for user ${user}.`)
@@ -20,7 +18,7 @@ async function createClientKey (user, accessToken) {
   ])
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${config.get('accountsUrl')}/client-keys`
+  const url = `${config.get('services.accounts.url')}/client-keys`
 
   request.post(url, { headers: { Authorization } }, function (err, data) {
     if (err) {

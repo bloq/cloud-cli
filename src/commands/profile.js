@@ -1,11 +1,9 @@
 'use strict'
 
-const Conf = require('conf')
-const config = new Conf()
-
 const consola = require('consola')
 const request = require('request')
 const { Command } = require('@oclif/command')
+const config = require('../config')
 
 class ProfileCommand extends Command {
   async run () {
@@ -18,7 +16,7 @@ class ProfileCommand extends Command {
 
     consola.info(`Retrieving profile for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
-    const url = `${config.get('accountsUrl')}/profile`
+    const url = `${config.get('services.accounts.url')}/profile`
 
     request.get(url, {
       headers: { Authorization }
