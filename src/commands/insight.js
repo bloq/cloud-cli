@@ -23,7 +23,7 @@ class InsightCommand extends Command {
     const clientId = config.get('clientId')
     const clientSecret = config.get('clientSecret')
 
-    const { args, flags } = this.parse(InsightCommand)
+    const { args } = this.parse(InsightCommand)
 
     const coin = 'btc'
     const network = 'mainnet'

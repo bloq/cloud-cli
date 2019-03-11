@@ -17,7 +17,11 @@ class SignupCommand extends Command {
     consola.info('☁️  Welcome to BloqCloud!')
     consola.info('We will guide you to create your new account')
 
-    config.clear()
+    config.delete('user')
+    config.delete('accessToken')
+    config.delete('clientToken')
+    config.delete('clientId')
+    config.delete('clientSecret')
 
     const { email, displayName, password, confirmPassword, acceptTerms } = await inquirer.prompt([
       { name: 'email', message: 'Enter your email address', type: 'input' },
