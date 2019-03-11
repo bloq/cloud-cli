@@ -17,20 +17,22 @@ class SignupCommand extends Command {
     consola.info('☁️  Welcome to BloqCloud!')
     consola.info('We will guide you to create your new account')
 
-    config.delete('user')
-    config.delete('accessToken')
-    config.delete('clientId')
-    config.delete('clientSecret')
+    config.clear()
 
     const { email, displayName, password, confirmPassword, acceptTerms } = await inquirer.prompt([
       { name: 'email', message: 'Enter your email address', type: 'input' },
       { name: 'displayName', message: 'Enter your name', type: 'input' },
       { name: 'password', message: 'Enter your password', type: 'password' },
       { name: 'confirmPassword', message: 'Confirm new password', type: 'password' },
-      { name: 'acceptTerms', message: 'Please confirm that you have read and accept the terms and conditions found at https://terms.bloq.cloud', type: 'confirm' }, // eslint-disable-line
+      {
+        name: 'acceptTerms',
+        message: 'Use of Bloq’s services is subject to the Terms of Service found at https://terms.bloq.cloud. \nPlease confirm that you have read and agree to the Terms of Service by selecting [“I accept”]',
+        type: 'list',
+        choices: ['Decline', 'I accept']
+      }
     ])
 
-    if (!acceptTerms) {
+    if (acceptTerms === 'Decline') {
       return consola.error('Terms & Conditions must be accepted in order to create a BloqCloud account and access BloqCloud services.') // eslint-disable-line
     }
 
