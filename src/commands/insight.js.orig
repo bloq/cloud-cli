@@ -4,9 +4,13 @@ const consola = require('consola')
 const { Command } = require('@oclif/command')
 const { insight } = require('@bloq/cloud-sdk')
 const config = require('../config')
+
+<<<<<<< HEAD
+=======
 const ora = require('ora')
 
-
+const config = new Conf()
+>>>>>>> Add nodes url
 const methods = {
   'block': 'block',
   'blocks': 'blocks',

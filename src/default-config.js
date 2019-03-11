@@ -10,7 +10,7 @@ module.exports = {
       statusEndpoint: '/'
     },
     nodes: {
-      url: 'http://localhost:4002',
+      url: 'https://nodes.bloq.cloud',
       statusEndpoint: '/'
     },
     insight: {
