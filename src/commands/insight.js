@@ -71,13 +71,15 @@ InsightCommand.flags = {
   chain: flags.string({
     char: 'c',
     default: 'btc',
-    description: 'Specify the chain for the method'
+    description: 'Specify the chain for the method',
+    options: ['btc', 'bch']
   }),
 
   network: flags.string({
     char: 'n',
     default: 'mainnet',
-    description: 'Specify the network for the method'
+    description: 'Specify the network for the method',
+    options: ['mainnet']
   })
 }
 
