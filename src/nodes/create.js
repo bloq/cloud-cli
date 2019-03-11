@@ -4,13 +4,13 @@ const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
 
-const { nodesUrl } = require('../config')
+const config = require('../config')
 
 async function createNode (user, accessToken, { chain }) {
   consola.info(`Initializing a new ${chain} node for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${nodesUrl}/nodes`
+  const url = `${config.get('services.nodes.url')}/nodes`
   const json = { image: chain }
   const spinner = ora().start()
 

@@ -5,13 +5,13 @@ const consola = require('consola')
 const request = require('request')
 require('console.table')
 
-const { nodesUrl } = require('../config')
+const config = require('../config')
 
 async function listNodes (user, accessToken, flags) {
   consola.info(`Retrieving all nodes node for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${nodesUrl}/nodes`
+  const url = `${config.get('services.nodes.url')}/nodes`
   const spinner = ora().start()
 
   request.get(url, { headers: { Authorization } }, function (err, data) {

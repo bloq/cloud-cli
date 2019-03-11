@@ -5,7 +5,7 @@ const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
 
-const { nodesUrl } = require('../config')
+const config = require('../config')
 
 async function removeNode (user, accessToken, flags) {
   consola.info(`Removing node for user ${user}.`)
@@ -28,7 +28,7 @@ async function removeNode (user, accessToken, flags) {
   }
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${nodesUrl}/nodes/${nodeId}`
+  const url = `${config.get('services.nodes.url')}/nodes/${nodeId}`
   const spinner = ora().start()
 
   request.del(url, { headers: { Authorization } }, function (err, data) {
