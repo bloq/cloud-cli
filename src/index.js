@@ -9,7 +9,7 @@ const configVersion = config.get('version')
 const isInitialized = config.get('isInitialized')
 
 if (isInitialized !== 'true' || (!configVersion || version > configVersion)) {
-  config.store = defaultConfig
+  config.store = Object.assign(config.store, defaultConfig)
   config.set('isInitialized', 'true')
 }
 
