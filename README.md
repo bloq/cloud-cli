@@ -33,7 +33,7 @@ USAGE
 * [`bcl conf [KEY] [VALUE]`](#bcl-conf-key-value)
 * [`bcl events`](#bcl-events)
 * [`bcl help [COMMAND]`](#bcl-help-command)
-* [`bcl insight`](#bcl-insight)
+* [`bcl insight METHOD`](#bcl-insight-method)
 * [`bcl login`](#bcl-login)
 * [`bcl logout`](#bcl-logout)
 * [`bcl nodes OPERATION`](#bcl-nodes-operation)
@@ -123,26 +123,22 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
-## `bcl insight`
+## `bcl insight METHOD`
 
-Manage your BloqCloud nodes
+Access Insight services through bcl
 
 ```
 USAGE
-  $ bcl insight
+  $ bcl insight METHOD
+
+ARGUMENTS
+  METHOD  (block|blocks|block-hash|raw-block|transaction|tx|raw-transaction|raw-tx) Specify the method to get from
+          insight API
 
 OPTIONS
-  -a, --argument=argument                                                               Specify the argument for the
-                                                                                        method
-
-  -c, --chain=btc|bch                                                                   [default: btc] Specify the chain
-                                                                                        for the method
-
-  -m, --method=block|blocks|block-hash|raw-block|transaction|tx|raw-transaction|raw-tx  (required) Specify the method to
-                                                                                        get from insight API
-
-  -n, --network=mainnet                                                                 [default: mainnet] Specify the
-                                                                                        network for the method
+  -a, --argument=argument  Specify the argument for the method
+  -c, --chain=btc|bch      [default: btc] Specify the chain for the method
+  -n, --network=mainnet    [default: mainnet] Specify the network for the method
 ```
 
 _See code: [src/commands/insight.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.8/src/commands/insight.js)_
