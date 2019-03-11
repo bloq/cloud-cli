@@ -19,7 +19,7 @@ $ npm install -g @bloq/cloud-cli
 $ bcl COMMAND
 running command...
 $ bcl (-v|--version|version)
-@bloq/cloud-cli/0.1.6 darwin-x64 node-v8.9.4
+@bloq/cloud-cli/0.1.7 darwin-x64 node-v8.9.4
 $ bcl --help [COMMAND]
 USAGE
   $ bcl COMMAND
@@ -34,7 +34,7 @@ USAGE
 * [`bcl conf [KEY] [VALUE]`](#bcl-conf-key-value)
 * [`bcl events`](#bcl-events)
 * [`bcl help [COMMAND]`](#bcl-help-command)
-* [`bcl insight METHOD [ID]`](#bcl-insight-method-id)
+* [`bcl insight METHOD [ARG]`](#bcl-insight-method-arg)
 * [`bcl login`](#bcl-login)
 * [`bcl logout`](#bcl-logout)
 * [`bcl nodes OPERATION`](#bcl-nodes-operation)
@@ -53,7 +53,7 @@ USAGE
   $ bcl cc
 ```
 
-_See code: [src/commands/cc.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/cc.js)_
+_See code: [src/commands/cc.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/cc.js)_
 
 ## `bcl client-keys OPERATION`
 
@@ -67,7 +67,7 @@ ARGUMENTS
   OPERATION  (create|list|remove) [default: list] Specify the type of client-keys operation to run
 ```
 
-_See code: [src/commands/client-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/client-keys.js)_
+_See code: [src/commands/client-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/client-keys.js)_
 
 ## `bcl client-token`
 
@@ -78,7 +78,7 @@ USAGE
   $ bcl client-token
 ```
 
-_See code: [src/commands/client-token.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/client-token.js)_
+_See code: [src/commands/client-token.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/client-token.js)_
 
 ## `bcl conf [KEY] [VALUE]`
 
@@ -116,7 +116,7 @@ OPTIONS
   -s, --service=service  service name
 ```
 
-_See code: [src/commands/events.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/events.js)_
+_See code: [src/commands/events.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/events.js)_
 
 ## `bcl help [COMMAND]`
 
@@ -135,22 +135,22 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
-## `bcl insight METHOD [ID]`
+## `bcl insight METHOD [ARG]`
 
 Manage your BloqCloud nodes
 
 ```
 USAGE
-  $ bcl insight METHOD [ID]
+  $ bcl insight METHOD [ARG]
 
 ARGUMENTS
-  METHOD  (block|blocks|block-hash|raw-block|transaction|tx|raw-transaction|raw-tx) [default: block] Specify the
-          resource to get from insight API
+  METHOD  (block|blocks|block-hash|raw-block|transaction|tx|raw-transaction|raw-tx) Specify the resource to get from
+          insight API
 
-  ID
+  ARG
 ```
 
-_See code: [src/commands/insight.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/insight.js)_
+_See code: [src/commands/insight.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/insight.js)_
 
 ## `bcl login`
 
@@ -164,7 +164,7 @@ OPTIONS
   -u, --user=user  account id or email
 ```
 
-_See code: [src/commands/login.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/login.js)_
+_See code: [src/commands/login.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/login.js)_
 
 ## `bcl logout`
 
@@ -175,7 +175,7 @@ USAGE
   $ bcl logout
 ```
 
-_See code: [src/commands/logout.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/logout.js)_
+_See code: [src/commands/logout.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/logout.js)_
 
 ## `bcl nodes OPERATION`
 
@@ -194,7 +194,7 @@ OPTIONS
   -i, --nodeId=nodeId  node id
 ```
 
-_See code: [src/commands/nodes.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/nodes.js)_
+_See code: [src/commands/nodes.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/nodes.js)_
 
 ## `bcl profile`
 
@@ -205,7 +205,7 @@ USAGE
   $ bcl profile
 ```
 
-_See code: [src/commands/profile.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/profile.js)_
+_See code: [src/commands/profile.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/profile.js)_
 
 ## `bcl signup`
 
@@ -216,7 +216,7 @@ USAGE
   $ bcl signup
 ```
 
-_See code: [src/commands/signup.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/signup.js)_
+_See code: [src/commands/signup.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/signup.js)_
 
 ## `bcl status`
 
@@ -227,7 +227,7 @@ USAGE
   $ bcl status
 ```
 
-_See code: [src/commands/status.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/status.js)_
+_See code: [src/commands/status.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/status.js)_
 
 ## `bcl update-password`
 
@@ -238,7 +238,7 @@ USAGE
   $ bcl update-password
 ```
 
-_See code: [src/commands/update-password.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/update-password.js)_
+_See code: [src/commands/update-password.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/update-password.js)_
 
 ## `bcl verify`
 
@@ -249,5 +249,5 @@ USAGE
   $ bcl verify
 ```
 
-_See code: [src/commands/verify.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.6/src/commands/verify.js)_
+_See code: [src/commands/verify.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/verify.js)_
 <!-- commandsstop -->
