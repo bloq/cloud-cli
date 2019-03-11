@@ -27,7 +27,7 @@ async function createNode (user, accessToken, { chain }) {
     const { id, state, instance } = data.body
     process.stdout.write('\n')
 
-    consola.success(`Initalized new ${chain} node
+    consola.success(`Initialized new ${chain} node
     * ID:\t${id}
     * State:\t${state}
     * Vendor:\t${instance.vendor}

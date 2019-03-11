@@ -12,9 +12,11 @@ async function removeNode (user, accessToken, flags) {
   let { nodeId } = flags
 
   if (!nodeId) {
-    nodeId = await inquirer.prompt([
+    const prompt = await inquirer.prompt([
       { name: 'nodeId', message: 'Enter the node id', type: 'text' }
     ])
+
+    nodeId = prompt.nodeId
   }
 
   const { confirmation } = await inquirer.prompt([{
