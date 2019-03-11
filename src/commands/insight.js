@@ -56,7 +56,6 @@ InsightCommand.args = [
     name: 'method',
     required: true,
     description: 'Specify the resource to get from insight API',
-    default: 'block',
     options: [
       'block',
       'blocks',
@@ -69,7 +68,7 @@ InsightCommand.args = [
     ]
   },
   {
-    name: 'id'
+    name: 'arg'
   }
 ]
 
