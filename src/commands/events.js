@@ -45,7 +45,7 @@ class EventsCommand extends Command {
         events = events.filter(e => e.service.toLowerCase().includes(flags.service))
       }
 
-      consola.success(`Retrieved ${body.count} events:`)
+      consola.success(`Retrieved ${events.length} events:`)
       process.stdout.write('\n')
       console.table(events)
     })

@@ -21,8 +21,9 @@ class InsightCommand extends Command {
   async run () {
     const clientId = config.get('clientId')
     const clientSecret = config.get('clientSecret')
-    const { flags } = this.parse(InsightCommand)
-    const { method, argument, coin, network } = flags
+    const { flags, args } = this.parse(InsightCommand)
+    const { argument, coin, network } = flags
+    const { method } = args
 
     if (!clientId || !clientSecret) {
       return consola.error('You must provide a valid client-keys pair in order to use insight.')
@@ -44,11 +45,11 @@ class InsightCommand extends Command {
   }
 }
 
-InsightCommand.description = 'Manage your BloqCloud nodes'
+InsightCommand.description = 'Access Insight services through bcl'
 
-InsightCommand.flags = {
-  method: flags.string({
-    char: 'm',
+InsightCommand.args = [
+  {
+    name: 'method',
     required: true,
     description: 'Specify the method to get from insight API',
     options: [
@@ -61,8 +62,10 @@ InsightCommand.flags = {
       'raw-transaction',
       'raw-tx'
     ]
-  }),
+  }
+]
 
+InsightCommand.flags = {
   argument: flags.string({
     char: 'a',
     description: 'Specify the argument for the method'
