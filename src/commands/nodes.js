@@ -54,7 +54,7 @@ class NodesCommand extends Command {
           }
 
           if (!isChainValid(flags.chain)) {
-            return consola.error(`Invalida chain value, expected to be one of: ${CHAIN_OPTIONS.join(', ')}`)
+            return consola.error(`Invalid chain value, expected to be one of: ${CHAIN_OPTIONS.join(', ')}`)
           }
 
           return nodes.create(user, accessToken, flags)

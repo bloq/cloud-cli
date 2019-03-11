@@ -49,7 +49,7 @@ class ClientTokenCommand extends Command {
 
       consola.success(
         'Generated new tokens: \n\n' +
-        `\t* clientAccresToken:  ${data.body.accessToken} \n` +
+        `\t* clientAccessToken:  ${data.body.accessToken} \n` +
         `\t* refreshToken:  ${data.body.refreshToken}`
       )
 
