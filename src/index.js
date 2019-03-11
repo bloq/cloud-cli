@@ -1,15 +1,14 @@
 'use strict'
 
 const config = require('./config')
+const { version } = require('../package.json')
 const defaultConfig = require('./default-config')
-
 require('./updater')
 
-// Note: conf library throws when trying to access a boolean value from the
-//       the terminal:
-//       node bin/run conf isInitialized
-//       TypeError: Invalid data, chunk must be a string or buffer, not boolean
-if (config.get('isInitialized') !== 'true') {
+const configVersion = config.get('version')
+const isInitialized = config.get('isInitialized')
+
+if (isInitialized !== 'true' || (!configVersion || version > configVersion)) {
   config.store = defaultConfig
   config.set('isInitialized', 'true')
 }

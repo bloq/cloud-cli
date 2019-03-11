@@ -1,7 +1,10 @@
 'use strict'
 
+const { version } = require('../package.json')
+
 module.exports = {
   port: 3000,
+  version,
   ccUrlBase: 'http://localhost',
 
   services: {
