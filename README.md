@@ -28,13 +28,12 @@ USAGE
 <!-- usagestop -->
 # Commands
 <!-- commands -->
-* [`bcl cc`](#bcl-cc)
 * [`bcl client-keys OPERATION`](#bcl-client-keys-operation)
 * [`bcl client-token`](#bcl-client-token)
 * [`bcl conf [KEY] [VALUE]`](#bcl-conf-key-value)
 * [`bcl events`](#bcl-events)
 * [`bcl help [COMMAND]`](#bcl-help-command)
-* [`bcl insight METHOD [ARG]`](#bcl-insight-method-arg)
+* [`bcl insight`](#bcl-insight)
 * [`bcl login`](#bcl-login)
 * [`bcl logout`](#bcl-logout)
 * [`bcl nodes OPERATION`](#bcl-nodes-operation)
@@ -43,17 +42,6 @@ USAGE
 * [`bcl status`](#bcl-status)
 * [`bcl update-password`](#bcl-update-password)
 * [`bcl verify`](#bcl-verify)
-
-## `bcl cc`
-
-Setup your credit card information
-
-```
-USAGE
-  $ bcl cc
-```
-
-_See code: [src/commands/cc.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/cc.js)_
 
 ## `bcl client-keys OPERATION`
 
@@ -135,19 +123,26 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
-## `bcl insight METHOD [ARG]`
+## `bcl insight`
 
 Manage your BloqCloud nodes
 
 ```
 USAGE
-  $ bcl insight METHOD [ARG]
+  $ bcl insight
 
-ARGUMENTS
-  METHOD  (block|blocks|block-hash|raw-block|transaction|tx|raw-transaction|raw-tx) Specify the resource to get from
-          insight API
+OPTIONS
+  -a, --argument=argument                                                               Specify the argument for the
+                                                                                        method
 
-  ARG
+  -c, --chain=chain                                                                     [default: btc] Specify the chain
+                                                                                        for the method
+
+  -m, --method=block|blocks|block-hash|raw-block|transaction|tx|raw-transaction|raw-tx  (required) Specify the method to
+                                                                                        get from insight API
+
+  -n, --network=network                                                                 [default: mainnet] Specify the
+                                                                                        network for the method
 ```
 
 _See code: [src/commands/insight.js](https://github.com/bloqpriv/cloud-cli/blob/v0.1.7/src/commands/insight.js)_
