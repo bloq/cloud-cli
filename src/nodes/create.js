@@ -20,6 +20,10 @@ async function createNode (user, accessToken, { chain }) {
       return consola.error(`Error initializing a new ${chain} node: ${err}`)
     }
 
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
+    }
+
     if (data.statusCode !== 200) {
       return consola.error(`Error initializing a new ${chain} node: ${data.code}`)
     }

@@ -30,6 +30,10 @@ async function removeClientKey (user, accessToken) {
       return consola.error(`Error removing the client-key: ${err}.`)
     }
 
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
+    }
+
     if (data.statusCode !== 204) {
       const body = JSON.parse(data.body)
       return consola.error(`Error removing client-key: ${body.code}.`)

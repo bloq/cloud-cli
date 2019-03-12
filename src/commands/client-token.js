@@ -43,6 +43,10 @@ class ClientTokenCommand extends Command {
         return consola.error(`Error generating client accessToken: ${err}.`)
       }
 
+      if (data.statusCode === 401 || data.statusCode === 403) {
+        return consola.error('Your session has expired')
+      }
+
       if (!data.body.accessToken || !data.body.refreshToken) {
         return consola.error('Error generating client accessToken.')
       }

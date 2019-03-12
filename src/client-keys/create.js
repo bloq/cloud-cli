@@ -25,6 +25,10 @@ async function createClientKey (user, accessToken) {
       return consola.error(`Error creating new pair of client keys: ${err}.`)
     }
 
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your session has expired')
+    }
+
     const body = JSON.parse(data.body)
     if (data.statusCode !== 200) {
       return consola.error(`Error creating new pair of client keys: ${body.code || body.message}.`)
