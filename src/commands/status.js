@@ -43,7 +43,7 @@ class StatusCommand extends Command {
         spinner.stop()
         consola.info(
           `BloqCloud Status:
-          * Acounts:     ${isAccountsOk ? '✔' : '❌'}
+          * Accounts:     ${isAccountsOk ? '✔' : '❌'}
           * Nodes:       ${isNodesOk ? '✔' : '❌'}
           * Insight BTC: ${isInsightBTCOk ? '✔' : '❌'}
           * Insight BCH: ${isInsightBCHOk ? '✔' : '❌'}
