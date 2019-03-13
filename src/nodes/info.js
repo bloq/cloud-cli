@@ -50,9 +50,7 @@ async function infoNode (user, accessToken, flags) {
     * State:\t\t${state.toUpperCase()}
     * Instance:
     \t- Vendor:\t${instance.vendor}
-    \t- ${instance.vendor.toUpperCase()} ID:\t${instance.id}
     \t- Type:\t\t${instance.type}
-    \t- Image ID:\t${instance.imageId}
     * Vendor:
     \t- LaunchTime:\t${vendor.LaunchTime}
     \t- Architecture:\t${vendor.Architecture}

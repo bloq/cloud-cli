@@ -39,9 +39,7 @@ async function createNode (user, accessToken, { chain }) {
     * ID:\t${id}
     * State:\t${state}
     * Vendor:\t${instance.vendor}
-    * ${instance.vendor.toUpperCase()} ID:\t${instance.id}
     * Type:\t${instance.type}
-    * Image ID:\t${instance.imageId}
     `)
   })
 }
