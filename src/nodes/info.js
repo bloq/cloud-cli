@@ -12,9 +12,11 @@ async function infoNode (user, accessToken, flags) {
   let { nodeId } = flags
 
   if (!nodeId) {
-    nodeId = await inquirer.prompt([
+    const prompt = await inquirer.prompt([
       { name: 'nodeId', message: 'Enter the node id', type: 'text' }
     ])
+
+    nodeId = prompt.nodeId
   }
 
   const Authorization = `Bearer ${accessToken}`
@@ -41,7 +43,7 @@ async function infoNode (user, accessToken, flags) {
     consola.success(`Retrieved node with id ${nodeId}`)
     process.stdout.write('\n')
 
-    consola.success(`
+    consola.log(`
     * Image: \t\t${image}
     * Started At:\t${startedAt}
     * Stopped At:\t${stopedAt || '-'}
