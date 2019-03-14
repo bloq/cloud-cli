@@ -1,22 +1,39 @@
 'use strict'
 
+const ora = require('ora')
 const request = require('request')
 const consola = require('consola')
 const inquirer = require('inquirer')
-const { Command } = require('@oclif/command')
+const { Command, flags } = require('@oclif/command')
+
 const { isUserValid, isUuidValid } = require('../validator')
 const config = require('../config')
 
 class VerifyCommand extends Command {
   async run () {
     consola.info('Verifyng your BloqCloud account.')
-    const { user, token } = await inquirer.prompt([
-      { name: 'user', message: 'Enter your account id', type: 'input', validate: isUserValid },
-      { name: 'token', message: 'Enter your verification token', type: 'input', validate: isUuidValid }
-    ])
+    const { flags } = this.parse(VerifyCommand)
+    let { user, token } = flags
+
+    if (!user) {
+      const prompt = await inquirer.prompt([
+        { name: 'user', message: 'Enter your account id', type: 'input', validate: isUserValid },
+      ])
+      user = prompt.user
+    }
+
+    if (!token) {
+      const prompt = await inquirer.prompt([
+        { name: 'token', message: 'Enter your verification token', type: 'input', validate: isUuidValid }
+      ])
+      token = prompt.token
+    }
 
     const url = `${config.get('services.accounts.url')}/user/${user}/token/${token}`
+    const spinner = ora().start()
+
     request.post(url, {}, function (err, data) {
+      spinner.stop()
       if (err) {
         return consola.error(`Error verifying your account: ${err}`)
       }
@@ -38,5 +55,10 @@ class VerifyCommand extends Command {
 }
 
 VerifyCommand.description = 'Verifies your BloqCloud account and complete signup process'
+
+VerifyCommand.flags = {
+  user: flags.string({ char: 'u', description: 'bloqcloud account id' }),
+  token: flags.string({ char: 't', description: 'verification token' })
+}
 
 module.exports = VerifyCommand
