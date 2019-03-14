@@ -8,26 +8,41 @@ const config = require('../config')
 
 const { Command, flags } = require('@oclif/command')
 
+function saveUser (user) {
+  config.set('user', user)
+  consola.info('Saved account id. Next time you only need -p flag (--password) to login.')
+}
+
 class LoginCommand extends Command {
   async run () {
     consola.info('☁️  Welcome to BloqCloud!')
     const { flags } = this.parse(LoginCommand)
-    let user = flags.user
+    let { user, password } = flags
 
-    if (user) {
-      config.set('user', user)
-      consola.info('Saved account id. Next time you only need -p (--password) to login.')
-    } else {
+    if (!user) {
       user = config.get('user')
       if (!user) {
-        return consola.error('Missing user parameter (-u or --user)')
+        const prompt = await inquirer.prompt([
+          { name: 'user', message: 'Enter your email or account id', type: 'input' }
+        ])
+
+        user = prompt.user
+        saveUser(user)
       }
-      consola.info(`Login with user ${user}`)
+    } else {
+      saveUser(user)
     }
 
-    const { password } = await inquirer.prompt([
-      { name: 'password', message: 'Enter your password', type: 'password' }
-    ])
+    consola.info(`Login with user ${user}`)
+
+    if (!password) {
+      const prompt = await inquirer.prompt([
+        { name: 'password', message: 'Enter your password', type: 'password' }
+      ])
+
+      password = prompt.password
+    }
+
     const Authorization = `Basic ${Buffer.from(`${user}:${password || ''}`).toString('base64')}`
     const url = `${config.get('services.accounts.url')}/auth`
     const spinner = ora().start()
@@ -38,6 +53,10 @@ class LoginCommand extends Command {
       spinner.stop()
       if (err) {
         return consola.error(`Error retrieving access token: ${err}`)
+      }
+
+      if (data.statusCode === 401 || data.statusCode === 403) {
+        return consola.error('Your credentials are invalid')
       }
 
       const body = JSON.parse(data.body)
@@ -54,7 +73,8 @@ class LoginCommand extends Command {
 LoginCommand.description = 'Login to your BloqCloud account'
 
 LoginCommand.flags = {
-  user: flags.string({ char: 'u', description: 'account id or email' })
+  user: flags.string({ char: 'u', description: 'account id or email' }),
+  password: flags.string({ char: 'p', description: 'password' })
 }
 
 module.exports = LoginCommand
