@@ -7,8 +7,8 @@ require('console.table')
 
 const config = require('../config')
 
-async function listNodes (user, accessToken, flags) {
-  consola.info(`Retrieving all nodes node for user ${user}.`)
+async function listNodes (clientId, accessToken, flags) {
+  consola.info(`Retrieving all nodes node with client ID ${clientId}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const url = `${config.get('services.nodes.url')}/nodes`

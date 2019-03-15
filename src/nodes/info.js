@@ -7,8 +7,8 @@ const inquirer = require('inquirer')
 
 const config = require('../config')
 
-async function infoNode (user, accessToken, flags) {
-  consola.info(`Retrieving node for user ${user}.`)
+async function infoNode (clientId, accessToken, flags) {
+  consola.info(`Retrieving node with client ID ${clientId}.`)
   let { nodeId } = flags
 
   if (!nodeId) {

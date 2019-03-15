@@ -7,8 +7,8 @@ const inquirer = require('inquirer')
 
 const config = require('../config')
 
-async function removeNode (user, accessToken, flags) {
-  consola.info(`Removing node for user ${user}.`)
+async function removeNode (clientId, accessToken, flags) {
+  consola.info(`Removing node with client ID ${clientId}.`)
   let { nodeId } = flags
 
   if (!nodeId) {
