@@ -38,13 +38,11 @@ async function infoNode (clientId, accessToken, flags) {
       return consola.error(`Error retrieving the node: ${body.code}.`)
     }
 
-    body = body[0]
     const { image, state, instance, startedAt, stopedAt, vendor } = body
     consola.success(`Retrieved node with id ${nodeId}`)
     process.stdout.write('\n')
 
-    consola.log(`
-    * Image: \t\t${image}
+    consola.log(`* Image: \t\t${image}
     * Started At:\t${startedAt}
     * Stopped At:\t${stopedAt || '-'}
     * State:\t\t${state.toUpperCase()}
