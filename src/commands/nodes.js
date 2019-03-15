@@ -27,6 +27,10 @@ function getClientToken (cb) {
       return cb(new Error(`Error retrieving client token: ${err}`))
     }
 
+    if (data.statusCode === 401 || data.statusCode === 403) {
+      return consola.error('Your client keys are invalid or have been revoked')
+    }
+
     if (data.statusCode !== 200) {
       return cb(new Error(`Error generating client token: ${data.body.code}`))
     }
