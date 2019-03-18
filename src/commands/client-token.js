@@ -20,7 +20,6 @@ class ClientTokenCommand extends Command {
     }
 
     consola.info(`Retrieving new client accessToken for ${user}`)
-    consola.warn('This command will generate a new client accessToken and refreshToken.')
 
     const { save } = await inquirer.prompt([
       { name: 'save', message: 'Do you want bcl to store your tokens locally for future usage?', type: 'confirm' } // eslint-disable-line
@@ -60,7 +59,7 @@ class ClientTokenCommand extends Command {
       }
 
       clipboardy.write(body.body.accessToken)
-      consola.info('Client access token was copied to clipboard.')
+      consola.info('Client accessToken was copied to clipboard.')
     })
   }
 }
