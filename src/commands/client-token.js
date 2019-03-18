@@ -2,8 +2,10 @@
 
 const consola = require('consola')
 const request = require('request')
-const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
+const clipboardy = require('clipboardy')
+const { Command } = require('@oclif/command')
+
 const config = require('../config')
 
 class ClientTokenCommand extends Command {
@@ -57,7 +59,8 @@ class ClientTokenCommand extends Command {
         config.set('refreshToken', data.body.refreshToken)
       }
 
-      consola.warn('Be sure to copy and save these keys since it will not be possible to obtain them again.') // eslint-disable-line
+      clipboardy.write(body.body.accessToken)
+      consola.info('Client access token was copied to clipboard.')
     })
   }
 }
