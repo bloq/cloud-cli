@@ -20,14 +20,9 @@ class ClientTokenCommand extends Command {
     consola.info(`Retrieving new client accessToken for ${user}`)
     consola.warn('This command will generate a new client accessToken and refreshToken.')
 
-    const { confirmation, save } = await inquirer.prompt([
-      { name: 'confirmation', message: 'Do you want to continue?', type: 'confirm' },
+    const { save } = await inquirer.prompt([
       { name: 'save', message: 'Do you want bcl to store your tokens locally for future usage?', type: 'confirm' } // eslint-disable-line
     ])
-
-    if (!confirmation) {
-      return consola.info('Generation of client keys aborted.')
-    }
 
     request.post(`${config.get('services.accounts.url')}/auth/token`, {
       headers: {
