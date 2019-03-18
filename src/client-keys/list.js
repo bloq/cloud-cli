@@ -25,7 +25,7 @@ async function listClientKeys (user, accessToken) {
       return consola.error(`Error listing client keys: ${body.code || body.message} | ${data.statusCode}.`)
     }
 
-    consola.success(`Retrieved ${body.length} client-keys:`)
+    consola.success(`Retrieved ${body.length} client keys:`)
     process.stdout.write('\n')
     console.table(body)
   })
