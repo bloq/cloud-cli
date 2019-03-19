@@ -34,11 +34,10 @@ class ProfileCommand extends Command {
         return consola.error(`Error trying to get user profile: ${body.code}`)
       }
 
-      const { verifiedAt, id, displayName, email, isAdmin } = body
+      const { verifiedAt, id, displayName, email } = body
 
       consola.success(`Retrieved user profile:
         * id:\t\t${id}
-        * role:\t\t${isAdmin ? 'admin' : 'customer'}
         * displayName:\t${displayName}
         * email:\t${email}
         * verified:\t${!!verifiedAt}
