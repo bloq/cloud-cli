@@ -6,12 +6,12 @@ const request = require('request')
 
 const config = require('../config')
 
-async function createNode (clientId, accessToken, { chain }) {
+async function createNode (clientId, accessToken, { chain, large }) {
   consola.info(`Initializing a new ${chain} node with client ID ${clientId}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const url = `${config.get('services.nodes.url')}/nodes`
-  const json = { image: chain }
+  const json = { image: chain, large: large }
   const spinner = ora().start()
 
   request.post(url, { headers: { Authorization }, json }, function (err, data) {
