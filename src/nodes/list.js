@@ -42,6 +42,7 @@ async function listNodes (clientId, accessToken, flags) {
     }
 
     if (!body.length) {
+      const user = `${config.get('user')}`
       return consola.success(`No nodes were found for user ${user}`)
     }
 
