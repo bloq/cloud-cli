@@ -11,7 +11,7 @@ async function createNode (clientId, accessToken, { chain, large }) {
 
   const Authorization = `Bearer ${accessToken}`
   const url = `${config.get('services.nodes.url')}/nodes`
-  const json = { image: chain, large: large }
+  const json = { image: chain, large }
   const spinner = ora().start()
 
   request.post(url, { headers: { Authorization }, json }, function (err, data) {
