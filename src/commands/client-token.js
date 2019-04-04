@@ -40,7 +40,7 @@ class ClientTokenCommand extends Command {
       }
 
       if (data.statusCode === 401 || data.statusCode === 403) {
-        return consola.error('Your session has expired')
+        return consola.error('Your client keys are invalid')
       }
 
       if (!data.body.accessToken || !data.body.refreshToken) {
