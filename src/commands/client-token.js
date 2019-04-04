@@ -58,7 +58,7 @@ class ClientTokenCommand extends Command {
         config.set('refreshToken', data.body.refreshToken)
       }
 
-      clipboardy.write(body.body.accessToken)
+      clipboardy.write(data.body.accessToken)
       consola.info('Client accessToken was copied to clipboard.')
     })
   }
