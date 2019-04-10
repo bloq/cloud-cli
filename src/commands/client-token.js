@@ -25,10 +25,11 @@ class ClientTokenCommand extends Command {
       { name: 'save', message: 'Do you want bcl to store your tokens locally for future usage?', type: 'confirm' } // eslint-disable-line
     ])
 
-    request.post(`${config.get('services.accounts.url')}/auth/token`, {
-      headers: {
-        Authorization: `Bearer ${accessToken}`
-      },
+    const env = config.get('env') || 'prod'
+    const url = `${config.get(`services.${env}.accounts.url`)}/auth/token`
+
+    request.post(url, {
+      headers: { Authorization: `Bearer ${accessToken}` },
       json: {
         grantType: 'clientCredentials',
         clientId,

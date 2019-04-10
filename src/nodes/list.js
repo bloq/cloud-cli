@@ -11,7 +11,8 @@ async function listNodes (clientId, accessToken, flags) {
   consola.info(`Retrieving all nodes node with client ID ${clientId}.`)
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${config.get('services.nodes.url')}/nodes`
+  const env = config.get('env') || 'prod'
+  const url = `${config.get(`services.${env}.nodes.url`)}/nodes`
   const spinner = ora().start()
 
   request.get(url, { headers: { Authorization } }, function (err, data) {

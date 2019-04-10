@@ -9,7 +9,8 @@ async function listClientKeys (user, accessToken) {
   consola.info(`Getting client keys for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${config.get('services.accounts.url')}/client-keys`
+  const env = config.get('env') || 'prod'
+  const url = `${config.get(`services.${env}.accounts.url`)}/client-keys`
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     if (err) {

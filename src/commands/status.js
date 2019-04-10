@@ -8,8 +8,10 @@ const { promisify } = require('util')
 const { Command } = require('@oclif/command')
 const config = require('../config')
 
+const env = config.get('env') || 'prod'
 const services = config.get('services')
 const get = promisify(request.get)
+
 function getStatus (url) {
   return get({ url, timeout: 5000 })
     .then(res => res.statusCode === 200)
@@ -27,10 +29,10 @@ class StatusCommand extends Command {
 
     const spinner = ora().start()
     Promise.all([
-      getStatus(new URL(services.accounts.statusEndpoint, services.accounts.url)),
-      getStatus(new URL(services.nodes.statusEndpoint, services.nodes.url)),
-      getStatus(new URL(services.insight.btc.statusEndpoint, services.insight.btc.url)),
-      getStatus(new URL(services.insight.bch.statusEndpoint, services.insight.bch.url))
+      getStatus(new URL(services[env].accounts.statusEndpoint, services[env].accounts.url)),
+      getStatus(new URL(services[env].nodes.statusEndpoint, services[env].nodes.url)),
+      getStatus(new URL(services[env].insight.btc.statusEndpoint, services[env].insight.btc.url)),
+      getStatus(new URL(services[env].insight.bch.statusEndpoint, services[env].insight.bch.url))
     ])
       .then(function (statuses) {
         const [

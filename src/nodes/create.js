@@ -10,7 +10,8 @@ async function createNode (clientId, accessToken, { chain, large }) {
   consola.info(`Initializing a new ${chain} node with client ID ${clientId}.`)
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${config.get('services.nodes.url')}/nodes`
+  const env = config.get('env') || 'prod'
+  const url = `${config.get(`services.${env}.nodes.url`)}/nodes`
   const json = { image: chain, large }
   const spinner = ora().start()
 

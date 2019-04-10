@@ -29,7 +29,8 @@ class VerifyCommand extends Command {
       token = prompt.token
     }
 
-    const url = `${config.get('services.accounts.url')}/user/${user}/token/${token}`
+    const env = config.get('env') || 'prod'
+    const url = `${config.get(`services.${env}.accounts.url`)}/user/${user}/token/${token}`
     const spinner = ora().start()
 
     request.post(url, {}, function (err, data) {

@@ -20,8 +20,10 @@ function getClientToken (cb) {
     return consola.error('You must provide a valid client-keys pair in order to manage nodes.')
   }
 
-  const url = `${config.get('services.accounts.url')}/auth/token`
+  const env = config.get('env') || 'prod'
+  const url = `${config.get(`services.${env}.accounts.url`)}/auth/token`
   const json = { grantType: 'clientCredentials', clientId, clientSecret }
+
   request.post(url, { json }, function (err, data) {
     if (err) {
       return cb(new Error(`Error retrieving client token: ${err}`))

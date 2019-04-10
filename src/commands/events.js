@@ -18,8 +18,10 @@ class EventsCommand extends Command {
     }
 
     consola.info(`Retrieving events for user ${user}`)
+
     const Authorization = `Bearer ${accessToken}`
-    const url = `${config.get('services.accounts.url')}/events`
+    const env = config.get('env') || 'prod'
+    const url = `${config.get(`services.${env}.accounts.url`)}/events`
     const spinner = ora().start()
 
     request.get(url, { headers: { Authorization } }, function (err, data) {

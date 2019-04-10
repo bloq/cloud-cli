@@ -44,7 +44,8 @@ class LoginCommand extends Command {
     }
 
     const Authorization = `Basic ${Buffer.from(`${user}:${password || ''}`).toString('base64')}`
-    const url = `${config.get('services.accounts.url')}/auth`
+    const env = config.get('env') || 'prod'
+    const url = `${config.get(`services.${env}.accounts.url`)}/auth`
     const spinner = ora().start()
 
     request.post(url, {
