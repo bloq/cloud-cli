@@ -28,7 +28,8 @@ class VerifyCommand extends Command {
 
     consola.info(`Getting information for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
-    const url = `${config.get('services.accounts.url')}/profile`
+    const env = config.get('env') || 'prod'
+    const url = `${config.get(`services.${env}.accounts.url`)}/profile`
 
     request.get(url, { headers: { Authorization } }, function (err, data) {
       if (err) {
@@ -52,7 +53,9 @@ class VerifyCommand extends Command {
           body = parse(body)
           body.email = email
 
-          const url = `${config.get('services.accounts.url')}/stripe`
+          const env = config.get('env') || 'prod'
+          const url = `${config.get(`services.${env}.accounts.url`)}/stripe`
+
           request.post(url, { headers: { Authorization }, json: body }, function (err, data) {
             if (err || data.statusCode !== 204) {
               consola.error('Error trying to update your credit card information')

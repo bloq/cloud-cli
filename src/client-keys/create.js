@@ -18,7 +18,8 @@ async function createClientKey (user, accessToken) {
   ])
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${config.get('services.accounts.url')}/client-keys`
+  const env = config.get('env') || 'prod'
+  const url = `${config.get(`services.${env}.accounts.url`)}/client-keys`
 
   request.post(url, { headers: { Authorization } }, function (err, data) {
     if (err) {

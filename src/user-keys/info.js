@@ -24,7 +24,8 @@ async function infoUserKey (user, accessToken, { type, keyId }) {
   consola.info(`Getting ${type} user keys with id ${keyId} for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
-  let url = `${config.get('services.accounts.url')}/keys/${type}/${keyId}`
+  const env = config.get('env') || 'prod'
+  const url = `${config.get(`services.${env}.accounts.url`)}/keys/${type}/${keyId}`
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     if (err) {

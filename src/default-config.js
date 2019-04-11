@@ -7,23 +7,48 @@ module.exports = {
   version,
   ccUrlBase: 'http://localhost',
 
+  env: 'prod',
+
   services: {
-    accounts: {
-      url: 'https://accounts.bloq.cloud',
-      statusEndpoint: '/'
-    },
-    nodes: {
-      url: 'https://nodes.bloq.cloud',
-      statusEndpoint: '/'
-    },
-    insight: {
-      btc: {
-        url: 'https://btc.insight.bloq.cloud',
-        statusEndpoint: '/status'
+    prod: {
+      accounts: {
+        url: 'https://accounts.bloq.cloud',
+        statusEndpoint: '/'
       },
-      bch: {
-        url: 'https://bch.insight.bloq.cloud',
-        statusEndpoint: '/status'
+      nodes: {
+        url: 'https://nodes.bloq.cloud',
+        statusEndpoint: '/'
+      },
+      insight: {
+        btc: {
+          url: 'https://btc.insight.bloq.cloud',
+          statusEndpoint: '/status'
+        },
+        bch: {
+          url: 'https://bch.insight.bloq.cloud',
+          statusEndpoint: '/status'
+        }
+      }
+    },
+
+    dev: {
+      accounts: {
+        url: 'https://accounts.bloqclouddev.com',
+        statusEndpoint: '/'
+      },
+      nodes: {
+        url: 'https://nodes.bloqclouddev.com',
+        statusEndpoint: '/'
+      },
+      insight: {
+        btc: {
+          url: 'https://btc.insight.bloqclouddev.com',
+          statusEndpoint: '/status'
+        },
+        bch: {
+          url: 'https://bch.insight.bloqclouddev.com',
+          statusEndpoint: '/status'
+        }
       }
     }
   }

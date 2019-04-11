@@ -23,7 +23,8 @@ async function removeClientKey (user, accessToken) {
   }
 
   const Authorization = `Bearer ${accessToken}`
-  const url = `${config.get('services.accounts.url')}/client-keys/${clientId}`
+  const env = config.get('env') || 'prod'
+  const url = `${config.get(`services.${env}.accounts.url`)}/client-keys/${clientId}`
 
   request.del(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
