@@ -8,7 +8,7 @@
   },
   "bugs": "https://github.com/bloqpriv/cloud-cli/issues",
   "dependencies": {
-    "@bloq/cloud-sdk": "git@github.com:bloq/cloud-sdk.git",
+    "@bloq/cloud-sdk": "git+ssh://git@github.com/bloq/cloud-sdk.git",
     "@oclif/command": "^1.5.8",
     "@oclif/config": "^1.12.4",
     "@oclif/plugin-help": "^2.1.6",
