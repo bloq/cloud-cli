@@ -1,14 +1,14 @@
 {
   "name": "@bloq/cloud-cli",
   "description": "BloqCloud CLI",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "author": "Ignacio Anaya <ignacio@bloq.com>",
   "bin": {
     "bcl": "./bin/run"
   },
   "bugs": "https://github.com/bloqpriv/cloud-cli/issues",
   "dependencies": {
-    "@bloq/cloud-sdk": "git+ssh://git@github.com/bloq/cloud-sdk.git",
+    "@bloq/cloud-sdk": "^0.1.3",
     "@oclif/command": "^1.5.8",
     "@oclif/config": "^1.12.4",
     "@oclif/plugin-help": "^2.1.6",
