@@ -138,7 +138,7 @@ ARGUMENTS
 
 OPTIONS
   -a, --argument=argument  Specify the argument for the method
-  -c, --chain=btc|bch      [default: btc] Specify the chain for the method
+  -c, --chain=btc|bch|eth  [default: btc] Specify the chain for the method
   -n, --network=mainnet    [default: mainnet] Specify the network for the method
 ```
 
