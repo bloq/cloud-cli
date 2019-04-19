@@ -6,7 +6,7 @@ const { Command, flags } = require('@oclif/command')
 const config = require('../config')
 const nodes = require('../nodes')
 
-const CHAIN_OPTIONS = ['btc', 'bch']
+const CHAIN_OPTIONS = ['btc', 'bch', 'eth']
 
 function isChainValid (chain) {
   return CHAIN_OPTIONS.find(c => c === chain)
