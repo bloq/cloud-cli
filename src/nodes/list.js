@@ -33,7 +33,7 @@ async function listNodes (clientId, accessToken, flags) {
     body = body.map(function (n) {
       delete n.user
       delete n.instance
-      n.PublicDnsName = n.vendor.PublicDnsName
+      n.PublicIpAddress = n.vendor.PublicIpAddress
       delete n.vendor
       return n
     })
