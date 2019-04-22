@@ -54,7 +54,7 @@ async function infoNode (clientId, accessToken, flags) {
     * Vendor:
     \t- LaunchTime:\t${vendor.LaunchTime}
     \t- Architecture:\t${vendor.Architecture}
-    \t- PublicDnsName:\t${vendor.PublicDnsName || '-'}
+    \t- PublicIpAddress:\t${vendor.PublicIpAddress || '-'}
     `)
   })
 }
