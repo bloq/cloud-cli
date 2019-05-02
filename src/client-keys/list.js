@@ -10,7 +10,7 @@ async function listClientKeys (user, accessToken) {
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.accounts.url`)}/client-keys`
+  const url = `${config.get(`services.${env}.accounts.url`)}/users/me/client-keys`
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     if (err) {

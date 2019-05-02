@@ -32,7 +32,7 @@ class UpdatePasswordCommand extends Command {
     consola.info(`Updating password for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
     const env = config.get('env') || 'prod'
-    const url = `${config.get(`services.${env}.accounts.url`)}/profile/password`
+    const url = `${config.get(`services.${env}.accounts.url`)}/users/me/password`
 
     request.put(url, {
       headers: { Authorization },
