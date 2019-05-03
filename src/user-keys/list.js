@@ -10,7 +10,7 @@ async function listClientKeys (user, accessToken, { type }) {
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  let url = `${config.get(`services.${env}.accounts.url`)}/keys`
+  let url = `${config.get(`services.${env}.accounts.url`)}/users/me/keys`
 
   if (type) { url += `/${type}` }
 

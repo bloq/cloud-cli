@@ -25,7 +25,7 @@ async function infoUserKey (user, accessToken, { type, keyId }) {
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.accounts.url`)}/keys/${type}/${keyId}`
+  const url = `${config.get(`services.${env}.accounts.url`)}/users/me/keys/${type}/${keyId}`
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     if (err) {

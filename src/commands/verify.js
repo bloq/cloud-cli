@@ -30,10 +30,11 @@ class VerifyCommand extends Command {
     }
 
     const env = config.get('env') || 'prod'
-    const url = `${config.get(`services.${env}.accounts.url`)}/user/${user}/token/${token}`
+    const url = `${config.get(`services.${env}.accounts.url`)}/users/${user}/token/${token}`
+    console.log(url)
     const spinner = ora().start()
 
-    request.post(url, {}, function (err, data) {
+    request.put(url, {}, function (err, data) {
       spinner.stop()
       if (err) {
         return consola.error(`Error verifying your account: ${err}`)
@@ -47,10 +48,8 @@ class VerifyCommand extends Command {
         return consola.error('Invalid verification token')
       }
 
-      const body = JSON.parse(data.body)
-
       consola.success(`The account with id ${body.id} has been validated.`)
-      consola.info(`You can now start a new session running the command: bcl login -u ${body.id}`)
+      consola.info(`You can now start a new session running the command: bcl login -u ${user}`)
     })
   }
 }

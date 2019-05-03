@@ -49,7 +49,7 @@ class SignupCommand extends Command {
     }
 
     const env = config.get('env') || 'prod'
-    const url = `${config.get(`services.${env}.accounts.url`)}/user/signup`
+    const url = `${config.get(`services.${env}.accounts.url`)}/users`
 
     const { confirm } = await inquirer.prompt([
       { name: 'confirm', message: 'Please check that your information is correct. Do you want to continue?', type: 'confirm' } // eslint-disable-line

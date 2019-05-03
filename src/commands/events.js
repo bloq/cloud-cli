@@ -21,7 +21,7 @@ class EventsCommand extends Command {
 
     const Authorization = `Bearer ${accessToken}`
     const env = config.get('env') || 'prod'
-    const url = `${config.get(`services.${env}.accounts.url`)}/events`
+    const url = `${config.get(`services.${env}.accounts.url`)}/users/me/events`
     const spinner = ora().start()
 
     request.get(url, { headers: { Authorization } }, function (err, data) {
@@ -39,7 +39,7 @@ class EventsCommand extends Command {
         return consola.error(`Error retrieving events: ${body.code}`)
       }
 
-      let events = (body.items.map(function ({ id, service, serviceData, createdAt }) {
+      let events = (body.map(function ({ id, service, serviceData, createdAt }) {
         return { id, service, serviceData: JSON.stringify(serviceData), createdAt }
       }))
 
@@ -54,7 +54,7 @@ class EventsCommand extends Command {
   }
 }
 
-EventsCommand.description = 'Get BloqCloud events'
+EventsCommand.description = 'Get BloqCloud daily events'
 
 EventsCommand.flags = {
   service: flags.string({ char: 's', description: 'service name' })

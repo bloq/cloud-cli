@@ -16,7 +16,8 @@ class ProfileCommand extends Command {
 
     consola.info(`Retrieving profile for user ${user}`)
     const Authorization = `Bearer ${accessToken}`
-    const url = `${config.get('services.accounts.url')}/profile`
+    const env = config.get('env') || 'prod'
+    const url = `${config.get(`services.${env}.accounts.url`)}/users/me`
 
     request.get(url, {
       headers: { Authorization }
