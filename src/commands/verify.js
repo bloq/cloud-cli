@@ -48,7 +48,7 @@ class VerifyCommand extends Command {
         return consola.error('Invalid verification token')
       }
 
-      consola.success(`The account with id ${body.id} has been validated.`)
+      consola.success(`The account with id ${data.body.id} has been validated.`)
       consola.info(`You can now start a new session running the command: bcl login -u ${user}`)
     })
   }
