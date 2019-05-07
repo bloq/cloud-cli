@@ -1,5 +1,6 @@
 'use strict'
 
+const url = require('url')
 const consola = require('consola')
 const { Command, flags } = require('@oclif/command')
 const { insight } = require('@bloq/cloud-sdk')
@@ -21,19 +22,31 @@ class InsightCommand extends Command {
   async run () {
     const clientId = config.get('clientId')
     const clientSecret = config.get('clientSecret')
+    const env = config.get('env')
     const { flags, args } = this.parse(InsightCommand)
-    const { argument, coin, network } = flags
+    const { argument, chain, network } = flags
     const { method } = args
 
     if (!clientId || !clientSecret) {
       return consola.error('You must provide a valid client-keys pair in order to use insight.')
     }
 
+    const services = {
+      insight: config.get(`services.${env}.insight.${chain}`),
+      accounts: config.get(`services.${env}.accounts`)
+    }
+
     const api = insight.http({
-      coin,
+      coin: chain,
       network,
-      auth: { clientId, clientSecret }
+      auth: {
+        clientId,
+        clientSecret,
+        url: services.accounts.url
+      },
+      url: url.resolve(services.insight.url, '/api/v1')
     })
+
     const spinner = ora().start()
 
     return api[methods[method]](argument)
@@ -41,7 +54,11 @@ class InsightCommand extends Command {
         spinner.stop()
         consola.log(JSON.stringify(data, null, 2))
       })
-      .catch(err => consola.error(err.message))
+      .catch(function (err) {
+        spinner.stop()
+        consola.error(err.message)
+      })
+
   }
 }
 
