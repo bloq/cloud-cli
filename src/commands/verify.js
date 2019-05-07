@@ -31,7 +31,7 @@ class VerifyCommand extends Command {
 
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/users/${user}/token/${token}`
-    console.log(url)
+
     const spinner = ora().start()
 
     request.put(url, {}, function (err, data) {
