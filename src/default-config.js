@@ -31,7 +31,7 @@ module.exports = {
       }
     },
 
-    dev: {
+    stage: {
       accounts: {
         url: 'https://accounts.bloqclouddev.com',
         statusEndpoint: '/'
