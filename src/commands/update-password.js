@@ -46,7 +46,7 @@ class UpdatePasswordCommand extends Command {
       }
 
       if (data.statusCode === 400) {
-        return consola.error('The old password is invalid')
+        return consola.error(`Error updating user password: ${data.body.code}`)
       }
 
       if (data.statusCode !== 204) {
