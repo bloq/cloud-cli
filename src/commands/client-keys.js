@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const { Command } = require('@oclif/command')
+const { Command, flags } = require('@oclif/command')
 const clientKeys = require('../client-keys')
 const config = require('../config')
 
@@ -14,12 +14,12 @@ class ClientKeysCommand extends Command {
       return consola.error('User is not authenticated. Use login command to start a new session.')
     }
 
-    const { args } = this.parse(ClientKeysCommand)
+    const { args, flags } = this.parse(ClientKeysCommand)
     switch (args.operation) {
       case 'create':
         return clientKeys.create(user, accessToken)
       case 'remove':
-        return clientKeys.remove(user, accessToken)
+        return clientKeys.remove(user, accessToken, flags)
       default:
         return clientKeys.list(user, accessToken)
     }
@@ -27,6 +27,10 @@ class ClientKeysCommand extends Command {
 }
 
 ClientKeysCommand.description = 'Manage your BloqCloud client key(s)'
+
+ClientKeysCommand.flags = {
+  clientId: flags.string({ char: 'i', description: 'client id' })
+}
 
 ClientKeysCommand.args = [
   {

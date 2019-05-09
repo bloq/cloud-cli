@@ -56,11 +56,11 @@ class LoginCommand extends Command {
         return consola.error(`Error retrieving access token: ${err}`)
       }
 
+      const body = JSON.parse(data.body)
       if (data.statusCode === 401 || data.statusCode === 403) {
-        return consola.error('Your credentials are invalid')
+        return consola.error(`Error retrieving access token: ${body.code}`)
       }
 
-      const body = JSON.parse(data.body)
       if (data.statusCode !== 200) {
         return consola.error(`Error retrieving access token: ${body.code || body.message}`)
       }
