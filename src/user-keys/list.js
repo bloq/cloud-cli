@@ -5,8 +5,8 @@ const request = require('request')
 const config = require('../config')
 require('console.table')
 
-async function listClientKeys (user, accessToken, { type }) {
-  consola.info(`Getting client keys for user ${user}.`)
+async function listUserKeys (user, accessToken, { type }) {
+  consola.info(`Getting user keys for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
@@ -52,4 +52,4 @@ async function listClientKeys (user, accessToken, { type }) {
   })
 }
 
-module.exports = listClientKeys
+module.exports = listUserKeys
