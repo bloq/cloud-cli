@@ -82,6 +82,7 @@ NodesCommand.description = 'Manage your BloqCloud nodes'
 NodesCommand.flags = {
   chain: flags.string({ char: 'c', description: 'chain type' }),
   large: flags.boolean({ char: 'l', description: 'request large node', default: false, required: false }),
+  jwt: flags.boolean({ char: 'j', description: 'user jwt tokens for auth instead of user/pass', default: false, required: false }),
   all: flags.boolean({ char: 'a', description: 'list all nodes', default: false, required: false }),
   nodeId: flags.string({ char: 'i', description: 'node id' })
 }
