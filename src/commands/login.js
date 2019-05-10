@@ -10,7 +10,7 @@ const { Command, flags } = require('@oclif/command')
 
 function saveUser (user) {
   config.set('user', user)
-  consola.info('Saved account id. Next time you only need -p flag (--password) to login.')
+  consola.info('Account saved. Next time you only need -p flag (--password) to login.')
 }
 
 class LoginCommand extends Command {
@@ -23,7 +23,7 @@ class LoginCommand extends Command {
       user = config.get('user')
       if (!user) {
         const prompt = await inquirer.prompt([
-          { name: 'user', message: 'Enter your email or account id', type: 'input' }
+          { name: 'user', message: 'Enter your email address or account id', type: 'input' }
         ])
 
         user = prompt.user
@@ -74,7 +74,7 @@ class LoginCommand extends Command {
 LoginCommand.description = 'Login to your BloqCloud account'
 
 LoginCommand.flags = {
-  user: flags.string({ char: 'u', description: 'account id or email' }),
+  user: flags.string({ char: 'u', description: 'email address or account id' }),
   password: flags.string({ char: 'p', description: 'password' })
 }
 

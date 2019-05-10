@@ -17,7 +17,7 @@ class VerifyCommand extends Command {
 
     if (!user) {
       const prompt = await inquirer.prompt([
-        { name: 'user', message: 'Enter your account id', type: 'input', validate: isUserValid },
+        { name: 'user', message: 'Enter your email address or account id', type: 'input', validate: isUserValid },
       ])
       user = prompt.user
     }
@@ -48,7 +48,7 @@ class VerifyCommand extends Command {
         return consola.error('Invalid verification token')
       }
 
-      consola.success(`The account with id ${data.body.id} has been validated.`)
+      consola.success(`The account ${user} has been validated.`)
       consola.info(`You can now start a new session running the command: bcl login -u ${user}`)
     })
   }
@@ -57,7 +57,7 @@ class VerifyCommand extends Command {
 VerifyCommand.description = 'Verifies your BloqCloud account and complete signup process'
 
 VerifyCommand.flags = {
-  user: flags.string({ char: 'u', description: 'bloqcloud account id' }),
+  user: flags.string({ char: 'u', description: 'email address or account id' }),
   token: flags.string({ char: 't', description: 'verification token' })
 }
 
