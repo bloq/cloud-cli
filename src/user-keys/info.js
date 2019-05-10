@@ -19,6 +19,7 @@ async function infoUserKey (user, accessToken, { type, keyId }) {
     ])
 
     keyId = prompt.keyId
+    if (!keyId)  { return consola.error('Missing key id' )}
   }
 
   consola.info(`Getting ${type} user keys with id ${keyId} for user ${user}.`)

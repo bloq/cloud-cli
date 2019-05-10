@@ -17,6 +17,7 @@ async function infoNode (clientId, accessToken, flags) {
     ])
 
     nodeId = prompt.nodeId
+    if (!nodeId)  { return consola.error('Missing node id' )}
   }
 
   const Authorization = `Bearer ${accessToken}`

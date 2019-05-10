@@ -17,6 +17,7 @@ async function removeNode (clientId, accessToken, flags) {
     ])
 
     nodeId = prompt.nodeId
+    if (!nodeId)  { return consola.error('Missing node id' )}
   }
 
   const { confirmation } = await inquirer.prompt([{
