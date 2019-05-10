@@ -33,7 +33,7 @@ async function createNode (clientId, accessToken, { chain, large, jwt }) {
       return consola.error(`Error initializing a new ${chain} node: ${data.code}`)
     }
 
-    const { id, version, state, instance } = data.body
+    const { id, version, state, nodeUser, nodePass, instance } = data.body
     process.stdout.write('\n')
 
     consola.success(`Initialized new ${chain} node
@@ -41,7 +41,7 @@ async function createNode (clientId, accessToken, { chain, large, jwt }) {
     * Version:\t${version}
     * State:\t${state}
     * NodeUser:\t${nodeUser}
-    * NodePassword:\t${nodepass}
+    * NodePass:\t${nodePass}
     * Vendor:\t${instance.vendor}
     * Type:\t${instance.type}
     `)
