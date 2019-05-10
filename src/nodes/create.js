@@ -36,15 +36,19 @@ async function createNode (clientId, accessToken, { chain, large, jwt }) {
     const { id, version, state, nodeUser, nodePass, instance } = data.body
     process.stdout.write('\n')
 
+    var creds = ''
+    if (nodeUser !== '-') {
+      creds = `* NodeUser:\t${nodeUser}
+    * NodePass:\t${nodePass}
+    `
+    }
     consola.success(`Initialized new ${chain} node
     * ID:\t${id}
     * Version:\t${version}
     * State:\t${state}
-    * NodeUser:\t${nodeUser}
-    * NodePass:\t${nodePass}
     * Vendor:\t${instance.vendor}
     * Type:\t${instance.type}
-    `)
+    ${creds}`)
   })
 }
 
