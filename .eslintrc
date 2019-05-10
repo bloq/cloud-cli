@@ -1,5 +1,5 @@
 {
-  "extends": ["bloq", "bloq/experimental"],
+  "extends": ["bloq"],
   "rules": {
     "no-console": "off",
     "no-shadow": "off",
