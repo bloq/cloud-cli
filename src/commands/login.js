@@ -4,6 +4,8 @@ const ora = require('ora')
 const request = require('request')
 const consola = require('consola')
 const inquirer = require('inquirer')
+const stringEntropy = require('fast-password-entropy')
+
 const config = require('../config')
 
 const { Command, flags } = require('@oclif/command')
@@ -41,6 +43,7 @@ class LoginCommand extends Command {
       ])
 
       password = prompt.password
+      if (!password)  { return consola.error('Missing password')}
     }
 
     const Authorization = `Basic ${Buffer.from(`${user}:${password || ''}`).toString('base64')}`

@@ -6,6 +6,7 @@ module.exports = {
   port: '3000',
   version,
   ccUrlBase: 'http://localhost',
+  passwordEntropy: 95,
 
   env: 'prod',
 
