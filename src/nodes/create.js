@@ -6,13 +6,13 @@ const request = require('request')
 
 const config = require('../config')
 
-async function createNode (clientId, accessToken, { chain, large }) {
+async function createNode (clientId, accessToken, { chain, large, jwt }) {
   consola.info(`Initializing a new ${chain} node with client ID ${clientId}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/nodes`
-  const json = { image: chain, large }
+  const json = { image: chain, large, jwt }
   const spinner = ora().start()
 
   request.post(url, { headers: { Authorization }, json }, function (err, data) {
@@ -40,6 +40,8 @@ async function createNode (clientId, accessToken, { chain, large }) {
     * ID:\t${id}
     * Version:\t${version}
     * State:\t${state}
+    * NodeUser:\t${nodeUser}
+    * NodePassword:\t${nodepass}
     * Vendor:\t${instance.vendor}
     * Type:\t${instance.type}
     `)
