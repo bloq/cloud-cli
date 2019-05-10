@@ -3,10 +3,10 @@
 const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
-const clipboardy = require('clipboardy')
 const { Command } = require('@oclif/command')
 
 const config = require('../config')
+const { coppyToClipboard } = require('../utils')
 
 class ClientTokenCommand extends Command {
   async run () {
@@ -59,8 +59,7 @@ class ClientTokenCommand extends Command {
         config.set('refreshToken', data.body.refreshToken)
       }
 
-      clipboardy.write(data.body.accessToken)
-      consola.info('Client accessToken was copied to clipboard.')
+      coppyToClipboard(data.body.accessToken, 'Client access token')
     })
   }
 }

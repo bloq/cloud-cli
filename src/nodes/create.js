@@ -5,6 +5,7 @@ const consola = require('consola')
 const request = require('request')
 
 const config = require('../config')
+const { coppyToClipboard } = require('../utils')
 
 async function createNode (clientId, accessToken, { chain, large, jwt }) {
   consola.info(`Initializing a new ${chain} node with client ID ${clientId}.`)
@@ -36,12 +37,12 @@ async function createNode (clientId, accessToken, { chain, large, jwt }) {
     const { id, version, state, nodeUser, nodePass, instance } = data.body
     process.stdout.write('\n')
 
-    var creds = ''
-    if (nodeUser !== '-') {
-      creds = `* NodeUser:\t${nodeUser}
-    * NodePass:\t${nodePass}
-    `
-    }
+    coppyToClipboard(id, 'Node id')
+
+    const creds = nodeUser === '-' ?
+    '' : `* NodeUser:\t${nodeUser}
+    * NodePass:\t${nodePass}`
+
     consola.success(`Initialized new ${chain} node
     * ID:\t${id}
     * Version:\t${version}
