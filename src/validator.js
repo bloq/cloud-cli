@@ -41,13 +41,12 @@ function isPasswordValid (value) {
 }
 
 function isPasswordEqual (password1, password2) {
-  if (password1 === password2) { return true}
+  if (password1 === password2) { return true }
 
   return 'Passwords do not match.'
 }
 
 function isAccepted (value) {
-  console.log(value)
   if (value === 'I accept') { return true }
 
   return 'Terms & Conditions must be accepted in order to create a BloqCloud account and access BloqCloud services.'
