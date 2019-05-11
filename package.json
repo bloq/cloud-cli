@@ -17,6 +17,7 @@
     "conf-cli": "0.1.8",
     "consola": "2.6.0",
     "console.table": "0.10.0",
+    "fast-password-entropy": "1.1.1",
     "inquirer": "6.3.1",
     "ora": "3.1.0",
     "request": "2.88.0",

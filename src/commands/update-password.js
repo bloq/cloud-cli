@@ -4,8 +4,9 @@ const consola = require('consola')
 const request = require('request')
 const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
-const config = require('../config')
 
+const config = require('../config')
+const { isEmailValid, isNotEmpty, isPasswordValid, isPasswordEqual } = require('../validator')
 class UpdatePasswordCommand extends Command {
   async run () {
     const user = config.get('user')
@@ -15,18 +16,17 @@ class UpdatePasswordCommand extends Command {
       return consola.error('User is not authenticated. Use login command to start a new session.')
     }
 
-    const { oldPassword, newPassword, confirmPassword } = await inquirer.prompt([
+    const { oldPassword, newPassword } = await inquirer.prompt([
       { name: 'oldPassword', message: 'Enter old password', type: 'password' },
-      { name: 'newPassword', message: 'Enter new password', type: 'password' },
-      { name: 'confirmPassword', message: 'Confirm new password', type: 'password' }
+      { name: 'newPassword', message: 'Enter new password', type: 'password', validate: isPasswordValid },
+    ])
+
+    await inquirer.prompt([
+      { name: 'confirmPassword', message: 'Confirm new password', type: 'password', validate: value => isPasswordEqual(value, newPassword) }
     ])
 
     if (oldPassword === newPassword) {
       return consola.error('New password must be different from old password')
-    }
-
-    if (newPassword !== confirmPassword) {
-      return consola.error('The passwords you have entered do not match')
     }
 
     consola.info(`Updating password for user ${user}`)

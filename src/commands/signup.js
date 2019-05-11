@@ -5,12 +5,9 @@ const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
 const { Command } = require('@oclif/command')
-const config = require('../config')
 
-function isEmailValid (email) {
-  const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // eslint-disable-line
-  return regex.test(String(email).toLowerCase())
-}
+const config = require('../config')
+const { isEmailValid, isNotEmpty, isPasswordValid, isPasswordEqual } = require('../validator')
 
 class SignupCommand extends Command {
   async run () {
@@ -23,11 +20,14 @@ class SignupCommand extends Command {
     config.delete('clientId')
     config.delete('clientSecret')
 
-    const { email, displayName, password, confirmPassword, acceptTerms } = await inquirer.prompt([
-      { name: 'email', message: 'Enter your email address', type: 'input' },
-      { name: 'displayName', message: 'Enter your name', type: 'input' },
-      { name: 'password', message: 'Enter your password', type: 'password' },
-      { name: 'confirmPassword', message: 'Confirm new password', type: 'password' },
+    const { email, displayName, password } = await inquirer.prompt([
+      { name: 'email', message: 'Enter your email address', type: 'input', validate: isEmailValid },
+      { name: 'displayName', message: 'Enter your name', type: 'input', validate: isNotEmpty },
+      { name: 'password', message: 'Enter your password', type: 'password', validate: isPasswordValid },
+    ])
+
+    const { acceptTerms } = await inquirer.prompt([
+      { name: 'confirmPassword', message: 'Confirm new password', type: 'password', validate: value => isPasswordEqual(value, password) },
       {
         name: 'acceptTerms',
         message: 'Use of Bloq’s services is subject to the Terms of Service found at https://terms.bloq.cloud. \nPlease confirm that you have read and agree to the Terms of Service by selecting [“I accept”]',
@@ -38,14 +38,6 @@ class SignupCommand extends Command {
 
     if (acceptTerms === 'Decline') {
       return consola.error('Terms & Conditions must be accepted in order to create a BloqCloud account and access BloqCloud services.') // eslint-disable-line
-    }
-
-    if (!isEmailValid(email)) {
-      return consola.error('The email address is invalid')
-    }
-
-    if (password !== confirmPassword) {
-      return consola.error('The passwords you entered do not match')
     }
 
     const env = config.get('env') || 'prod'
