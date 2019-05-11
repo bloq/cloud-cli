@@ -42,7 +42,7 @@ async function createClientKey (user, accessToken) {
     `)
 
     coppyToClipboard(body.clientSecret, 'Client secret')
-    consola.warn('You will be NOT able to see your client secret again. Remember to copy it and keep it safe.')
+    consola.warn('You will NOT be able to see your client secret again. Remember to copy it and keep it safe.')
 
     if (save) {
       config.set('clientId', body.clientId)
