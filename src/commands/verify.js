@@ -16,17 +16,25 @@ class VerifyCommand extends Command {
     let { user, token } = flags
 
     if (!user) {
-      const prompt = await inquirer.prompt([
-        { name: 'user', message: 'Enter your email address or account id', type: 'input', validate: isUserValid }
-      ])
+      const prompt = await inquirer.prompt([{
+        name: 'user',
+        message: 'Enter your email address or account id',
+        type: 'input',
+        validate: isUserValid
+      }])
+
       user = prompt.user
       if (!user) { return consola.error('Missing email or account id') }
     }
 
     if (!token) {
-      const prompt = await inquirer.prompt([
-        { name: 'token', message: 'Enter your verification token', type: 'input', validate: isUuidValid }
-      ])
+      const prompt = await inquirer.prompt([{
+        name: 'token',
+        message: 'Enter your verification token',
+        type: 'input',
+        validate: isUuidValid
+      }])
+
       token = prompt.token
       if (!token) { return consola.error('Missing verification token') }
     }
@@ -48,6 +56,11 @@ class VerifyCommand extends Command {
 
       const body = JSON.parse(data.body)
       if (data.statusCode !== 204) {
+        if (body.code === 'UserVerified') {
+          return consola.warn(
+            `Your account is already verified, to start a new session use bcl login -u ${user}`
+          )
+        }
         return consola.error(`Error verifying your account: ${body.code}`)
       }
 
