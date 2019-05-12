@@ -5,6 +5,14 @@ const request = require('request')
 const inquirer = require('inquirer')
 const config = require('../config')
 
+/**
+ *  Removes the giving client key
+ *
+ * @param  {string} user the user email or id
+ * @param  {string} accessToken local access token
+ * @param  {object} flags set of options retrieved by cli
+ * @returns {undefined}
+ */
 async function removeClientKey (user, accessToken, flags) {
   consola.info(`Removing client key for user ${user}.`)
   let { clientId } = flags
