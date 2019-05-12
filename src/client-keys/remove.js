@@ -29,7 +29,8 @@ async function removeClientKey (user, accessToken, flags) {
   const { confirmation } = await inquirer.prompt([{
     name: 'confirmation',
     message: `You will remove client key with id ${clientId}. Do you want to continue?`,
-    type: 'confirm'
+    type: 'confirm',
+    default: false
   }])
 
   if (!confirmation) {
