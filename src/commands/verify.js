@@ -20,6 +20,7 @@ class VerifyCommand extends Command {
         { name: 'user', message: 'Enter your email address or account id', type: 'input', validate: isUserValid }
       ])
       user = prompt.user
+      if (!user) { return consola.error('Missing email or account id') }
     }
 
     if (!token) {
@@ -27,6 +28,7 @@ class VerifyCommand extends Command {
         { name: 'token', message: 'Enter your verification token', type: 'input', validate: isUuidValid }
       ])
       token = prompt.token
+      if (!token) { return consola.error('Missing verification token') }
     }
 
     const env = config.get('env') || 'prod'
@@ -44,8 +46,9 @@ class VerifyCommand extends Command {
         return consola.error('User does not exist')
       }
 
-      if (data.statusCode === 400) {
-        return consola.error('Invalid verification token')
+      const body = JSON.parse(data.body)
+      if (data.statusCode !== 204) {
+        return consola.error(`Error verifying your account: ${body.code}`)
       }
 
       consola.success(`The account ${user} has been validated.`)

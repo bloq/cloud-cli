@@ -4,52 +4,92 @@ const config = require('./config')
 
 const MIN_ENTROPY = config.get('passwordEntropy')
 
+/**
+ *  Check if an email is valid or not
+ *
+ * @param  {string} email the email address
+ * @returns {boolean|string} string with error message or true
+ */
+function isEmailValid (email) {
+  // eslint-disable-next-line max-len
+  const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // eslint-disable-line
+  if (EMAIL_REGEX.test(String(email).toLowerCase())) { return true }
+
+  return 'The email is not valid.'
+}
+
+/**
+ *  Check if the user is valid or not
+ *
+ * @param  {string} user the user email or id
+ * @returns {boolean|string} string with error message or true
+ */
 function isUserValid (user) {
+  // eslint-disable-next-line max-len
   const USER_REGEX = /user-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
   if (USER_REGEX.test(user)) { return true }
 
-  return 'The user id does not have the correct format.'
+  const emailValidation = isEmailValid(user)
+  if (typeof emailValidation === 'boolean') { return true }
+
+  return 'The email or account id does not have the correct format.'
 }
 
+/**
+ *  Check if a uuid is valid or not
+ *
+ * @param  {string} uuid the uuid
+ * @returns {boolean|string} string with error message or true
+ */
 function isUuidValid (uuid) {
+  // eslint-disable-next-line max-len
   const UUID_REGEX = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
   if (UUID_REGEX.test(uuid)) { return true }
 
   return 'The token does not have the correct format.'
 }
 
-function isEmailValid (email) {
-  const regex = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // eslint-disable-line
-  if (regex.test(String(email).toLowerCase())) { return true }
-
-  return 'The email is not valid.'
-}
-
+/**
+ *  Check if a value is empty or not
+ *
+ * @param  {any} value the value
+ * @returns {boolean|string} string with error message or true
+ */
 function isNotEmpty (value) {
-  if (value === '' || value === undefined || value === null) { return 'The value can not be empty' }
+  if (value === '' || value === undefined || value === null) {
+    return 'The value can not be empty'
+  }
 
   return true
 }
 
-function isPasswordValid (value) {
-  const passwordEntropy = stringEntropy(value)
+/**
+ *  Check if a password is valid or not
+ *
+ * @param  {string} password the password
+ * @returns {boolean|string} string with error message or true
+ */
+function isPasswordValid (password) {
+  const passwordEntropy = stringEntropy(password)
   if (passwordEntropy < MIN_ENTROPY) {
+    // eslint-disable-next-line max-len
     return `The password provided is not strong enough. The password rate is ${((passwordEntropy * 100) / MIN_ENTROPY).toFixed()} and you need to reach 100, try adding more or different characters.`
   }
 
   return true
 }
 
+/**
+ *  Check if two passwords are equal or not
+ *
+ * @param  {string} password1 the firs password
+ * @param  {string} password2 the second password
+ * @returns {boolean|string} string with error message or true
+ */
 function isPasswordEqual (password1, password2) {
   if (password1 === password2) { return true }
 
   return 'Passwords do not match.'
-}
-
-function isAccepted (value) {
-  if (value === 'I accept') { return true }
-
-  return 'Terms & Conditions must be accepted in order to create a BloqCloud account and access BloqCloud services.'
 }
 
 module.exports = {
@@ -58,6 +98,5 @@ module.exports = {
   isEmailValid,
   isNotEmpty,
   isPasswordEqual,
-  isPasswordValid,
-  isAccepted
+  isPasswordValid
 }
