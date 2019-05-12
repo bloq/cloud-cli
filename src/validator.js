@@ -3,6 +3,7 @@ const stringEntropy = require('fast-password-entropy')
 const config = require('./config')
 
 const MIN_ENTROPY = config.get('passwordEntropy')
+const CHAIN_OPTIONS = ['btc', 'bch', 'eth']
 
 /**
  *  Check if an email is valid or not
@@ -99,7 +100,6 @@ function isPasswordEqual (password1, password2) {
  * @returns {boolean} true if the value is in the chains list
  */
 function isChainValid (chain) {
-  const CHAIN_OPTIONS = ['btc', 'bch', 'eth']
   return CHAIN_OPTIONS.find(c => c === chain)
 }
 
@@ -110,5 +110,8 @@ module.exports = {
   isNotEmpty,
   isChainValid,
   isPasswordEqual,
-  isPasswordValid
+  isPasswordValid,
+
+  MIN_ENTROPY,
+  CHAIN_OPTIONS
 }

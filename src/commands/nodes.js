@@ -6,7 +6,7 @@ const { Command, flags } = require('@oclif/command')
 
 const config = require('../config')
 const nodes = require('../nodes')
-const { isChainValid } = require('../validator')
+const { isChainValid, CHAIN_OPTIONS } = require('../validator')
 
 /**
  *  Gets a user client token
