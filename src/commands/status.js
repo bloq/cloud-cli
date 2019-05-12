@@ -59,7 +59,7 @@ class StatusCommand extends Command {
             service: 'Insight BCH',
             isUp: isInsightBchUp ? '✔' : '❌',
             url: services[env].insight.btc.url
-          },
+          }
         ]
 
         spinner.stop()

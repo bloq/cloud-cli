@@ -17,7 +17,7 @@ class VerifyCommand extends Command {
 
     if (!user) {
       const prompt = await inquirer.prompt([
-        { name: 'user', message: 'Enter your email address or account id', type: 'input', validate: isUserValid },
+        { name: 'user', message: 'Enter your email address or account id', type: 'input', validate: isUserValid }
       ])
       user = prompt.user
     }

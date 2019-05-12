@@ -39,8 +39,8 @@ async function createNode (clientId, accessToken, { chain, large, jwt }) {
 
     coppyToClipboard(id, 'Node id')
 
-    const creds = nodeUser === '-' ?
-    '' : `* NodeUser:\t${nodeUser}
+    const creds = nodeUser === '-'
+      ? '' : `* NodeUser:\t${nodeUser}
     * NodePass:\t${nodePass}`
 
     consola.success(`Initialized new ${chain} node

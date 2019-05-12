@@ -58,7 +58,6 @@ class InsightCommand extends Command {
         spinner.stop()
         consola.error(err.message)
       })
-
   }
 }
 

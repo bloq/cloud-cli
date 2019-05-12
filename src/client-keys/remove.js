@@ -15,7 +15,7 @@ async function removeClientKey (user, accessToken, flags) {
     ])
 
     clientId = prompt.clientId
-    if (!clientId)  { return consola.error('Missing client id' )}
+    if (!clientId) { return consola.error('Missing client id') }
   }
 
   const { confirmation } = await inquirer.prompt([{

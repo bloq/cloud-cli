@@ -17,7 +17,7 @@ async function infoNode (clientId, accessToken, flags) {
     ])
 
     nodeId = prompt.nodeId
-    if (!nodeId)  { return consola.error('Missing node id' )}
+    if (!nodeId) { return consola.error('Missing node id') }
   }
 
   const Authorization = `Bearer ${accessToken}`
@@ -35,7 +35,7 @@ async function infoNode (clientId, accessToken, flags) {
       return consola.error('Your session has expired')
     }
 
-    let body = JSON.parse(data.body)
+    const body = JSON.parse(data.body)
     if (data.statusCode !== 200) {
       return consola.error(`Error retrieving the node: ${body.code}.`)
     }

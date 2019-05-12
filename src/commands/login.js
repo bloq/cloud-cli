@@ -41,7 +41,7 @@ class LoginCommand extends Command {
       ])
 
       password = prompt.password
-      if (!password)  { return consola.error('Missing password')}
+      if (!password) { return consola.error('Missing password') }
     }
 
     const Authorization = `Basic ${Buffer.from(`${user}:${password || ''}`).toString('base64')}`

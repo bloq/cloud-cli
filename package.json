@@ -6,6 +6,18 @@
   "bin": {
     "bcl": "./bin/run"
   },
+  "scripts": {
+    "publish": "npm publish --access public",
+    "start": "node bin/run",
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "prepack": "oclif-dev manifest && oclif-dev readme",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "repository": "bloqpriv/cloud-cli",
   "bugs": "https://github.com/bloqpriv/cloud-cli/issues",
   "dependencies": {
     "@bloq/cloud-sdk": "1.0.0",
@@ -65,17 +77,5 @@
       "@oclif/plugin-help",
       "conf-cli"
     ]
-  },
-  "repository": "bloqpriv/cloud-cli",
-  "scripts": {
-    "publish": "npm publish --access public",
-    "start": "node bin/run",
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint .",
-    "lint": "eslint .",
-    "lint-fix": "eslint --fix .",
-    "prepack": "oclif-dev manifest && oclif-dev readme",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-    "version": "oclif-dev readme && git add README.md"
   }
 }

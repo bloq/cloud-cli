@@ -18,7 +18,7 @@ class UpdatePasswordCommand extends Command {
 
     const { oldPassword, newPassword } = await inquirer.prompt([
       { name: 'oldPassword', message: 'Enter old password', type: 'password' },
-      { name: 'newPassword', message: 'Enter new password', type: 'password', validate: isPasswordValid },
+      { name: 'newPassword', message: 'Enter new password', type: 'password', validate: isPasswordValid }
     ])
 
     await inquirer.prompt([

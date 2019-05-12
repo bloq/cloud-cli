@@ -19,7 +19,7 @@ async function infoUserKey (user, accessToken, { type, keyId }) {
     ])
 
     keyId = prompt.keyId
-    if (!keyId)  { return consola.error('Missing key id' )}
+    if (!keyId) { return consola.error('Missing key id') }
   }
 
   consola.info(`Getting ${type} user keys with id ${keyId} for user ${user}.`)
@@ -49,7 +49,7 @@ async function infoUserKey (user, accessToken, { type, keyId }) {
     * Type:\t\t${type}
     `)
 
-    if (body.keylist) { console.log('\n', body.keylist)}
+    if (body.keylist) { console.log('\n', body.keylist) }
   })
 }
 

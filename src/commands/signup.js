@@ -23,7 +23,7 @@ class SignupCommand extends Command {
     const { email, displayName, password } = await inquirer.prompt([
       { name: 'email', message: 'Enter your email address', type: 'input', validate: isEmailValid },
       { name: 'displayName', message: 'Enter your name', type: 'input', validate: isNotEmpty },
-      { name: 'password', message: 'Enter your password', type: 'password', validate: isPasswordValid },
+      { name: 'password', message: 'Enter your password', type: 'password', validate: isPasswordValid }
     ])
 
     const { acceptTerms } = await inquirer.prompt([

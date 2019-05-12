@@ -26,15 +26,15 @@ function isEmailValid (email) {
 }
 
 function isNotEmpty (value) {
-  if (value === '' || value === undefined || value === null) { return `The value can not be empty` }
+  if (value === '' || value === undefined || value === null) { return 'The value can not be empty' }
 
   return true
 }
 
 function isPasswordValid (value) {
-  let passwordEntropy = stringEntropy(value)
+  const passwordEntropy = stringEntropy(value)
   if (passwordEntropy < MIN_ENTROPY) {
-    return `The password provided is not strong enough. The password rate is ${ ((passwordEntropy * 100) / MIN_ENTROPY).toFixed() } and you need to reach 100, try adding more or different characters.`
+    return `The password provided is not strong enough. The password rate is ${((passwordEntropy * 100) / MIN_ENTROPY).toFixed()} and you need to reach 100, try adding more or different characters.`
   }
 
   return true
