@@ -82,7 +82,7 @@ function isPasswordValid (password) {
 /**
  *  Check if two passwords are equal or not
  *
- * @param  {string} password1 the firs password
+ * @param  {string} password1 the first password
  * @param  {string} password2 the second password
  * @returns {boolean|string} string with error message or true
  */
@@ -92,11 +92,23 @@ function isPasswordEqual (password1, password2) {
   return 'Passwords do not match.'
 }
 
+/**
+ *  Check if the chain name is valid
+ *
+ * @param  {string} chain the chain name
+ * @returns {boolean} true if the value is in the chains list
+ */
+function isChainValid (chain) {
+  const CHAIN_OPTIONS = ['btc', 'bch', 'eth']
+  return CHAIN_OPTIONS.find(c => c === chain)
+}
+
 module.exports = {
   isUserValid,
   isUuidValid,
   isEmailValid,
   isNotEmpty,
+  isChainValid,
   isPasswordEqual,
   isPasswordValid
 }

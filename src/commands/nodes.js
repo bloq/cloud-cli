@@ -3,15 +3,17 @@
 const consola = require('consola')
 const request = require('request')
 const { Command, flags } = require('@oclif/command')
+
 const config = require('../config')
 const nodes = require('../nodes')
+const { isChainValid } = require('../validator')
 
-const CHAIN_OPTIONS = ['btc', 'bch', 'eth']
-
-function isChainValid (chain) {
-  return CHAIN_OPTIONS.find(c => c === chain)
-}
-
+/**
+ *  Gets a user client token
+ *
+ * @param {function} cb callback to execute when token retrieved
+ * @returns {true} cb the given callback
+ */
 function getClientToken (cb) {
   const clientId = config.get('clientId')
   const clientSecret = config.get('clientSecret')
@@ -43,7 +45,8 @@ function getClientToken (cb) {
 
 class NodesCommand extends Command {
   async run () {
-    const _this = this
+    const { args, flags } = this.parse(NodesCommand)
+
     getClientToken(function (err, data) {
       if (err) {
         return consola.error(err.message)
@@ -51,7 +54,6 @@ class NodesCommand extends Command {
 
       const { accessToken } = data
       const user = config.get('clientId')
-      const { args, flags } = _this.parse(NodesCommand)
 
       switch (args.operation) {
         case 'create':
@@ -60,7 +62,9 @@ class NodesCommand extends Command {
           }
 
           if (!isChainValid(flags.chain)) {
-            return consola.error(`Invalid chain value, expected to be one of: ${CHAIN_OPTIONS.join(', ')}`)
+            return consola.error(
+              `Invalid chain value, expected to be one of: ${CHAIN_OPTIONS.join(', ')}.`
+            )
           }
 
           return nodes.create(user, accessToken, flags)

@@ -57,9 +57,8 @@ class VerifyCommand extends Command {
       const body = JSON.parse(data.body)
       if (data.statusCode !== 204) {
         if (body.code === 'UserVerified') {
-          return consola.warn(
-            `Your account is already verified, to start a new session use bcl login -u ${user}`
-          )
+          return consola.warn(`Your account is already verified
+            To start a new session run the command: bcl login -u ${user}`)
         }
         return consola.error(`Error verifying your account: ${body.code}`)
       }
