@@ -14,6 +14,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepack": "oclif-dev manifest && oclif-dev readme",
+    "tag": "git tag $(date +'%Y-%m-%d')",
     "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
     "version": "oclif-dev readme && git add README.md"
   },
