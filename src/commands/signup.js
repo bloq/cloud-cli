@@ -30,7 +30,7 @@ class SignupCommand extends Command {
       { name: 'confirmPassword', message: 'Confirm new password', type: 'password', validate: value => isPasswordEqual(value, password) },
       {
         name: 'acceptTerms',
-        message: 'Use of Bloq’s services is subject to the Terms of Service found at https://terms.bloq.cloud. \nPlease confirm that you have read and agree to the Terms of Service by selecting [“I accept”]',
+        message: 'Use of Bloq’s services is subject to the Terms of Service found at https://bloq.cloud/legal \nPlease confirm that you have read and agree to the Terms of Service by selecting [“I accept”]',
         type: 'list',
         choices: ['Decline', 'I accept']
       }
