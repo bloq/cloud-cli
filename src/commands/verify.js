@@ -54,8 +54,6 @@ class VerifyCommand extends Command {
         return consola.error('User does not exist')
       }
 
-      console.log(data.statusCode, data.body)
-
       if (data.statusCode !== 204) {
         const body = JSON.parse(data.body)
         if (body.code === 'UserVerified') {
