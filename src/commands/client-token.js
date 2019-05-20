@@ -15,8 +15,10 @@ class ClientTokenCommand extends Command {
     const clientId = config.get('clientId')
     const clientSecret = config.get('clientSecret')
 
-    if (!user || !accessToken) {
-      return consola.error('User is not authenticated. Use login command to start a new session.')
+    if (!clientId || !clientSecret) {
+      consola.error('You must provide a valid client-keys pair in order to create a client token')
+      consola.info('To create a new client-keys pair run: bcl client-keys create')
+      return
     }
 
     consola.info(`Retrieving new client accessToken for ${user}`)
@@ -43,6 +45,8 @@ class ClientTokenCommand extends Command {
       if (data.statusCode === 401 || data.statusCode === 403) {
         return consola.error('Your client keys are invalid')
       }
+
+      console.log(data.statusCode, data.body)
 
       if (!data.body.accessToken || !data.body.refreshToken) {
         return consola.error('Error generating client accessToken.')

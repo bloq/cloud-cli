@@ -19,7 +19,9 @@ function getClientToken (cb) {
   const clientSecret = config.get('clientSecret')
 
   if (!clientId || !clientSecret) {
-    return consola.error('You must provide a valid client-keys pair in order to manage nodes.')
+    consola.error('You must provide a valid client-keys pair in order to manage nodes')
+    consola.info('To create a new client-keys pair run: bcl client-keys create')
+    return
   }
 
   const env = config.get('env') || 'prod'
