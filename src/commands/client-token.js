@@ -46,8 +46,6 @@ class ClientTokenCommand extends Command {
         return consola.error('Your client keys are invalid')
       }
 
-      console.log(data.statusCode, data.body)
-
       if (!data.body.accessToken || !data.body.refreshToken) {
         return consola.error('Error generating client accessToken.')
       }
