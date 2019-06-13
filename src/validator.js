@@ -3,7 +3,7 @@ const stringEntropy = require('fast-password-entropy')
 const config = require('./config')
 
 const MIN_ENTROPY = config.get('passwordEntropy')
-const CHAIN_OPTIONS = ['btc', 'bch', 'eth']
+const CHAIN_OPTIONS = ['btc', 'bch', 'eth', 'etc']
 
 /**
  *  Check if an email is valid or not
