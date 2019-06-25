@@ -34,7 +34,7 @@ async function createNode (clientId, accessToken, { chain, large, jwt }) {
       return consola.error(`Error initializing a new ${chain} node: ${data.code}`)
     }
 
-    const { id, version, state, nodeUser, nodePass, instance } = data.body
+    const { id, version, state, nodeUser, nodePass, instance, vendor } = data.body
     process.stdout.write('\n')
 
     coppyToClipboard(id, 'Node id')
@@ -49,6 +49,7 @@ async function createNode (clientId, accessToken, { chain, large, jwt }) {
     * State:\t${state}
     * Vendor:\t${instance.vendor}
     * Type:\t${instance.type}
+    * PublicIP: \t${vendor.PublicIpAddress}
     ${creds}`)
   })
 }
