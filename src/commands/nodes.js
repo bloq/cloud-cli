@@ -58,27 +58,24 @@ class NodesCommand extends Command {
       const user = config.get('clientId')
 
       switch (args.operation) {
-        case 'create':
-          if (!flags.chain) {
-            return consola.error('Missing chain type (-c or --chain)')
-          }
+        // case 'create':
+        //   if (!flags.chain) {
+        //     return consola.error('Missing chain type (-c or --chain)')
+        //   }
 
-          if (!isChainValid(flags.chain)) {
-            return consola.error(
-              `Invalid chain value, expected to be one of: ${CHAIN_OPTIONS.join(', ')}.`
-            )
-          }
+        //   if (!isChainValid(flags.chain)) {
+        //     return consola.error(
+        //       `Invalid chain value, expected to be one of: ${CHAIN_OPTIONS.join(', ')}.`
+        //     )
+        //   }
 
-          return nodes.create(user, accessToken, flags)
+        //   return nodes.create(user, accessToken, flags)
 
         case 'remove':
           return nodes.remove(user, accessToken, flags)
 
         case 'info':
           return nodes.info(user, accessToken, flags)
-
-        case 'chains':
-          return nodes.chains(user, accessToken, flags)
 
         default:
           return nodes.list(user, accessToken, flags)
@@ -89,9 +86,9 @@ class NodesCommand extends Command {
 
 NodesCommand.description = 'Manage your BloqCloud nodes'
 NodesCommand.flags = {
-  chain: flags.string({ char: 'c', description: 'chain type' }),
-  large: flags.boolean({ char: 'l', description: 'request large node', default: false, required: false }),
-  jwt: flags.boolean({ char: 'j', description: 'user jwt tokens for auth instead of user/pass', default: false, required: false }),
+  // chain: flags.string({ char: 'c', description: 'chain type' }),
+  // large: flags.boolean({ char: 'l', description: 'request large node', default: false, required: false }),
+  // jwt: flags.boolean({ char: 'j', description: 'user jwt tokens for auth instead of user/pass', default: false, required: false }),
   all: flags.boolean({ char: 'a', description: 'list all nodes', default: false, required: false }),
   nodeId: flags.string({ char: 'i', description: 'node id' })
 }
@@ -102,7 +99,7 @@ NodesCommand.args = [
     required: true,
     description: 'Specify the type of nodes operation to run',
     default: 'list',
-    options: ['create', 'list', 'remove', 'info', 'chains']
+    options: ['list', 'remove', 'info']
   }
 ]
 

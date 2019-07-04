@@ -22,7 +22,7 @@ async function infoNode (clientId, accessToken, flags) {
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.nodes.url`)}/nodes/${nodeId}`
+  const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes/${nodeId}`
   const spinner = ora().start()
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
