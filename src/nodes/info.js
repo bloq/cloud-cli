@@ -7,25 +7,27 @@ const inquirer = require('inquirer')
 
 const config = require('../config')
 
-async function infoNode (clientId, accessToken, flags) {
-  consola.info(`Retrieving node with client ID ${clientId}.`)
-  let { nodeId } = flags
+/**
+ *  Get the information of the given node
+ *
+ * @param  {object} options { accessToken, nodeId }
+ * @returns {Promise}
+ */
+async function infoNode ({ accessToken, nodeId }) {
+  consola.info(`Retrieving node with ID ${nodeId}.`)
 
   if (!nodeId) {
-    const prompt = await inquirer.prompt([
-      { name: 'nodeId', message: 'Enter the node id', type: 'text' }
-    ])
-
+    const prompt = await inquirer.prompt([{ name: 'nodeId', message: 'Enter the node id', type: 'text' }])
     nodeId = prompt.nodeId
     if (!nodeId) { return consola.error('Missing node id') }
   }
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.nodes.url`)}/nodes/${nodeId}`
+  const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes/${nodeId}`
   const spinner = ora().start()
 
-  request.get(url, { headers: { Authorization } }, function (err, data) {
+  return request.get(url, { headers: { Authorization } }, function (err, data) {
     spinner.stop()
     if (err) {
       return consola.error(`Error retrieving the node: ${err}.`)
@@ -40,23 +42,25 @@ async function infoNode (clientId, accessToken, flags) {
       return consola.error(`Error retrieving the node: ${body.code}.`)
     }
 
-    const { image, version, state, instance, startedAt, stopedAt, vendor } = body
-    consola.success(`Retrieved node with id ${nodeId}`)
+    const { id, auth, state, chain, network, serviceData, ip, stoppedAt, createdAt } = body
+    const creds = auth.type === 'jwt'
+      ? '* Auth:\t\tJWT'
+      : `* User:\t\t${auth.user}
+    * Password:\t\t${auth.pass}`
+
     process.stdout.write('\n')
 
-    consola.log(`* Image: \t\t${image}
-    * Software Version:\t${version}
-    * Started At:\t${startedAt}
-    * Stopped At:\t${stopedAt || '-'}
-    * State:\t\t${state.toUpperCase()}
-    * Instance:
-    \t- Vendor:\t${instance.vendor}
-    \t- Type:\t\t${instance.type}
-    * Vendor:
-    \t- LaunchTime:\t${vendor.LaunchTime}
-    \t- Architecture:\t${vendor.Architecture}
-    \t- PublicIpAddress:\t${vendor.PublicIpAddress || '-'}
-    `)
+    consola.success(`Retrieved node with id ${nodeId}
+    * ID:\t\t${id}
+    * Started At:\t${createdAt}
+    * Stopped At:\t${stoppedAt || 'N/A'}
+    * Chain:\t\t${chain}
+    * Network:\t\t${network}
+    * Version:\t\t${serviceData.software}
+    * Performance:\t${serviceData.performance}
+    * State:\t\t${state}
+    * IP:\t\t${ip}
+    ${creds}`)
   })
 }
 

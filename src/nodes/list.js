@@ -7,12 +7,18 @@ require('console.table')
 
 const config = require('../config')
 
-async function listNodes (clientId, accessToken, flags) {
-  consola.info(`Retrieving all nodes node with client ID ${clientId}.`)
+/**
+ *  Get all nodes
+ *
+ * @param  {object} options { accessToken, nodeId }
+ * @returns {Promise}
+ */
+async function listNodes ({ accessToken, all }) {
+  consola.info('Retrieving all nodes.')
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.nodes.url`)}/nodes`
+  const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
   const spinner = ora().start()
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
@@ -30,15 +36,23 @@ async function listNodes (clientId, accessToken, flags) {
     }
 
     let body = JSON.parse(data.body)
-    body = body.map(function (n) {
-      delete n.user
-      delete n.instance
-      n.PublicIpAddress = n.vendor.PublicIpAddress
-      delete n.vendor
-      return n
+    body = body.map(function ({ id, chain, state, network, ip, createdAt, serviceData, stoppedAt }) {
+      const node = {
+        id,
+        chain,
+        network,
+        ip,
+        state,
+        createdAt,
+        version: serviceData.software,
+        performance: serviceData.performance
+      }
+
+      if (all) { node.stoppedAt = stoppedAt || 'N/A' }
+      return node
     })
 
-    if (!flags.all) {
+    if (!all) {
       body = body.filter(n => n.state !== 'stopped')
     }
 
