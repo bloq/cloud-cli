@@ -3,6 +3,7 @@
 const consola = require('consola')
 const request = require('request')
 const config = require('../config')
+const inquirer = require('inquirer')
 
 async function infoUserKey (user, accessToken, { type, keyId }) {
   if (!type) {
@@ -49,7 +50,7 @@ async function infoUserKey (user, accessToken, { type, keyId }) {
     * Type:\t\t${type}
     `)
 
-    if (body.keylist) { console.log('\n', body.keylist) }
+    if (body.keylist) { consola.success('\n', body.keylist) }
   })
 }
 
