@@ -19,13 +19,13 @@ module.exports = {
         url: 'https://nodes.bloq.cloud',
         statusEndpoint: '/'
       },
-      insight: {
+      connect: {
         btc: {
-          url: 'https://btc.insight.bloq.cloud',
+          url: 'https://btc.connect.bloq.cloud',
           statusEndpoint: '/status'
         },
         bch: {
-          url: 'https://bch.insight.bloq.cloud',
+          url: 'https://bch.connect.bloq.cloud',
           statusEndpoint: '/status'
         }
       }
@@ -40,13 +40,13 @@ module.exports = {
         url: 'https://nodes.bloqclouddev.com',
         statusEndpoint: '/'
       },
-      insight: {
+      connect: {
         btc: {
-          url: 'https://btc.insight.bloqclouddev.com',
+          url: 'https://btc.connect.bloqclouddev.com',
           statusEndpoint: '/status'
         },
         bch: {
-          url: 'https://bch.insight.bloqclouddev.com',
+          url: 'https://bch.connect.bloqclouddev.com',
           statusEndpoint: '/status'
         }
       }
