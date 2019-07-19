@@ -3,7 +3,7 @@
 const url = require('url')
 const consola = require('consola')
 const { Command, flags } = require('@oclif/command')
-const { insight } = require('@bloq/cloud-sdk')
+const { connect } = require('@bloq/cloud-sdk')
 const config = require('../config')
 const ora = require('ora')
 
@@ -18,25 +18,25 @@ const methods = {
   'raw-tx': 'rawTransaction'
 }
 
-class InsightCommand extends Command {
+class ConnectCommand extends Command {
   async run () {
     const clientId = config.get('clientId')
     const clientSecret = config.get('clientSecret')
     const env = config.get('env')
-    const { flags, args } = this.parse(InsightCommand)
+    const { flags, args } = this.parse(ConnectCommand)
     const { argument, chain, network } = flags
     const { method } = args
 
     if (!clientId || !clientSecret) {
-      return consola.error('You must provide a valid client-keys pair in order to use insight.')
+      return consola.error('You must provide a valid client-keys pair in order to use connect.')
     }
 
     const services = {
-      insight: config.get(`services.${env}.insight.${chain}`),
+      connect: config.get(`services.${env}.connect.${chain}`),
       accounts: config.get(`services.${env}.accounts`)
     }
 
-    const api = insight.http({
+    const api = connect.http({
       coin: chain,
       network,
       auth: {
@@ -44,7 +44,7 @@ class InsightCommand extends Command {
         clientSecret,
         url: services.accounts.url
       },
-      url: url.resolve(services.insight.url, '/api/v1')
+      url: url.resolve(services.connect.url, '/api/v1')
     })
 
     const spinner = ora().start()
@@ -58,17 +58,16 @@ class InsightCommand extends Command {
         spinner.stop()
         consola.error(err.message)
       })
-
   }
 }
 
-InsightCommand.description = 'Access Insight services through bcl'
+ConnectCommand.description = 'Access Connect services through bcl'
 
-InsightCommand.args = [
+ConnectCommand.args = [
   {
     name: 'method',
     required: true,
-    description: 'Specify the method to get from insight API',
+    description: 'Specify the method to get from connect API',
     options: [
       'block',
       'blocks',
@@ -82,7 +81,7 @@ InsightCommand.args = [
   }
 ]
 
-InsightCommand.flags = {
+ConnectCommand.flags = {
   argument: flags.string({
     char: 'a',
     description: 'Specify the argument for the method'
@@ -103,4 +102,4 @@ InsightCommand.flags = {
   })
 }
 
-module.exports = InsightCommand
+module.exports = ConnectCommand

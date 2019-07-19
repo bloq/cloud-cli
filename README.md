@@ -33,7 +33,7 @@ USAGE
 * [`bcl conf [KEY] [VALUE]`](#bcl-conf-key-value)
 * [`bcl events`](#bcl-events)
 * [`bcl help [COMMAND]`](#bcl-help-command)
-* [`bcl insight METHOD`](#bcl-insight-method)
+* [`bcl connect METHOD`](#bcl-connect-method)
 * [`bcl login`](#bcl-login)
 * [`bcl logout`](#bcl-logout)
 * [`bcl nodes OPERATION`](#bcl-nodes-operation)
@@ -124,17 +124,17 @@ OPTIONS
 
 _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6/src/commands/help.ts)_
 
-## `bcl insight METHOD`
+## `bcl connect METHOD`
 
-Access Insight services through bcl
+Access Connect services through bcl
 
 ```
 USAGE
-  $ bcl insight METHOD
+  $ bcl connect METHOD
 
 ARGUMENTS
   METHOD  (block|blocks|block-hash|raw-block|transaction|tx|raw-transaction|raw-tx) Specify the method to get from
-          insight API
+          connect API
 
 OPTIONS
   -a, --argument=argument  Specify the argument for the method
@@ -142,7 +142,7 @@ OPTIONS
   -n, --network=mainnet    [default: mainnet] Specify the network for the method
 ```
 
-_See code: [src/commands/insight.js](https://github.com/bloqpriv/cloud-cli/blob/v0.4.2/src/commands/insight.js)_
+_See code: [src/commands/connect.js](https://github.com/bloqpriv/cloud-cli/blob/v0.4.2/src/commands/connect.js)_
 
 ## `bcl login`
 

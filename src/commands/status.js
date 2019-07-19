@@ -32,10 +32,10 @@ class StatusCommand extends Command {
     Promise.all([
       getStatus(new URL(services[env].accounts.statusEndpoint, services[env].accounts.url)),
       getStatus(new URL(services[env].nodes.statusEndpoint, services[env].nodes.url)),
-      getStatus(new URL(services[env].insight.btc.statusEndpoint, services[env].insight.btc.url)),
-      getStatus(new URL(services[env].insight.bch.statusEndpoint, services[env].insight.bch.url))
+      getStatus(new URL(services[env].connect.btc.statusEndpoint, services[env].connect.btc.url)),
+      getStatus(new URL(services[env].connect.bch.statusEndpoint, services[env].connect.bch.url))
     ])
-      .then(function ([ isAccountsUp, isNodesUp, isInsightBtcUp, isInsightBchUp ]) {
+      .then(function ([ isAccountsUp, isNodesUp, isConnectBtcUp, isConnectBchUp ]) {
         const status = [
           {
             service: 'Accounts',
@@ -50,15 +50,15 @@ class StatusCommand extends Command {
           },
 
           {
-            service: 'Insight BTC',
-            isUp: isInsightBtcUp ? '✔' : '❌',
-            url: services[env].insight.btc.url
+            service: 'Connect BTC',
+            isUp: isConnectBtcUp ? '✔' : '❌',
+            url: services[env].connect.btc.url
           },
 
           {
-            service: 'Insight BCH',
-            isUp: isInsightBchUp ? '✔' : '❌',
-            url: services[env].insight.btc.url
+            service: 'Connect BCH',
+            isUp: isConnectBchUp ? '✔' : '❌',
+            url: services[env].connect.btc.url
           },
         ]
 
