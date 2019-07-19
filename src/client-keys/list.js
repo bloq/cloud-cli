@@ -5,6 +5,13 @@ const request = require('request')
 const config = require('../config')
 require('console.table')
 
+/**
+ *  Creates a new pair of client keys
+ *
+ * @param  {string} user the user email or id
+ * @param  {string} accessToken local access token
+ * @returns {undefined}
+ */
 async function listClientKeys (user, accessToken) {
   consola.info(`Getting client keys for user ${user}.`)
 

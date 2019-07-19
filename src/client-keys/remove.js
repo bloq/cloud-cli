@@ -5,17 +5,32 @@ const request = require('request')
 const inquirer = require('inquirer')
 const config = require('../config')
 
-async function removeClientKey (user, accessToken) {
+/**
+ *  Removes the giving client key
+ *
+ * @param  {string} user the user email or id
+ * @param  {string} accessToken local access token
+ * @param  {object} flags set of options retrieved by cli
+ * @returns {undefined}
+ */
+async function removeClientKey (user, accessToken, flags) {
   consola.info(`Removing client key for user ${user}.`)
+  let { clientId } = flags
 
-  const { clientId } = await inquirer.prompt([
-    { name: 'clientId', message: 'Enter the client-key id', type: 'text' }
-  ])
+  if (!clientId) {
+    const prompt = await inquirer.prompt([
+      { name: 'clientId', message: 'Enter the client-key id', type: 'text' }
+    ])
+
+    clientId = prompt.clientId
+    if (!clientId) { return consola.error('Missing client id') }
+  }
 
   const { confirmation } = await inquirer.prompt([{
     name: 'confirmation',
     message: `You will remove client key with id ${clientId}. Do you want to continue?`,
-    type: 'confirm'
+    type: 'confirm',
+    default: false
   }])
 
   if (!confirmation) {

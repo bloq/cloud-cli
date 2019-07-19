@@ -17,12 +17,14 @@ async function removeNode (clientId, accessToken, flags) {
     ])
 
     nodeId = prompt.nodeId
+    if (!nodeId) { return consola.error('Missing node id') }
   }
 
   const { confirmation } = await inquirer.prompt([{
     name: 'confirmation',
     message: `You will remove the node with id ${nodeId}. Do you want to continue?`,
-    type: 'confirm'
+    type: 'confirm',
+    default: false
   }])
 
   if (!confirmation) {

@@ -3,10 +3,10 @@
 const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
-const clipboardy = require('clipboardy')
 const { Command } = require('@oclif/command')
 
 const config = require('../config')
+const { coppyToClipboard } = require('../utils')
 
 class ClientTokenCommand extends Command {
   async run () {
@@ -15,8 +15,10 @@ class ClientTokenCommand extends Command {
     const clientId = config.get('clientId')
     const clientSecret = config.get('clientSecret')
 
-    if (!user || !accessToken) {
-      return consola.error('User is not authenticated. Use login command to start a new session.')
+    if (!clientId || !clientSecret) {
+      consola.error('You must provide a valid client-keys pair in order to create a client token')
+      consola.info('To create a new client-keys pair run: bcl client-keys create')
+      return
     }
 
     consola.info(`Retrieving new client accessToken for ${user}`)
@@ -59,8 +61,7 @@ class ClientTokenCommand extends Command {
         config.set('refreshToken', data.body.refreshToken)
       }
 
-      clipboardy.write(data.body.accessToken)
-      consola.info('Client accessToken was copied to clipboard.')
+      coppyToClipboard(data.body.accessToken, 'Client access token')
     })
   }
 }

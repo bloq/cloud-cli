@@ -3,9 +3,16 @@
 const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
-const clipboardy = require('clipboardy')
 const config = require('../config')
+const { coppyToClipboard } = require('../utils')
 
+/**
+ *  Creates a new pair of client keys
+ *
+ * @param  {string} user the user email or id
+ * @param  {string} accessToken local access token
+ * @returns {undefined}
+ */
 async function createClientKey (user, accessToken) {
   consola.info(`Creating new pair of client keys for user ${user}.`)
 
@@ -41,9 +48,10 @@ async function createClientKey (user, accessToken) {
     * Client Secret:\t${body.clientSecret}
     `)
 
-    clipboardy.write(body.clientSecret)
-    consola.info('Client secret was copied to clipboard.')
-    consola.warn('You will be not able to see your client secret again. Remember to copy it and keep it safe.')
+    coppyToClipboard(body.clientSecret, 'Client secret')
+    consola.warn(
+      'You will NOT be able to see your client secret again. Remember to copy it and keep it safe.'
+    )
 
     if (save) {
       config.set('clientId', body.clientId)

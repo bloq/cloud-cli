@@ -16,17 +16,27 @@ class VerifyCommand extends Command {
     let { user, token } = flags
 
     if (!user) {
-      const prompt = await inquirer.prompt([
-        { name: 'user', message: 'Enter your account id', type: 'input', validate: isUserValid },
-      ])
+      const prompt = await inquirer.prompt([{
+        name: 'user',
+        message: 'Enter your email address or account id',
+        type: 'input',
+        validate: isUserValid
+      }])
+
       user = prompt.user
+      if (!user) { return consola.error('Missing email or account id') }
     }
 
     if (!token) {
-      const prompt = await inquirer.prompt([
-        { name: 'token', message: 'Enter your verification token', type: 'input', validate: isUuidValid }
-      ])
+      const prompt = await inquirer.prompt([{
+        name: 'token',
+        message: 'Enter your verification token',
+        type: 'input',
+        validate: isUuidValid
+      }])
+
       token = prompt.token
+      if (!token) { return consola.error('Missing verification token') }
     }
 
     const env = config.get('env') || 'prod'
@@ -44,11 +54,16 @@ class VerifyCommand extends Command {
         return consola.error('User does not exist')
       }
 
-      if (data.statusCode === 400) {
-        return consola.error('Invalid verification token')
+      if (data.statusCode !== 204) {
+        const body = JSON.parse(data.body)
+        if (body.code === 'UserVerified') {
+          return consola.warn(`Your account is already verified
+            To start a new session run the command: bcl login -u ${user}`)
+        }
+        return consola.error(`Error verifying your account: ${body.code}`)
       }
 
-      consola.success(`The account with id ${data.body.id} has been validated.`)
+      consola.success(`The account ${user} has been validated.`)
       consola.info(`You can now start a new session running the command: bcl login -u ${user}`)
     })
   }
@@ -57,7 +72,7 @@ class VerifyCommand extends Command {
 VerifyCommand.description = 'Verifies your BloqCloud account and complete signup process'
 
 VerifyCommand.flags = {
-  user: flags.string({ char: 'u', description: 'bloqcloud account id' }),
+  user: flags.string({ char: 'u', description: 'email address or account id' }),
   token: flags.string({ char: 't', description: 'verification token' })
 }
 

@@ -1,11 +1,23 @@
 {
   "name": "@bloq/cloud-cli",
   "description": "BloqCloud CLI",
-  "version": "0.4.2",
+  "version": "1.0.1",
   "author": "Ignacio Anaya <ignacio@bloq.com>",
   "bin": {
     "bcl": "./bin/run"
   },
+  "scripts": {
+    "publish": "npm publish --access public",
+    "start": "node bin/run",
+    "postpack": "rm -f oclif.manifest.json",
+    "posttest": "eslint .",
+    "lint": "eslint .",
+    "lint:fix": "eslint --fix .",
+    "prepack": "oclif-dev manifest && oclif-dev readme",
+    "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
+    "version": "oclif-dev readme && git add README.md"
+  },
+  "repository": "bloqpriv/cloud-cli",
   "bugs": "https://github.com/bloqpriv/cloud-cli/issues",
   "dependencies": {
     "@bloq/cloud-sdk": "1.0.0",
@@ -17,6 +29,7 @@
     "conf-cli": "0.1.8",
     "consola": "2.6.0",
     "console.table": "0.10.0",
+    "fast-password-entropy": "1.1.1",
     "inquirer": "6.3.1",
     "ora": "3.1.0",
     "request": "2.88.0",
@@ -37,6 +50,7 @@
     "eslint-plugin-node": "9.0.1",
     "eslint-plugin-prefer-arrow": "1.1.5",
     "eslint-plugin-promise": "4.1.1",
+    "eslint-plugin-require-path-exists": "1.1.9",
     "eslint-plugin-standard": "4.0.0",
     "mocha": "6.1.4",
     "nyc": "14.1.0"
@@ -63,17 +77,5 @@
       "@oclif/plugin-help",
       "conf-cli"
     ]
-  },
-  "repository": "bloqpriv/cloud-cli",
-  "scripts": {
-    "publish": "npm publish --access public",
-    "start": "node bin/run",
-    "postpack": "rm -f oclif.manifest.json",
-    "posttest": "eslint .",
-    "lint": "eslint .",
-    "lint-fix": "eslint --fix .",
-    "prepack": "oclif-dev manifest && oclif-dev readme",
-    "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-    "version": "oclif-dev readme && git add README.md"
   }
 }

@@ -5,14 +5,15 @@ const consola = require('consola')
 const request = require('request')
 
 const config = require('../config')
+const { coppyToClipboard } = require('../utils')
 
-async function createNode (clientId, accessToken, { chain, large }) {
+async function createNode (clientId, accessToken, { chain, large, jwt }) {
   consola.info(`Initializing a new ${chain} node with client ID ${clientId}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/nodes`
-  const json = { image: chain, large }
+  const json = { image: chain, large, jwt }
   const spinner = ora().start()
 
   request.post(url, { headers: { Authorization }, json }, function (err, data) {
@@ -33,8 +34,14 @@ async function createNode (clientId, accessToken, { chain, large }) {
       return consola.error(`Error initializing a new ${chain} node: ${data.code}`)
     }
 
-    const { id, version, state, instance } = data.body
+    const { id, version, state, nodeUser, nodePass, instance, vendor } = data.body
     process.stdout.write('\n')
+
+    coppyToClipboard(id, 'Node id')
+
+    const creds = nodeUser === '-'
+      ? '' : `* NodeUser:\t${nodeUser}
+    * NodePass:\t${nodePass}`
 
     consola.success(`Initialized new ${chain} node
     * ID:\t${id}
@@ -42,7 +49,8 @@ async function createNode (clientId, accessToken, { chain, large }) {
     * State:\t${state}
     * Vendor:\t${instance.vendor}
     * Type:\t${instance.type}
-    `)
+    * PublicIP: \t${vendor.PublicIpAddress}
+    ${creds}`)
   })
 }
 
