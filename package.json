@@ -31,6 +31,7 @@
     "console.table": "0.10.0",
     "fast-password-entropy": "1.1.1",
     "inquirer": "6.3.1",
+    "jwt-decode": "2.2.0",
     "ora": "3.1.0",
     "request": "2.88.0",
     "serve": "10.1.2",

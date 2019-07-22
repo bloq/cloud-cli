@@ -3,27 +3,35 @@
 const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
+const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
 const { coppyToClipboard } = require('../utils')
 
-async function createNode (clientId, accessToken, { chain, large, jwt }) {
-  consola.info(`Initializing a new ${chain} node with client ID ${clientId}.`)
+/**
+ *  Creates a new node from a service (only valid for admin users)
+ *
+ * @param  {object} options { accessToken, serviceId, authType }
+ * @returns {Promise}
+ */
+async function createNode ({ accessToken, serviceId, authType }) {
+  consola.info(`Initializing a new node from service ${serviceId}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.nodes.url`)}/nodes`
-  const json = { image: chain, large, jwt }
+  const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
+  const json = { serviceId, authType }
   const spinner = ora().start()
 
-  request.post(url, { headers: { Authorization }, json }, function (err, data) {
+  const payload = jwtDecode(accessToken)
+  if (!payload.aud.includes('manager')) {
+    return consola.error('Only admin users can create nodes with the CLI')
+  }
+
+  return request.post(url, { headers: { Authorization }, json }, function (err, data) {
     spinner.stop()
     if (err) {
-      return consola.error(`Error initializing a new ${chain} node: ${err}`)
-    }
-
-    if (data.statusCode === 403 && data.body.code === 'LimitExceeded') {
-      return consola.error('Maximum simultaneous number of nodes reached')
+      return consola.error(`Error initializing the new node: ${err}`)
     }
 
     if (data.statusCode === 401 || data.statusCode === 403) {
@@ -31,25 +39,27 @@ async function createNode (clientId, accessToken, { chain, large, jwt }) {
     }
 
     if (data.statusCode !== 200) {
-      return consola.error(`Error initializing a new ${chain} node: ${data.code}`)
+      return consola.error(`Error initializing the new node: ${data.code}`)
     }
 
-    const { id, version, state, nodeUser, nodePass, instance, vendor } = data.body
+    const { id, auth, state, chain, network, serviceData, ip } = data.body[0]
     process.stdout.write('\n')
 
     coppyToClipboard(id, 'Node id')
 
-    const creds = nodeUser === '-'
-      ? '' : `* NodeUser:\t${nodeUser}
-    * NodePass:\t${nodePass}`
+    const creds = auth.type === 'jwt'
+      ? '* Auth:\t\tJWT'
+      : `* User:\t\t${auth.user}
+    * Password:\t\t${auth.pass}`
 
-    consola.success(`Initialized new ${chain} node
-    * ID:\t${id}
-    * Version:\t${version}
-    * State:\t${state}
-    * Vendor:\t${instance.vendor}
-    * Type:\t${instance.type}
-    * PublicIP: \t${vendor.PublicIpAddress}
+    consola.success(`Initialized new node from service ${serviceId}
+    * ID:\t\t${id}
+    * Chain:\t\t${chain}
+    * Network:\t\t${network}
+    * Version:\t\t${serviceData.software}
+    * Performance:\t${serviceData.performance}
+    * State:\t\t${state}
+    * IP:\t\t${ip}
     ${creds}`)
   })
 }
