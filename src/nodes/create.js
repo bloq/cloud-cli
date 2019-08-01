@@ -42,7 +42,7 @@ async function createNode ({ accessToken, serviceId, authType }) {
       return consola.error(`Error initializing the new node: ${data.code}`)
     }
 
-    const { id, auth, state, chain, network, serviceData, ip } = data.body[0]
+    const { id, auth, state, chain, network, serviceData, ip } = data.body
     process.stdout.write('\n')
 
     coppyToClipboard(id, 'Node id')
