@@ -56,9 +56,9 @@ class StatusCommand extends Command {
           },
 
           {
-            service: 'Insight BCH',
+            service: 'Connect BCH',
             isUp: isConnectBchUp ? '✔' : '❌',
-            url: services[env].insight.btc.url
+            url: services[env].connect.btc.url
           }
         ]
 
