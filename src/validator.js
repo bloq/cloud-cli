@@ -1,9 +1,9 @@
 'use strict'
 const stringEntropy = require('fast-password-entropy')
-const config = require('./config')
+const postalCodesValidator = require('postal-codes-js')
 
+const config = require('./config')
 const MIN_ENTROPY = config.get('passwordEntropy')
-const CHAIN_OPTIONS = ['btc', 'bch', 'eth', 'etc', 'btctestnet', 'bchtestnet']
 
 /**
  *  Check if an email is valid or not
@@ -94,13 +94,14 @@ function isPasswordEqual (password1, password2) {
 }
 
 /**
- *  Check if the chain name is valid
+ *  Check if the zip code is valid
  *
- * @param  {string} chain the chain name
- * @returns {boolean} true if the value is in the chains list
+ * @param  {string} countryCode the country code
+ * @param  {string} zipCode the zip code
+ * @returns {boolean|string} string with error message or true
  */
-function isChainValid (chain) {
-  return CHAIN_OPTIONS.find(c => c === chain)
+function isZipCodeValid (countryCode, zipCode) {
+  return postalCodesValidator.validate(countryCode, zipCode) === true ? true : 'The zip code is invalid'
 }
 
 module.exports = {
@@ -108,10 +109,8 @@ module.exports = {
   isUuidValid,
   isEmailValid,
   isNotEmpty,
-  isChainValid,
   isPasswordEqual,
   isPasswordValid,
-
-  MIN_ENTROPY,
-  CHAIN_OPTIONS
+  isZipCodeValid,
+  MIN_ENTROPY
 }
