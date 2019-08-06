@@ -19,7 +19,7 @@ async function createClientKey (user, accessToken) {
   const { save } = await inquirer.prompt([
     {
       name: 'save',
-      message: 'Do you want blc to store your tokens locally for future usage?',
+      message: 'Do you want bcl to store your tokens locally for future usage?',
       type: 'confirm'
     }
   ])
