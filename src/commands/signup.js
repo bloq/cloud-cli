@@ -4,10 +4,11 @@ const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
+const countriesData = require('country-region-data')
 const { Command } = require('@oclif/command')
 
 const config = require('../config')
-const { isEmailValid, isNotEmpty, isPasswordValid, isPasswordEqual } = require('../validator')
+const { isEmailValid, isZipCodeValid, isNotEmpty, isPasswordValid, isPasswordEqual } = require('../validator')
 
 class SignupCommand extends Command {
   async run () {
@@ -20,9 +21,43 @@ class SignupCommand extends Command {
     config.delete('clientId')
     config.delete('clientSecret')
 
-    const { email, displayName, password } = await inquirer.prompt([
+    const { email, displayName } = await inquirer.prompt([
       { name: 'email', message: 'Enter your email address', type: 'input', validate: isEmailValid },
-      { name: 'displayName', message: 'Enter your name', type: 'input', validate: isNotEmpty },
+      { name: 'displayName', message: 'Enter your name', type: 'input', validate: isNotEmpty }
+    ])
+
+    const { address, countryName } = await inquirer.prompt([
+      { name: 'address', message: 'Enter your billing address', type: 'input', validate: isNotEmpty },
+      {
+        name: 'countryName',
+        message: 'Select your country',
+        type: 'rawlist',
+        choices: countriesData.map(({ countryName }) => countryName),
+        default: 234
+      }
+    ])
+
+    const country = countriesData.find(c => c.countryName === countryName)
+
+    const { regionName, zipCode } = await inquirer.prompt([
+      {
+        name: 'regionName',
+        message: 'Select your state/province',
+        type: 'rawlist',
+        choices: country.regions.map(({ name }) => name),
+        default: 234
+      },
+      {
+        name: 'zipCode',
+        message: 'Enter your zip code',
+        type: 'input',
+        validate: zipCode => isZipCodeValid(country.countryShortCode, zipCode)
+      }
+    ])
+
+    const region = country.regions.find(r => r.name === regionName)
+
+    const { password } = await inquirer.prompt([
       { name: 'password', message: 'Enter your password', type: 'password', validate: isPasswordValid }
     ])
 
@@ -51,9 +86,23 @@ class SignupCommand extends Command {
       return consola.error('BloqCloud signup aborted')
     }
 
+    const body = {
+      json: {
+        email,
+        displayName,
+        password,
+        billingAddress: { address,
+          zipCode,
+          state: region.shortCode,
+          country: country.countryShortCode
+        }
+      }
+    }
+
     consola.info('Creating your new BloqCloud account')
     const spinner = ora().start()
-    request.post(url, { json: { email, displayName, password } }, function (err, data) {
+
+    request.post(url, body, function (err, data) {
       spinner.stop()
       if (err) {
         return consola.error(`Error creating BloqCloud account: ${err}`)

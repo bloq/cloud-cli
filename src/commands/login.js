@@ -1,5 +1,4 @@
 'use strict'
-
 const ora = require('ora')
 const request = require('request')
 const consola = require('consola')
@@ -19,7 +18,9 @@ class LoginCommand extends Command {
     const { flags } = this.parse(LoginCommand)
     let { user, password } = flags
 
-    if (!user) {
+    if (user) {
+      saveUser(user)
+    } else {
       user = config.get('user')
       if (!user) {
         const prompt = await inquirer.prompt([
@@ -29,8 +30,6 @@ class LoginCommand extends Command {
         user = prompt.user
         saveUser(user)
       }
-    } else {
-      saveUser(user)
     }
 
     consola.info(`Login with user ${user}`)
