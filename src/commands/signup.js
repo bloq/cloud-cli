@@ -60,8 +60,7 @@ class SignupCommand extends Command {
       { name: 'displayName', message: 'Enter your name', type: 'input', validate: isNotEmpty }
     ])
 
-    const { address, countryName } = await inquirer.prompt([
-      { name: 'address', message: 'Enter your street address', type: 'input', validate: isNotEmpty },
+    const { countryName } = await inquirer.prompt([
       {
         name: 'countryName',
         message: 'Select your country',
@@ -73,7 +72,7 @@ class SignupCommand extends Command {
 
     const country = countriesData.find(c => c.countryName === countryName)
 
-    const { regionName, zipCode } = await inquirer.prompt([
+    const { regionName, zipCode, address } = await inquirer.prompt([
       {
         name: 'regionName',
         message: 'Select your state/province',
@@ -86,11 +85,16 @@ class SignupCommand extends Command {
         message: 'Enter your zip code',
         type: 'input',
         validate: zipCode => isZipCodeValid(country.countryShortCode, zipCode)
+      },
+      {
+        name: 'address',
+        message: 'Enter your street address',
+        type: 'input',
+        validate: isNotEmpty
       }
     ])
 
     const region = country.regions.find(r => r.name === regionName)
-
     const password = await askForPassowords()
 
     const { acceptTerms } = await inquirer.prompt([
