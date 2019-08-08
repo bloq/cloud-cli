@@ -27,7 +27,7 @@ class SignupCommand extends Command {
     ])
 
     const { address, countryName } = await inquirer.prompt([
-      { name: 'address', message: 'Enter your billing address', type: 'input', validate: isNotEmpty },
+      { name: 'address', message: 'Enter your street address', type: 'input', validate: isNotEmpty },
       {
         name: 'countryName',
         message: 'Select your country',
@@ -91,7 +91,8 @@ class SignupCommand extends Command {
         email,
         displayName,
         password,
-        billingAddress: { address,
+        billingAddress: {
+          address,
           zipCode,
           state: region.shortCode,
           country: country.countryShortCode
