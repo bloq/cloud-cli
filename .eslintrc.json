@@ -1,5 +1,5 @@
 {
-  "extends": ["bloq", "bloq/mocha"],
+  "extends": ["bloq"],
   "rules": {
     "no-console": "warn",
     "no-shadow": "warn",
