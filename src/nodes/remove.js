@@ -4,6 +4,7 @@ const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
+const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
 
@@ -15,6 +16,11 @@ const config = require('../config')
  */
 async function removeNode ({ accessToken, nodeId }) {
   consola.info(`Removing node with id ${nodeId}.`)
+
+  const payload = jwtDecode(accessToken)
+  if (!payload.aud.includes('manager')) {
+    return consola.error('Only admin users can create nodes with the CLI')
+  }
 
   if (!nodeId) {
     const prompt = await inquirer.prompt([
