@@ -1,5 +1,6 @@
 'use strict'
 
+const consola = require('consola')
 const clipboardy = require('clipboardy')
 
 function coppyToClipboard (value, name) {

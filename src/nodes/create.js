@@ -11,7 +11,7 @@ const { coppyToClipboard } = require('../utils')
 /**
  *  Creates a new node from a service (only valid for admin users)
  *
- * @param  {object} options { accessToken, serviceId, authType }
+ * @param  {Object} options { accessToken, serviceId, authType }
  * @returns {Promise}
  */
 async function createNode ({ accessToken, serviceId, authType }) {
@@ -28,7 +28,10 @@ async function createNode ({ accessToken, serviceId, authType }) {
     return consola.error('Only admin users can create nodes with the CLI')
   }
 
-  return request.post(url, { headers: { Authorization }, json }, function (err, data) {
+  return request.post(url, { headers: { Authorization }, json }, function (
+    err,
+    data
+  ) {
     spinner.stop()
     if (err) {
       return consola.error(`Error initializing the new node: ${err}`)
@@ -47,9 +50,10 @@ async function createNode ({ accessToken, serviceId, authType }) {
 
     coppyToClipboard(id, 'Node id')
 
-    const creds = auth.type === 'jwt'
-      ? '* Auth:\t\tJWT'
-      : `* User:\t\t${auth.user}
+    const creds =
+      auth.type === 'jwt'
+        ? '* Auth:\t\tJWT'
+        : `* User:\t\t${auth.user}
     * Password:\t\t${auth.pass}`
 
     consola.success(`Initialized new node from service ${serviceId}

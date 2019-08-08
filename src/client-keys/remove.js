@@ -10,7 +10,7 @@ const config = require('../config')
  *
  * @param  {string} user the user email or id
  * @param  {string} accessToken local access token
- * @param  {object} flags set of options retrieved by cli
+ * @param  {Object} flags set of options retrieved by cli
  * @returns {undefined}
  */
 async function removeClientKey (user, accessToken, flags) {
@@ -23,15 +23,19 @@ async function removeClientKey (user, accessToken, flags) {
     ])
 
     clientId = prompt.clientId
-    if (!clientId) { return consola.error('Missing client id') }
+    if (!clientId) {
+      return consola.error('Missing client id')
+    }
   }
 
-  const { confirmation } = await inquirer.prompt([{
-    name: 'confirmation',
-    message: `You will remove client key with id ${clientId}. Do you want to continue?`,
-    type: 'confirm',
-    default: false
-  }])
+  const { confirmation } = await inquirer.prompt([
+    {
+      name: 'confirmation',
+      message: `You will remove client key with id ${clientId}. Do you want to continue?`,
+      type: 'confirm',
+      default: false
+    }
+  ])
 
   if (!confirmation) {
     return consola.error('Remove client key was canceled.')
@@ -39,7 +43,9 @@ async function removeClientKey (user, accessToken, flags) {
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.accounts.url`)}/users/me/client-keys/${clientId}`
+  const url = `${config.get(
+    `services.${env}.accounts.url`
+  )}/users/me/client-keys/${clientId}`
 
   request.del(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
