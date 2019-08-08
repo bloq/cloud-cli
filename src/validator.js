@@ -87,7 +87,7 @@ function isPasswordValid (password) {
  * @param  {string} password2 the second password
  * @returns {boolean|string} string with error message or true
  */
-function isPasswordEqual (password1, password2) {
+function arePasswordEquals (password1, password2) {
   if (password1 === password2) { return true }
 
   return 'Passwords do not match.'
@@ -109,7 +109,7 @@ module.exports = {
   isUuidValid,
   isEmailValid,
   isNotEmpty,
-  isPasswordEqual,
+  arePasswordEquals,
   isPasswordValid,
   isZipCodeValid,
   MIN_ENTROPY
