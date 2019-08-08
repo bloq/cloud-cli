@@ -6,7 +6,7 @@ const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
 
 const config = require('../config')
-const { isEmailValid, isNotEmpty, isPasswordValid, isPasswordEqual } = require('../validator')
+const { isPasswordValid, arePasswordEquals } = require('../validator')
 class UpdatePasswordCommand extends Command {
   async run () {
     const user = config.get('user')
@@ -22,7 +22,7 @@ class UpdatePasswordCommand extends Command {
     ])
 
     await inquirer.prompt([
-      { name: 'confirmPassword', message: 'Confirm new password', type: 'password', validate: value => isPasswordEqual(value, newPassword) }
+      { name: 'confirmPassword', message: 'Confirm new password', type: 'password', validate: value => arePasswordEquals(value, newPassword) }
     ])
 
     if (oldPassword === newPassword) {

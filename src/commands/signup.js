@@ -8,7 +8,41 @@ const countriesData = require('country-region-data')
 const { Command } = require('@oclif/command')
 
 const config = require('../config')
-const { isEmailValid, isZipCodeValid, isNotEmpty, isPasswordValid, isPasswordEqual } = require('../validator')
+const {
+  isEmailValid,
+  isZipCodeValid,
+  isNotEmpty,
+  isPasswordValid
+} = require('../validator')
+
+/**
+ *  Prompt password and password confirmation until they match
+ *
+ * @returns {Promise} password
+ */
+async function askForPassowords () {
+  const { password, confirmPassword } = await inquirer.prompt([
+    {
+      name: 'password',
+      message: 'Enter your password',
+      type: 'password',
+      validate: isPasswordValid
+    },
+    {
+      name: 'confirmPassword',
+      message: 'Confirm your password',
+      type: 'password',
+      validate: isNotEmpty
+    }
+  ])
+
+  if (password !== confirmPassword) {
+    consola.error('Passwords do not match')
+    return askForPassowords()
+  }
+
+  return Promise.resolve(password)
+}
 
 class SignupCommand extends Command {
   async run () {
@@ -26,8 +60,7 @@ class SignupCommand extends Command {
       { name: 'displayName', message: 'Enter your name', type: 'input', validate: isNotEmpty }
     ])
 
-    const { address, countryName } = await inquirer.prompt([
-      { name: 'address', message: 'Enter your street address', type: 'input', validate: isNotEmpty },
+    const { countryName } = await inquirer.prompt([
       {
         name: 'countryName',
         message: 'Select your country',
@@ -39,7 +72,7 @@ class SignupCommand extends Command {
 
     const country = countriesData.find(c => c.countryName === countryName)
 
-    const { regionName, zipCode } = await inquirer.prompt([
+    const { regionName, zipCode, address } = await inquirer.prompt([
       {
         name: 'regionName',
         message: 'Select your state/province',
@@ -52,17 +85,19 @@ class SignupCommand extends Command {
         message: 'Enter your zip code',
         type: 'input',
         validate: zipCode => isZipCodeValid(country.countryShortCode, zipCode)
+      },
+      {
+        name: 'address',
+        message: 'Enter your street address',
+        type: 'input',
+        validate: isNotEmpty
       }
     ])
 
     const region = country.regions.find(r => r.name === regionName)
-
-    const { password } = await inquirer.prompt([
-      { name: 'password', message: 'Enter your password', type: 'password', validate: isPasswordValid }
-    ])
+    const password = await askForPassowords()
 
     const { acceptTerms } = await inquirer.prompt([
-      { name: 'confirmPassword', message: 'Confirm new password', type: 'password', validate: value => isPasswordEqual(value, password) },
       {
         name: 'acceptTerms',
         message: 'Use of Bloq’s services is subject to the Terms of Service found at https://bloq.cloud/legal \nPlease confirm that you have read and agree to the Terms of Service by selecting [“I accept”]',
@@ -115,8 +150,8 @@ class SignupCommand extends Command {
         )
       }
 
-      consola.success(`Generated new BloqCloud account. Your user id is: ${data.body.id}`)
-      consola.info('Email sent to confirm your account.')
+      consola.success('Generated new BloqCloud account')
+      consola.info(`Email sent to ${email} confirm your account.`)
     })
   }
 }
