@@ -38,12 +38,12 @@ async function chainsNodes () {
     }
 
     process.stdout.write('\n')
-    console.table(body.map(({ chain, id, metadata, region, network }) => ({
+    console.table(body.map(({ chain, id, metadata, vendor, network }) => ({
       chain,
       network,
       software: metadata.software,
       performance: metadata.performance,
-      region,
+      region: vendor.region,
       id
     })))
 
