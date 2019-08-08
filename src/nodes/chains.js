@@ -7,8 +7,8 @@ require('console.table')
 
 const config = require('../config')
 
-async function chainsNodes (clientId, accessToken, flags) {
-  consola.info(`Retrieving list of available blockchains.`)
+async function chainsNodes (clientId, accessToken) {
+  consola.info('Retrieving list of available blockchains.')
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
@@ -26,10 +26,12 @@ async function chainsNodes (clientId, accessToken, flags) {
     }
 
     if (data.statusCode !== 200) {
-      return consola.error(`Error retrieving available blockchains: ${data.code}`)
+      return consola.error(
+        `Error retrieving available blockchains: ${data.code}`
+      )
     }
 
-    let body = JSON.parse(data.body)
+    const body = JSON.parse(data.body)
     console.table(body)
   })
 }

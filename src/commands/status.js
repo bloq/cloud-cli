@@ -30,12 +30,34 @@ class StatusCommand extends Command {
 
     const spinner = ora().start()
     Promise.all([
-      getStatus(new URL(services[env].accounts.statusEndpoint, services[env].accounts.url)),
-      getStatus(new URL(services[env].nodes.statusEndpoint, services[env].nodes.url)),
-      getStatus(new URL(services[env].connect.btc.statusEndpoint, services[env].connect.btc.url)),
-      getStatus(new URL(services[env].connect.bch.statusEndpoint, services[env].connect.bch.url))
+      getStatus(
+        new URL(
+          services[env].accounts.statusEndpoint,
+          services[env].accounts.url
+        )
+      ),
+      getStatus(
+        new URL(services[env].nodes.statusEndpoint, services[env].nodes.url)
+      ),
+      getStatus(
+        new URL(
+          services[env].connect.btc.statusEndpoint,
+          services[env].connect.btc.url
+        )
+      ),
+      getStatus(
+        new URL(
+          services[env].connect.bch.statusEndpoint,
+          services[env].connect.bch.url
+        )
+      )
     ])
-      .then(function ([ isAccountsUp, isNodesUp, isConnectBtcUp, isConnectBchUp ]) {
+      .then(function ([
+        isAccountsUp,
+        isNodesUp,
+        isConnectBtcUp,
+        isConnectBchUp
+      ]) {
         const status = [
           {
             service: 'Accounts',

@@ -10,7 +10,7 @@ const config = require('../config')
 /**
  *  Get all nodes
  *
- * @param  {object} options { accessToken, nodeId }
+ * @param  {Object} options { accessToken, nodeId }
  * @returns {Promise}
  */
 async function listNodes ({ accessToken, all }) {
@@ -36,7 +36,16 @@ async function listNodes ({ accessToken, all }) {
     }
 
     let body = JSON.parse(data.body)
-    body = body.map(function ({ id, chain, state, network, ip, createdAt, serviceData, stoppedAt }) {
+    body = body.map(function ({
+      id,
+      chain,
+      state,
+      network,
+      ip,
+      createdAt,
+      serviceData,
+      stoppedAt
+    }) {
       const node = {
         id,
         chain,
@@ -48,7 +57,9 @@ async function listNodes ({ accessToken, all }) {
         performance: serviceData.performance
       }
 
-      if (all) { node.stoppedAt = stoppedAt || 'N/A' }
+      if (all) {
+        node.stoppedAt = stoppedAt || 'N/A'
+      }
       return node
     })
 

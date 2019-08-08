@@ -1,0 +1,20 @@
+{
+  "extends": ["bloq", "bloq/mocha"],
+  "rules": {
+    "no-console": "warn",
+    "no-shadow": "warn",
+    "complexity": "warn",
+    "consistent-return": "warn",
+    "require-atomic-updates": "warn",
+    "node/no-deprecated-api": "warn",
+    "promise/no-return-wrap": "warn",
+    "no-param-reassign": "warn",
+    "arrow-body-style": "warn",
+    "no-empty": "warn"
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "experimentalObjectRestSpread": true
+    }
+  }
+}

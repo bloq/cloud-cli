@@ -11,7 +11,7 @@ const config = require('../config')
 /**
  *  Get the information of the given node
  *
- * @param  {object} options { accessToken, nodeId }
+ * @param  {Object} options { accessToken, nodeId }
  * @returns {Promise}
  */
 async function removeNode ({ accessToken, nodeId }) {
@@ -28,15 +28,19 @@ async function removeNode ({ accessToken, nodeId }) {
     ])
 
     nodeId = prompt.nodeId
-    if (!nodeId) { return consola.error('Missing node id') }
+    if (!nodeId) {
+      return consola.error('Missing node id')
+    }
   }
 
-  const { confirmation } = await inquirer.prompt([{
-    name: 'confirmation',
-    message: `You will remove the node with id ${nodeId}. Do you want to continue?`,
-    type: 'confirm',
-    default: false
-  }])
+  const { confirmation } = await inquirer.prompt([
+    {
+      name: 'confirmation',
+      message: `You will remove the node with id ${nodeId}. Do you want to continue?`,
+      type: 'confirm',
+      default: false
+    }
+  ])
 
   if (!confirmation) {
     return consola.error('Remove node was canceled.')
@@ -44,7 +48,9 @@ async function removeNode ({ accessToken, nodeId }) {
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes/${nodeId}`
+  const url = `${config.get(
+    `services.${env}.nodes.url`
+  )}/users/me/nodes/${nodeId}`
   const spinner = ora().start()
 
   request.del(url, { headers: { Authorization } }, function (err, data) {

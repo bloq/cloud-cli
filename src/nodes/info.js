@@ -10,21 +10,27 @@ const config = require('../config')
 /**
  *  Get the information of the given node
  *
- * @param  {object} options { accessToken, nodeId }
+ * @param  {Object} options { accessToken, nodeId }
  * @returns {Promise}
  */
 async function infoNode ({ accessToken, nodeId }) {
   consola.info(`Retrieving node with ID ${nodeId}.`)
 
   if (!nodeId) {
-    const prompt = await inquirer.prompt([{ name: 'nodeId', message: 'Enter the node id', type: 'text' }])
+    const prompt = await inquirer.prompt([
+      { name: 'nodeId', message: 'Enter the node id', type: 'text' }
+    ])
     nodeId = prompt.nodeId
-    if (!nodeId) { return consola.error('Missing node id') }
+    if (!nodeId) {
+      return consola.error('Missing node id')
+    }
   }
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes/${nodeId}`
+  const url = `${config.get(
+    `services.${env}.nodes.url`
+  )}/users/me/nodes/${nodeId}`
   const spinner = ora().start()
 
   return request.get(url, { headers: { Authorization } }, function (err, data) {
@@ -42,10 +48,21 @@ async function infoNode ({ accessToken, nodeId }) {
       return consola.error(`Error retrieving the node: ${body.code}.`)
     }
 
-    const { id, auth, state, chain, network, serviceData, ip, stoppedAt, createdAt } = body
-    const creds = auth.type === 'jwt'
-      ? '* Auth:\t\tJWT'
-      : `* User:\t\t${auth.user}
+    const {
+      id,
+      auth,
+      state,
+      chain,
+      network,
+      serviceData,
+      ip,
+      stoppedAt,
+      createdAt
+    } = body
+    const creds =
+      auth.type === 'jwt'
+        ? '* Auth:\t\tJWT'
+        : `* User:\t\t${auth.user}
     * Password:\t\t${auth.pass}`
 
     process.stdout.write('\n')
