@@ -29,7 +29,7 @@
     "conf-cli": "0.1.8",
     "consola": "2.6.0",
     "console.table": "0.10.0",
-    "country-region-data": "1.4.5",
+    "country-region-data": "github:bloq/country-region-data#75dbb7c",
     "fast-password-entropy": "1.1.1",
     "inquirer": "6.3.1",
     "jwt-decode": "2.2.0",
