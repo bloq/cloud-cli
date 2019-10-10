@@ -14,10 +14,14 @@ const { coppyToClipboard } = require('../utils')
  * @param  {Object} options { accessToken, serviceId, authType }
  * @returns {Promise}
  */
-async function createNode ({ accessToken, serviceId, authType }) {
+async function createNode({ accessToken, serviceId, authType }) {
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
     return consola.error('Only admin users can create nodes with the CLI')
+  }
+
+  if (!serviceId) {
+    return consola.error('Missing service id value (-s or --serviceId)')
   }
 
   consola.info(`Initializing a new node from service ${serviceId}.`)
@@ -28,7 +32,7 @@ async function createNode ({ accessToken, serviceId, authType }) {
   const json = { serviceId, authType }
   const spinner = ora().start()
 
-  return request.post(url, { headers: { Authorization }, json }, function (
+  return request.post(url, { headers: { Authorization }, json }, function(
     err,
     data
   ) {
