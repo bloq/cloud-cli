@@ -20,6 +20,10 @@ async function createNode ({ accessToken, serviceId, authType }) {
     return consola.error('Only admin users can create nodes with the CLI')
   }
 
+  if (!serviceId) {
+    return consola.error('Missing service id value (-s or --serviceId)')
+  }
+
   consola.info(`Initializing a new node from service ${serviceId}.`)
 
   const Authorization = `Bearer ${accessToken}`
