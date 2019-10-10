@@ -14,7 +14,7 @@ const { coppyToClipboard } = require('../utils')
  * @param  {Object} options { accessToken, serviceId, authType }
  * @returns {Promise}
  */
-async function createNode({ accessToken, serviceId, authType }) {
+async function createNode ({ accessToken, serviceId, authType }) {
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
     return consola.error('Only admin users can create nodes with the CLI')
@@ -32,7 +32,7 @@ async function createNode({ accessToken, serviceId, authType }) {
   const json = { serviceId, authType }
   const spinner = ora().start()
 
-  return request.post(url, { headers: { Authorization }, json }, function(
+  return request.post(url, { headers: { Authorization }, json }, function (
     err,
     data
   ) {
