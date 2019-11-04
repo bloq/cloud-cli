@@ -12,12 +12,11 @@ const config = require('../config')
  *
  * @returns {Promise}
  */
-async function chainsNodes () {
+async function getServices () {
   consola.info('Retrieving list of available services.')
 
-  // const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.nodes.url`)}/services`
+  const url = `${config.get(`services.${env}.nodes.url`)}/services/nodes`
   const spinner = ora().start()
 
   return request.get(url, {}, function (err, data) {
@@ -32,23 +31,23 @@ async function chainsNodes () {
 
     const body = JSON.parse(data.body)
     if (data.statusCode !== 200) {
-      return consola.error(
-        `Error retrieving available services: ${body.code}`
-      )
+      return consola.error(`Error retrieving available services: ${body.code}`)
     }
 
     process.stdout.write('\n')
-    console.table(body.map(({ chain, id, metadata, vendor, network }) => ({
-      chain,
-      network,
-      software: metadata.software,
-      performance: metadata.performance,
-      region: vendor.region,
-      id
-    })))
+    console.table(
+      body.map(({ chain, id, metadata, vendor, network }) => ({
+        chain,
+        network,
+        software: metadata.software,
+        performance: metadata.performance,
+        region: vendor.region,
+        id
+      }))
+    )
 
     return body
   })
 }
 
-module.exports = chainsNodes
+module.exports = getServices

@@ -8,23 +8,23 @@ require('console.table')
 const config = require('../config')
 
 /**
- *  Get all nodes
+ *  Get all clusters
  *
  * @param  {Object} options { accessToken, all }
  * @returns {Promise}
  */
-async function listNodes ({ accessToken, all }) {
-  consola.info('Retrieving all nodes.')
+async function listClusters ({ accessToken, all }) {
+  consola.info('Retrieving all clusters.')
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
+  const url = `${config.get(`services.${env}.nodes.url`)}/users/me/clusters`
   const spinner = ora().start()
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     spinner.stop()
     if (err) {
-      return consola.error(`Error retrieving all nodes: ${err}.`)
+      return consola.error(`Error retrieving all clusters: ${err}.`)
     }
 
     if (data.statusCode === 401 || data.statusCode === 403) {
@@ -32,7 +32,7 @@ async function listNodes ({ accessToken, all }) {
     }
 
     if (data.statusCode !== 200) {
-      return consola.error(`Error retrieving all nodes: ${data.code}`)
+      return consola.error(`Error retrieving all clusters: ${data.code}`)
     }
 
     let body = JSON.parse(data.body)
@@ -46,7 +46,7 @@ async function listNodes ({ accessToken, all }) {
       serviceData,
       stoppedAt
     }) {
-      const node = {
+      const cluster = {
         id,
         chain,
         network,
@@ -58,9 +58,10 @@ async function listNodes ({ accessToken, all }) {
       }
 
       if (all) {
-        node.stoppedAt = stoppedAt || 'N/A'
+        cluster.stoppedAt = stoppedAt || 'N/A'
       }
-      return node
+
+      return cluster
     })
 
     if (!all) {
@@ -69,13 +70,13 @@ async function listNodes ({ accessToken, all }) {
 
     if (!body.length) {
       const user = `${config.get('user')}`
-      return consola.success(`No nodes were found for user ${user}`)
+      return consola.success(`No clusters were found for user ${user}`)
     }
 
-    consola.success(`Got ${body.length} nodes:`)
+    consola.success(`Got ${body.length} clusters:`)
     process.stdout.write('\n')
     console.table(body)
   })
 }
 
-module.exports = listNodes
+module.exports = listClusters
