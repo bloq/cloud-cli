@@ -9,10 +9,13 @@ const config = require('../config')
 const { coppyToClipboard } = require('../utils')
 
 /**
- *  Creates a new cluster from a service (only valid for admin users)
+ * Creates a cluster from a service ID (Admins only)
  *
- * @param  {Object} options { accessToken, serviceId, authType }
- * @returns {Promise}
+ * @param {Object} params object
+ * @param {Object} params.accessToken Account access token
+ * @param {Object} params.serviceId Service ID
+ * @param {Object} params.authType Authentication type
+ * @returns {Promise} The create cluster promise
  */
 async function createCluster ({ accessToken, serviceId, authType }) {
   const payload = jwtDecode(accessToken)
@@ -24,7 +27,7 @@ async function createCluster ({ accessToken, serviceId, authType }) {
     return consola.error('Missing service id value (-s or --serviceId)')
   }
 
-  consola.info(`Initializing a new cluster from service ${serviceId}.`)
+  consola.info(`Creating a new cluster from service ${serviceId}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
@@ -45,29 +48,39 @@ async function createCluster ({ accessToken, serviceId, authType }) {
       return consola.error('Your session has expired')
     }
 
-    if (data.statusCode !== 200) {
-      return consola.error(`Error initializing the new cluster: ${data.code}`)
+    if (data.statusCode === 404) {
+      return consola.error(
+        'Error initializing the new cluster, requested resource not found'
+      )
     }
 
-    const { id, auth, state, chain, network, serviceData, ip } = data.body
+    const { body } = data
+
+    if (data.statusCode !== 201) {
+      return consola.error(`Error initializing the new cluster: ${body.code}`)
+    }
+
     process.stdout.write('\n')
 
-    coppyToClipboard(id, 'Cluster id')
+    coppyToClipboard(body.id, 'Cluster id')
 
     const creds =
-      auth.type === 'jwt'
+      body.auth.type === 'jwt'
         ? '* Auth:\t\tJWT'
-        : `* User:\t\t${auth.user}
-    * Password:\t\t${auth.pass}`
+        : `* User:\t\t${body.auth.user}
+    * Password:\t\t${body.auth.pass}`
 
     consola.success(`Initialized new cluster from service ${serviceId}
-    * ID:\t\t${id}
-    * Chain:\t\t${chain}
-    * Network:\t\t${network}
-    * Version:\t\t${serviceData.software}
-    * Performance:\t${serviceData.performance}
-    * State:\t\t${state}
-    * IP:\t\t${ip}
+    * ID:\t\t${body.id}
+    * Name:\t\t${body.name}
+    * Chain:\t\t${body.chain}
+    * Network:\t\t${body.network}
+    * Version:\t\t${body.serviceData.software}
+    * Performance:\t${body.serviceData.performance}
+    * Domain:\t\t${body.domain}
+    * Capacity:\t\t${body.capacity}
+    * Region:\t\t${body.region}
+    * State:\t\t${body.state}
     ${creds}`)
   })
 }
