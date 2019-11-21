@@ -8,20 +8,25 @@ require('console.table')
 const config = require('../config')
 
 /**
- *  Get all nodes
+ * Retrieves nodes
  *
- * @param  {Object} options { accessToken, all }
- * @returns {Promise}
+ * @param {Object} params object
+ * @param {Object} params.accessToken Account access token
+ * @param {Object} params.all Boolean defining if it should show killed nodes
+ * @returns {Promise} The information nodes promise
  */
 async function listNodes ({ accessToken, all }) {
-  consola.info('Retrieving all nodes.')
+  consola.info('Retrieving all nodes')
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
   const spinner = ora().start()
 
-  request.get(url, { headers: { Authorization } }, function (err, data) {
+  request.get(url, { headers: { Authorization }, json: true }, function (
+    err,
+    data
+  ) {
     spinner.stop()
     if (err) {
       return consola.error(`Error retrieving all nodes: ${err}.`)
@@ -35,7 +40,7 @@ async function listNodes ({ accessToken, all }) {
       return consola.error(`Error retrieving all nodes: ${data.code}`)
     }
 
-    let body = JSON.parse(data.body)
+    let { body } = data
     body = body.map(function ({
       id,
       chain,

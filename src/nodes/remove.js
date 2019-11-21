@@ -9,17 +9,19 @@ const jwtDecode = require('jwt-decode')
 const config = require('../config')
 
 /**
- *  Get the information of the given node
+ * Removes a node by ID
  *
- * @param  {Object} options { accessToken, nodeId }
- * @returns {Promise}
+ * @param {Object} params object
+ * @param {Object} params.accessToken Account access token
+ * @param {Object} params.nodeId Node ID
+ * @returns {Promise} The remove node promise
  */
 async function removeNode ({ accessToken, nodeId }) {
-  consola.info(`Removing node with id ${nodeId}.`)
+  consola.info('Removing node')
 
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
-    return consola.error('Only admin users can create nodes with the CLI')
+    return consola.error('Only admin users can manage nodes with the CLI')
   }
 
   if (!nodeId) {
@@ -53,7 +55,10 @@ async function removeNode ({ accessToken, nodeId }) {
   )}/users/me/nodes/${nodeId}`
   const spinner = ora().start()
 
-  return request.del(url, { headers: { Authorization } }, function (err, data) {
+  return request.del(url, { headers: { Authorization }, json: true }, function (
+    err,
+    data
+  ) {
     spinner.stop()
     if (err) {
       return consola.error(`Error removing the node: ${err}.`)
@@ -67,12 +72,16 @@ async function removeNode ({ accessToken, nodeId }) {
       return consola.error('Your session has expired')
     }
 
-    if (data.statusCode !== 204) {
-      const body = JSON.parse(data.body)
-      return consola.error(`Error removing the node: ${body.code}.`)
+    if (data.statusCode === 404) {
+      return consola.error('Error removing node, requested resource not found')
     }
 
-    consola.success(`Removed node with id ${nodeId}`)
+    const { body } = data
+    if (data.statusCode !== 204) {
+      return consola.error(`Error removing the node: ${body.code}`)
+    }
+
+    consola.success(`Node with id ${nodeId} removed successfully`)
   })
 }
 

@@ -8,19 +8,18 @@ require('console.table')
 const config = require('../config')
 
 /**
- *  Get all chains available
+ * Retrieves chains
  *
- * @returns {Promise}
+ * @returns {Promise} The chains promise
  */
 async function getChains () {
   consola.info('Retrieving list of available blockchains.')
 
-  // const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/chains`
   const spinner = ora().start()
 
-  return request.get(url, {}, function (err, data) {
+  return request.get(url, { json: true }, function (err, data) {
     spinner.stop()
     if (err) {
       return consola.error(`Error retrieving available blockchains: ${err}.`)
@@ -30,7 +29,7 @@ async function getChains () {
       return consola.error('Your session has expired')
     }
 
-    const body = JSON.parse(data.body)
+    const { body } = data
     if (data.statusCode !== 200) {
       return consola.error(
         `Error retrieving available blockchains: ${body.code}`
