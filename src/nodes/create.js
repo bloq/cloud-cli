@@ -9,10 +9,13 @@ const config = require('../config')
 const { coppyToClipboard } = require('../utils')
 
 /**
- *  Creates a new node from a service (only valid for admin users)
+ * Creates a node from a service ID (Valid for admin users)
  *
- * @param  {Object} options { accessToken, serviceId, authType }
- * @returns {Promise}
+ * @param {Object} params object
+ * @param {Object} params.accessToken Account access token
+ * @param {Object} params.serviceId Service ID
+ * @param {Object} params.authType Authentication type
+ * @returns {Promise} The create node promise
  */
 async function createNode ({ accessToken, serviceId, authType }) {
   const payload = jwtDecode(accessToken)
@@ -24,7 +27,7 @@ async function createNode ({ accessToken, serviceId, authType }) {
     return consola.error('Missing service id value (-s or --serviceId)')
   }
 
-  consola.info(`Initializing a new node from service ${serviceId}.`)
+  consola.info(`Initializing a new node from service ${serviceId}`)
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
