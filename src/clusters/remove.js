@@ -9,17 +9,19 @@ const jwtDecode = require('jwt-decode')
 const config = require('../config')
 
 /**
- *  Get the information of the given cluster
+ * Removes a cluster by ID
  *
- * @param  {Object} options { accessToken, clusterId }
- * @returns {Promise}
+ * @param {Object} params object
+ * @param {Object} params.accessToken Account access token
+ * @param {Object} params.clusterId Cluster ID
+ * @returns {Promise} The remove cluster promise
  */
 async function removeCluster ({ accessToken, clusterId }) {
-  consola.info(`Removing cluster with id ${clusterId}.`)
+  consola.info('Removing cluster')
 
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
-    return consola.error('Only admin users can create clusters with the CLI')
+    return consola.error('Only admin users can manage clusters with the CLI')
   }
 
   if (!clusterId) {
@@ -48,9 +50,8 @@ async function removeCluster ({ accessToken, clusterId }) {
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(
-    `services.${env}.nodes.url`
-  )}/users/me/clusters/${clusterId}`
+  const serviceUrl = config.get(`services.${env}.nodes.url`)
+  const url = `${serviceUrl}/users/me/clusters/${clusterId}`
   const spinner = ora().start()
 
   return request.del(url, { headers: { Authorization } }, function (err, data) {
@@ -67,12 +68,18 @@ async function removeCluster ({ accessToken, clusterId }) {
       return consola.error('Your session has expired')
     }
 
+    if (data.statusCode === 404) {
+      return consola.error(
+        'Error removing cluster, requested resource not found'
+      )
+    }
+
     if (data.statusCode !== 204) {
       const body = JSON.parse(data.body)
       return consola.error(`Error removing the cluster: ${body.code}.`)
     }
 
-    consola.success(`Removed cluster with id ${clusterId}`)
+    consola.success(`Cluster with ID ${clusterId} removed successfully`)
   })
 }
 

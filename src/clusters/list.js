@@ -8,13 +8,15 @@ require('console.table')
 const config = require('../config')
 
 /**
- *  Get all clusters
+ * Retrieves cluster
  *
- * @param  {Object} options { accessToken, all }
- * @returns {Promise}
+ * @param {Object} params object
+ * @param {Object} params.accessToken Account access token
+ * @param {Object} params.all Boolean defining if it should show killed clusters
+ * @returns {Promise} The information cluster promise
  */
 async function listClusters ({ accessToken, all }) {
-  consola.info('Retrieving all clusters.')
+  consola.info('Retrieving clusters.')
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'

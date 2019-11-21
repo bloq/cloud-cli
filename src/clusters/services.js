@@ -8,12 +8,12 @@ require('console.table')
 const config = require('../config')
 
 /**
- *  Get all chains available
+ * Retrieves cluster associated services
  *
- * @returns {Promise}
+ * @returns {Promise} The services promise
  */
 async function getServices () {
-  consola.info('Retrieving list of available services.')
+  consola.info('Retrieving list of available services')
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/services/cluster`
@@ -24,8 +24,6 @@ async function getServices () {
     if (err) {
       return consola.error(`Error retrieving available services: ${err}.`)
     }
-
-    console.log(url, data.statusCode)
 
     if (data.statusCode === 401 || data.statusCode === 403) {
       return consola.error('Your session has expired')

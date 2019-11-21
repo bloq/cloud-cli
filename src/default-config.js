@@ -50,6 +50,27 @@ module.exports = {
           statusEndpoint: '/status'
         }
       }
+    },
+
+    local: {
+      accounts: {
+        url: 'http://localhost:4000',
+        statusEndpoint: '/'
+      },
+      nodes: {
+        url: 'http://localhost:4002',
+        statusEndpoint: '/'
+      },
+      connect: {
+        btc: {
+          url: 'http://localhost:4006',
+          statusEndpoint: '/status'
+        },
+        bch: {
+          url: 'http://localhost:4006',
+          statusEndpoint: '/status'
+        }
+      }
     }
   }
 }

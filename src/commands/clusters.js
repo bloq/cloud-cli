@@ -20,9 +20,6 @@ class ClusterCommand extends Command {
       case 'info':
         return clusters.info({ accessToken, ...flags })
 
-      case 'chains':
-        return clusters.chains()
-
       case 'services':
         return clusters.services()
 

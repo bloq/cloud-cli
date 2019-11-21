@@ -45,7 +45,13 @@ async function createNode ({ accessToken, serviceId, authType }) {
       return consola.error('Your session has expired')
     }
 
-    if (data.statusCode !== 200) {
+    if (data.statusCode === 404) {
+      return consola.error(
+        'Error initializing the new node, requested resource not found'
+      )
+    }
+
+    if (data.statusCode !== 201) {
       return consola.error(`Error initializing the new node: ${data.code}`)
     }
 
