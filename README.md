@@ -1,5 +1,4 @@
-cloud-cli
-=========
+# cloud-cli
 
 > ☁️ 💻
 
@@ -9,36 +8,49 @@ cloud-cli
 [![License](https://img.shields.io/npm/l/cloud-cli.svg)](https://github.com/bloqpriv/cloud-cli/blob/master/package.json)
 
 <!-- toc -->
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
+
+- [Usage](#usage)
+- [Commands](#commands)
+  <!-- tocstop -->
+
 # Usage
+
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @bloq/cloud-cli
 $ bcl COMMAND
 running command...
 $ bcl (-v|--version|version)
-@bloq/cloud-cli/2.2.1 darwin-x64 node-v10.15.3
+@bloq/cloud-cli/2.3.0 darwin-x64 node-v10.17.0
 $ bcl --help [COMMAND]
 USAGE
   $ bcl COMMAND
 ...
 ```
+
 <!-- usagestop -->
+
 # Commands
+
 <!-- commands -->
-* [`bcl client-keys OPERATION`](#bcl-client-keys-operation)
-* [`bcl client-token`](#bcl-client-token)
-* [`bcl conf [KEY] [VALUE]`](#bcl-conf-key-value)
-* [`bcl connect METHOD`](#bcl-connect-method)
-* [`bcl events`](#bcl-events)
-* [`bcl help [COMMAND]`](#bcl-help-command)
-* [`bcl login`](#bcl-login)
-* [`bcl logout`](#bcl-logout)
-* [`bcl profile`](#bcl-profile)
-* [`bcl status`](#bcl-status)
-* [`bcl user-keys OPERATION`](#bcl-user-keys-operation)
+
+- [`bcl client-keys OPERATION`](#bcl-client-keys-operation)
+- [`bcl client-token`](#bcl-client-token)
+- [`bcl clusters OPERATION`](#bcl-clusters-operation)
+- [`bcl conf [KEY] [VALUE]`](#bcl-conf-key-value)
+- [`bcl connect METHOD`](#bcl-connect-method)
+- [`bcl events`](#bcl-events)
+- [`bcl help [COMMAND]`](#bcl-help-command)
+- [`bcl login`](#bcl-login)
+- [`bcl logout`](#bcl-logout)
+- [`bcl nodes OPERATION`](#bcl-nodes-operation)
+- [`bcl profile`](#bcl-profile)
+- [`bcl signup`](#bcl-signup)
+- [`bcl status`](#bcl-status)
+- [`bcl update-password`](#bcl-update-password)
+- [`bcl user-keys OPERATION`](#bcl-user-keys-operation)
+- [`bcl verify`](#bcl-verify)
 
 ## `bcl client-keys OPERATION`
 
@@ -55,7 +67,7 @@ OPTIONS
   -i, --clientId=clientId  client id
 ```
 
-_See code: [src/commands/client-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v2.2.1/src/commands/client-keys.js)_
+_See code: [src/commands/client-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/client-keys.js)_
 
 ## `bcl client-token`
 
@@ -66,7 +78,27 @@ USAGE
   $ bcl client-token
 ```
 
-_See code: [src/commands/client-token.js](https://github.com/bloqpriv/cloud-cli/blob/v2.2.1/src/commands/client-token.js)_
+_See code: [src/commands/client-token.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/client-token.js)_
+
+## `bcl clusters OPERATION`
+
+Manage your BloqCloud clusters
+
+```
+USAGE
+  $ bcl clusters OPERATION
+
+ARGUMENTS
+  OPERATION  (create|list|remove|info|chains|services) [default: list] Specify the type of cluster operation to run
+
+OPTIONS
+  -a, --all                   list all clusters
+  -i, --clusterId=clusterId   cluster id
+  -s, --serviceId=serviceId   service id
+  -t, --authType=(jwt|basic)  [default: basic] auth type (jwt or basic)
+```
+
+_See code: [src/commands/clusters.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/clusters.js)_
 
 ## `bcl conf [KEY] [VALUE]`
 
@@ -110,7 +142,7 @@ OPTIONS
   -n, --network=mainnet    [default: mainnet] Specify the network for the method
 ```
 
-_See code: [src/commands/connect.js](https://github.com/bloqpriv/cloud-cli/blob/v2.2.1/src/commands/connect.js)_
+_See code: [src/commands/connect.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/connect.js)_
 
 ## `bcl events`
 
@@ -124,7 +156,7 @@ OPTIONS
   -s, --service=service  service name
 ```
 
-_See code: [src/commands/events.js](https://github.com/bloqpriv/cloud-cli/blob/v2.2.1/src/commands/events.js)_
+_See code: [src/commands/events.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/events.js)_
 
 ## `bcl help [COMMAND]`
 
@@ -156,7 +188,7 @@ OPTIONS
   -u, --user=user          email address or account id
 ```
 
-_See code: [src/commands/login.js](https://github.com/bloqpriv/cloud-cli/blob/v2.2.1/src/commands/login.js)_
+_See code: [src/commands/login.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/login.js)_
 
 ## `bcl logout`
 
@@ -167,7 +199,27 @@ USAGE
   $ bcl logout
 ```
 
-_See code: [src/commands/logout.js](https://github.com/bloqpriv/cloud-cli/blob/v2.2.1/src/commands/logout.js)_
+_See code: [src/commands/logout.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/logout.js)_
+
+## `bcl nodes OPERATION`
+
+Manage your BloqCloud nodes
+
+```
+USAGE
+  $ bcl nodes OPERATION
+
+ARGUMENTS
+  OPERATION  (create|list|remove|info|chains|services) [default: list] Specify the type of nodes operation to run
+
+OPTIONS
+  -a, --all                   list all nodes
+  -i, --nodeId=nodeId         node id
+  -s, --serviceId=serviceId   service id
+  -t, --authType=(jwt|basic)  [default: basic] auth type (jwt or basic)
+```
+
+_See code: [src/commands/nodes.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/nodes.js)_
 
 ## `bcl profile`
 
@@ -178,7 +230,18 @@ USAGE
   $ bcl profile
 ```
 
-_See code: [src/commands/profile.js](https://github.com/bloqpriv/cloud-cli/blob/v2.2.1/src/commands/profile.js)_
+_See code: [src/commands/profile.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/profile.js)_
+
+## `bcl signup`
+
+Setup a new BloqCloud account
+
+```
+USAGE
+  $ bcl signup
+```
+
+_See code: [src/commands/signup.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/signup.js)_
 
 ## `bcl status`
 
@@ -189,7 +252,18 @@ USAGE
   $ bcl status
 ```
 
-_See code: [src/commands/status.js](https://github.com/bloqpriv/cloud-cli/blob/v2.2.1/src/commands/status.js)_
+_See code: [src/commands/status.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/status.js)_
+
+## `bcl update-password`
+
+Update user password
+
+```
+USAGE
+  $ bcl update-password
+```
+
+_See code: [src/commands/update-password.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/update-password.js)_
 
 ## `bcl user-keys OPERATION`
 
@@ -207,5 +281,21 @@ OPTIONS
   -t, --type=bit|pgp  key type
 ```
 
-_See code: [src/commands/user-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v2.2.1/src/commands/user-keys.js)_
+_See code: [src/commands/user-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/user-keys.js)_
+
+## `bcl verify`
+
+Verifies your BloqCloud account and complete signup process
+
+```
+USAGE
+  $ bcl verify
+
+OPTIONS
+  -t, --token=token  verification token
+  -u, --user=user    email address or account id
+```
+
+_See code: [src/commands/verify.js](https://github.com/bloqpriv/cloud-cli/blob/v2.3.0/src/commands/verify.js)_
+
 <!-- commandsstop -->
