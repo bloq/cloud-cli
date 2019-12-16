@@ -9,6 +9,7 @@
 
 <!-- toc -->
 
+- [cloud-cli](#cloud-cli)
 - [Usage](#usage)
 - [Commands](#commands)
   <!-- tocstop -->
@@ -93,6 +94,7 @@ ARGUMENTS
 
 OPTIONS
   -a, --all                   list all clusters
+  -c, --capacity=capacity     [default: 2] capacity
   -i, --clusterId=clusterId   cluster id
   -s, --serviceId=serviceId   service id
   -t, --authType=(jwt|basic)  [default: basic] auth type (jwt or basic)

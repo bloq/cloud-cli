@@ -38,6 +38,11 @@ ClusterCommand.flags = {
     default: 'basic',
     options: ['jwt', 'basic']
   }),
+  capacity: flags.integer({
+    char: 'c',
+    description: 'capacity',
+    default: 2
+  }),
   all: flags.boolean({
     char: 'a',
     description: 'list all clusters',
