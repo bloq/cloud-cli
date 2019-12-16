@@ -9,7 +9,9 @@ const { Command, flags } = require('@oclif/command')
 
 function saveUser (user) {
   config.set('user', user)
-  consola.info('Account saved. Next time you only need -p flag (--password) to login.')
+  consola.info(
+    'Account saved. Next time you only need -p flag (--password) to login.'
+  )
 }
 
 class LoginCommand extends Command {
@@ -24,7 +26,11 @@ class LoginCommand extends Command {
       user = config.get('user')
       if (!user) {
         const prompt = await inquirer.prompt([
-          { name: 'user', message: 'Enter your email address or account id', type: 'input' }
+          {
+            name: 'user',
+            message: 'Enter your email address or account id',
+            type: 'input'
+          }
         ])
 
         user = prompt.user
@@ -40,34 +46,44 @@ class LoginCommand extends Command {
       ])
 
       password = prompt.password
-      if (!password) { return consola.error('Missing password') }
+      if (!password) {
+        return consola.error('Missing password')
+      }
     }
 
-    const Authorization = `Basic ${Buffer.from(`${user}:${password || ''}`).toString('base64')}`
+    const Authorization = `Basic ${Buffer.from(
+      `${user}:${password || ''}`
+    ).toString('base64')}`
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/auth`
     const spinner = ora().start()
 
-    request.post(url, {
-      headers: { Authorization }
-    }, function (err, data) {
-      spinner.stop()
-      if (err) {
-        return consola.error(`Error retrieving access token: ${err}`)
-      }
+    request.post(
+      url,
+      {
+        headers: { Authorization }
+      },
+      function (err, data) {
+        spinner.stop()
+        if (err) {
+          return consola.error(`Error retrieving access token: ${err}`)
+        }
 
-      const body = JSON.parse(data.body)
-      if (data.statusCode === 401 || data.statusCode === 403) {
-        return consola.error(`Error retrieving access token: ${body.code}`)
-      }
+        const body = JSON.parse(data.body)
+        if (data.statusCode === 401 || data.statusCode === 403) {
+          return consola.error(`Error retrieving access token: ${body.code}`)
+        }
 
-      if (data.statusCode !== 200) {
-        return consola.error(`Error retrieving access token: ${body.code || body.message}`)
-      }
+        if (data.statusCode !== 200) {
+          return consola.error(
+            `Error retrieving access token: ${body.code || body.message}`
+          )
+        }
 
-      config.set('accessToken', body.accessToken)
-      consola.success('Login success. Your session expires in 12h.')
-    })
+        config.set('accessToken', body.accessToken)
+        consola.success('Login success. Your session expires in 12h.')
+      }
+    )
   }
 }
 
