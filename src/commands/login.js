@@ -61,7 +61,8 @@ class LoginCommand extends Command {
     request.post(
       url,
       {
-        headers: { Authorization }
+        headers: { Authorization },
+        json: true
       },
       function (err, data) {
         spinner.stop()
@@ -69,12 +70,15 @@ class LoginCommand extends Command {
           return consola.error(`Error retrieving access token: ${err}`)
         }
 
-        const body = JSON.parse(data.body)
-        if (data.statusCode === 401 || data.statusCode === 403) {
-          return consola.error(`Error retrieving access token: ${body.code}`)
+        const { statusCode, body } = data
+
+        if (statusCode === 401 || statusCode === 403) {
+          return consola.error(
+            'The username or password you entered is incorrect'
+          )
         }
 
-        if (data.statusCode !== 200) {
+        if (statusCode !== 200) {
           return consola.error(
             `Error retrieving access token: ${body.code || body.message}`
           )
