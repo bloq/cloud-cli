@@ -18,10 +18,19 @@ const CLUSTER_MAX_CAPACITY = 10
  * @param {Object} params.accessToken Account access token
  * @param {Object} params.serviceId Service ID
  * @param {Object} params.authType Authentication type
- * @param {Object} params.capacity Clusters capacity
+ * @param {Object} params.capacity Clusters total capacity
+ * @param {Object} params.onDemandCapacity Clusters on-demand capacity
  * @returns {Promise} The create cluster promise
  */
-async function createCluster ({ accessToken, serviceId, authType, capacity }) {
+async function createCluster (params) {
+  const {
+    accessToken,
+    authType,
+    capacity,
+    onDemandCapacity,
+    serviceId
+  } = params
+
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
     return consola.error('Only admin users can create clusters with the CLI')
@@ -37,12 +46,18 @@ async function createCluster ({ accessToken, serviceId, authType, capacity }) {
     )
   }
 
+  if (onDemandCapacity < CLUSTER_MIN_CAPACITY || onDemandCapacity > capacity) {
+    return consola.error(
+      `Wrong on-demand cluster capacity. Capacity should be between ${CLUSTER_MIN_CAPACITY} and ${capacity}`
+    )
+  }
+
   consola.info(`Creating a new cluster from service ${serviceId}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/clusters`
-  const json = { serviceId, authType, capacity }
+  const json = { serviceId, authType, capacity, onDemandCapacity }
   const spinner = ora().start()
 
   return request.post(url, { headers: { Authorization }, json }, function (
@@ -88,7 +103,7 @@ async function createCluster ({ accessToken, serviceId, authType, capacity }) {
     * Version:\t\t${body.serviceData.software}
     * Performance:\t${body.serviceData.performance}
     * Domain:\t\t${body.domain}
-    * Capacity:\t\t${body.capacity}
+    * Capacity:\t\t${body.onDemandCapacity}:${body.capacity}
     * Region:\t\t${body.region}
     * State:\t\t${body.state}
     ${creds}`)
