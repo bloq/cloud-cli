@@ -61,26 +61,26 @@ class StatusCommand extends Command {
         const status = [
           {
             service: 'Accounts',
-            isUp: isAccountsUp ? '✔' : '❌',
+            status: isAccountsUp ? 'OK' : 'DOWN',
             url: services[env].accounts.url
           },
 
           {
             service: 'Nodes',
-            isUp: isNodesUp ? '✔' : '❌',
+            status: isNodesUp ? 'OK' : 'DOWN',
             url: services[env].nodes.url
           },
 
           {
             service: 'Connect BTC',
-            isUp: isConnectBtcUp ? '✔' : '❌',
+            status: isConnectBtcUp ? 'OK' : 'DOWN',
             url: services[env].connect.btc.url
           },
 
           {
             service: 'Connect BCH',
-            isUp: isConnectBchUp ? '✔' : '❌',
-            url: services[env].connect.btc.url
+            status: isConnectBchUp ? 'OK' : 'DOWN',
+            url: services[env].connect.bch.url
           }
         ]
 
