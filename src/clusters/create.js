@@ -46,9 +46,9 @@ async function createCluster (params) {
     )
   }
 
-  if (onDemandCapacity < CLUSTER_MIN_CAPACITY || onDemandCapacity > capacity) {
+  if (onDemandCapacity < 1 || onDemandCapacity > capacity) {
     return consola.error(
-      `Wrong on-demand cluster capacity. Capacity should be between ${CLUSTER_MIN_CAPACITY} and ${capacity}`
+      `Wrong on-demand cluster capacity. Capacity should be between ${1} and ${capacity}`
     )
   }
 
