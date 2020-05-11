@@ -32,7 +32,7 @@ class NodesCommand extends Command {
   }
 }
 
-NodesCommand.description = 'Manage your BloqCloud nodes'
+NodesCommand.description = 'Manage your Bloq nodes'
 NodesCommand.flags = {
   serviceId: flags.string({ char: 's', description: 'service id' }),
   authType: flags.enum({

@@ -16,7 +16,7 @@ function saveUser (user) {
 
 class LoginCommand extends Command {
   async run () {
-    consola.info('☁️  Welcome to BloqCloud!')
+    consola.info('☁️  Welcome to Bloq!')
     const { flags } = this.parse(LoginCommand)
     let { user, password } = flags
 
@@ -91,7 +91,7 @@ class LoginCommand extends Command {
   }
 }
 
-LoginCommand.description = 'Login to your BloqCloud account'
+LoginCommand.description = 'Login to your Bloq account'
 
 LoginCommand.flags = {
   user: flags.string({ char: 'u', description: 'email address or account id' }),
