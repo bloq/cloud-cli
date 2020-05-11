@@ -54,7 +54,7 @@ class EventsCommand extends Command {
   }
 }
 
-EventsCommand.description = 'Get BloqCloud daily events'
+EventsCommand.description = 'Get Bloq daily events'
 
 EventsCommand.flags = {
   service: flags.string({ char: 's', description: 'service name' })

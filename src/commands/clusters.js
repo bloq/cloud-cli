@@ -29,7 +29,7 @@ class ClusterCommand extends Command {
   }
 }
 
-ClusterCommand.description = 'Manage your BloqCloud clusters'
+ClusterCommand.description = 'Manage your Bloq clusters'
 ClusterCommand.flags = {
   serviceId: flags.string({ char: 's', description: 'service id' }),
   authType: flags.enum({

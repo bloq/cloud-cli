@@ -46,7 +46,7 @@ async function askForPassowords () {
 
 class SignupCommand extends Command {
   async run () {
-    consola.info('☁️  Welcome to BloqCloud!')
+    consola.info('☁️  Welcome to Bloq!')
     consola.info('We will guide you to create your new account')
 
     config.delete('user')
@@ -107,7 +107,7 @@ class SignupCommand extends Command {
     ])
 
     if (acceptTerms === 'Decline') {
-      return consola.error('Terms & Conditions must be accepted in order to create a BloqCloud account and access BloqCloud services.') // eslint-disable-line
+      return consola.error('Terms & Conditions must be accepted in order to create a Bloq account and access Bloq services.') // eslint-disable-line
     }
 
     const env = config.get('env') || 'prod'
@@ -118,7 +118,7 @@ class SignupCommand extends Command {
     ])
 
     if (!confirm) {
-      return consola.error('BloqCloud signup aborted')
+      return consola.error('Bloq signup aborted')
     }
 
     const body = {
@@ -135,27 +135,27 @@ class SignupCommand extends Command {
       }
     }
 
-    consola.info('Creating your new BloqCloud account')
+    consola.info('Creating your new Bloq account')
     const spinner = ora().start()
 
     request.post(url, body, function (err, data) {
       spinner.stop()
       if (err) {
-        return consola.error(`Error creating BloqCloud account: ${err}`)
+        return consola.error(`Error creating Bloq account: ${err}`)
       }
 
       if (data.statusCode !== 201) {
         return consola.error(
-          `Error creating BloqCloud account: ${data.body.code || data.body.message}`
+          `Error creating Bloq account: ${data.body.code || data.body.message}`
         )
       }
 
-      consola.success('Generated new BloqCloud account')
+      consola.success('Generated new Bloq account')
       consola.info(`Email sent to ${email} confirm your account.`)
     })
   }
 }
 
-SignupCommand.description = 'Setup a new BloqCloud account'
+SignupCommand.description = 'Setup a new Bloq account'
 
 module.exports = SignupCommand

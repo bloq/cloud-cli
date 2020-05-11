@@ -26,7 +26,7 @@ function getStatus (url) {
 
 class StatusCommand extends Command {
   async run () {
-    consola.info(`Retrieving BloqCloud status: ${env}`)
+    consola.info(`Retrieving Bloq status: ${env}`)
 
     const spinner = ora().start()
     Promise.all([
@@ -86,7 +86,7 @@ class StatusCommand extends Command {
 
         spinner.stop()
 
-        consola.info(`BloqCloud status: ${env}\n`)
+        consola.info(`Bloq status: ${env}\n`)
         console.table(status)
       })
       .catch(function (err) {
@@ -95,6 +95,6 @@ class StatusCommand extends Command {
   }
 }
 
-StatusCommand.description = 'Get BloqCloud services status'
+StatusCommand.description = 'Get Bloq services status'
 
 module.exports = StatusCommand

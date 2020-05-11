@@ -28,7 +28,7 @@ class UserKeysCommand extends Command {
   }
 }
 
-UserKeysCommand.description = 'Manage your BloqCloud user key(s)'
+UserKeysCommand.description = 'Manage your Bloq user key(s)'
 
 UserKeysCommand.flags = {
   type: flags.string({ char: 't', description: 'key type', options: ['bit', 'pgp'] }),

@@ -55,7 +55,7 @@ USAGE
 
 ## `bcl client-keys OPERATION`
 
-Manage your BloqCloud client key(s)
+Manage your Bloq client key(s)
 
 ```
 USAGE
@@ -83,7 +83,7 @@ _See code: [src/commands/client-token.js](https://github.com/bloqpriv/cloud-cli/
 
 ## `bcl clusters OPERATION`
 
-Manage your BloqCloud clusters
+Manage your Bloq clusters
 
 ```
 USAGE
@@ -148,7 +148,7 @@ _See code: [src/commands/connect.js](https://github.com/bloqpriv/cloud-cli/blob/
 
 ## `bcl events`
 
-Get BloqCloud daily events
+Get Bloq daily events
 
 ```
 USAGE
@@ -179,7 +179,7 @@ _See code: [@oclif/plugin-help](https://github.com/oclif/plugin-help/blob/v2.1.6
 
 ## `bcl login`
 
-Login to your BloqCloud account
+Login to your Bloq account
 
 ```
 USAGE
@@ -205,7 +205,7 @@ _See code: [src/commands/logout.js](https://github.com/bloqpriv/cloud-cli/blob/v
 
 ## `bcl nodes OPERATION`
 
-Manage your BloqCloud nodes
+Manage your Bloq nodes
 
 ```
 USAGE
@@ -236,7 +236,7 @@ _See code: [src/commands/profile.js](https://github.com/bloqpriv/cloud-cli/blob/
 
 ## `bcl signup`
 
-Setup a new BloqCloud account
+Setup a new Bloq account
 
 ```
 USAGE
@@ -247,7 +247,7 @@ _See code: [src/commands/signup.js](https://github.com/bloqpriv/cloud-cli/blob/v
 
 ## `bcl status`
 
-Get BloqCloud services status
+Get Bloq services status
 
 ```
 USAGE
@@ -269,7 +269,7 @@ _See code: [src/commands/update-password.js](https://github.com/bloqpriv/cloud-c
 
 ## `bcl user-keys OPERATION`
 
-Manage your BloqCloud user key(s)
+Manage your Bloq user key(s)
 
 ```
 USAGE
@@ -287,7 +287,7 @@ _See code: [src/commands/user-keys.js](https://github.com/bloqpriv/cloud-cli/blo
 
 ## `bcl verify`
 
-Verifies your BloqCloud account and complete signup process
+Verifies your Bloq account and complete signup process
 
 ```
 USAGE
