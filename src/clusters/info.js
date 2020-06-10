@@ -75,7 +75,7 @@ async function infoCluster ({ accessToken, clusterId }) {
     * Version:\t\t${body.serviceData.software}
     * Performance:\t${body.serviceData.performance}
     * Domain:\t\t${body.domain}
-    * Capacity:\t\t${body.capacity}
+    * Capacity:\t\t${body.onDemandCapacity}:${body.capacity}
     * Region:\t\t${body.region}
     * State:\t\t${body.state}
     ${creds}`)

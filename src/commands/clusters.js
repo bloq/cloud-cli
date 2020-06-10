@@ -43,6 +43,11 @@ ClusterCommand.flags = {
     description: 'capacity',
     default: 2
   }),
+  onDemandCapacity: flags.integer({
+    char: 'o',
+    description: 'on-demand capacity',
+    default: 1
+  }),
   all: flags.boolean({
     char: 'a',
     description: 'list all clusters',
