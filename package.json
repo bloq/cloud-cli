@@ -7,7 +7,6 @@
     "bcl": "./bin/run"
   },
   "scripts": {
-    "publish": "npm publish --access public",
     "start": "node bin/run",
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint .",
