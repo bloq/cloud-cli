@@ -4,7 +4,6 @@ const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
 const inquirer = require('inquirer')
-const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
 
@@ -18,11 +17,6 @@ const config = require('../config')
  */
 async function removeCluster ({ accessToken, clusterId }) {
   consola.info('Removing cluster')
-
-  const payload = jwtDecode(accessToken)
-  if (!payload.aud.includes('manager')) {
-    return consola.error('Only admin users can manage clusters with the CLI')
-  }
 
   if (!clusterId) {
     const prompt = await inquirer.prompt([
