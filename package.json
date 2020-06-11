@@ -1,13 +1,12 @@
 {
   "name": "@bloq/cloud-cli",
   "description": "BloqCloud CLI",
-  "version": "2.3.2",
+  "version": "2.4.0",
   "author": "Ignacio Anaya <ignacio@bloq.com>",
   "bin": {
     "bcl": "./bin/run"
   },
   "scripts": {
-    "publish": "npm publish --access public",
     "start": "node bin/run",
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint .",
