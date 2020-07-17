@@ -14,14 +14,17 @@ class ClusterCommand extends Command {
       case 'create':
         return clusters.create({ accessToken, ...flags })
 
-      case 'remove':
-        return clusters.remove({ accessToken, ...flags })
-
       case 'info':
         return clusters.info({ accessToken, ...flags })
 
+      case 'remove':
+        return clusters.remove({ accessToken, ...flags })
+
       case 'services':
         return clusters.services()
+
+      case 'update':
+        return clusters.update({ accessToken, ...flags })
 
       default:
         return clusters.list({ accessToken, ...flags })
@@ -54,6 +57,11 @@ ClusterCommand.flags = {
     default: false,
     required: false
   }),
+  yes: flags.boolean({
+    char: 'y',
+    description: 'answer "yes" to prompts',
+    default: false
+  }),
   clusterId: flags.string({ char: 'i', description: 'cluster id' })
 }
 
@@ -63,7 +71,7 @@ ClusterCommand.args = [
     required: true,
     description: 'Specify the type of cluster operation to run',
     default: 'list',
-    options: ['create', 'list', 'remove', 'info', 'chains', 'services']
+    options: ['create', 'info', 'list', 'remove', 'services', 'update']
   }
 ]
 
