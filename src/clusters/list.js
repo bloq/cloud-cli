@@ -39,20 +39,22 @@ async function listClusters ({ accessToken, all }) {
 
     let body = JSON.parse(data.body)
     body = body.map(function ({
-      id,
+      alias,
       chain,
-      state,
-      network,
-      ip,
       createdAt,
-      serviceData,
+      id,
+      name,
+      network,
+      serviceData = {},
+      state,
       stoppedAt
     }) {
       const cluster = {
         id,
         chain,
         network,
-        ip,
+        name: alias || name,
+        subdomain: name,
         state,
         createdAt,
         version: serviceData.software,
