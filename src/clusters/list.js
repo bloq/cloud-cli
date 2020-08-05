@@ -45,6 +45,7 @@ async function listClusters ({ accessToken, all }) {
       id,
       name,
       network,
+      service,
       serviceData = {},
       state,
       stoppedAt
@@ -57,6 +58,7 @@ async function listClusters ({ accessToken, all }) {
         subdomain: name,
         state,
         createdAt,
+        service,
         version: serviceData.software,
         performance: serviceData.performance
       }
