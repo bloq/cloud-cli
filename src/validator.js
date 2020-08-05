@@ -27,7 +27,7 @@ function isEmailValid (email) {
  */
 function isUserValid (user) {
   // eslint-disable-next-line max-len
-  const USER_REGEX = /user-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
+  const USER_REGEX = /user-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i
   if (USER_REGEX.test(user)) { return true }
 
   const emailValidation = isEmailValid(user)
@@ -44,7 +44,7 @@ function isUserValid (user) {
  */
 function isUuidValid (uuid) {
   // eslint-disable-next-line max-len
-  const UUID_REGEX = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
+  const UUID_REGEX = /[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i
   if (UUID_REGEX.test(uuid)) { return true }
 
   return 'The token does not have the correct format.'
