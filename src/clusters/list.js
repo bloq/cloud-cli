@@ -1,8 +1,8 @@
 'use strict'
 
-const { sortBy } = require('lodash')
-const ora = require('ora')
 const consola = require('consola')
+const lodash = require('lodash')
+const ora = require('ora')
 const request = require('request')
 require('console.table')
 
@@ -42,8 +42,10 @@ async function listClusters ({ accessToken, all, sort }) {
     let body = JSON.parse(data.body)
     body = body.map(function ({
       alias,
+      capacity,
       chain,
       createdAt,
+      healthCount,
       id,
       name,
       network,
@@ -59,6 +61,7 @@ async function listClusters ({ accessToken, all, sort }) {
         name: alias || name,
         subdomain: name,
         state,
+        health: healthCount && healthCount / capacity,
         createdAt,
         service,
         version: serviceData.software,
@@ -66,7 +69,7 @@ async function listClusters ({ accessToken, all, sort }) {
       }
 
       if (all) {
-        cluster.stoppedAt = stoppedAt || 'N/A'
+        cluster.stoppedAt = stoppedAt
       }
 
       return cluster
@@ -83,7 +86,7 @@ async function listClusters ({ accessToken, all, sort }) {
 
     consola.success(`Got ${body.length} clusters:`)
     process.stdout.write('\n')
-    console.table(sortBy(body, sort || 'createdAt'))
+    console.table(lodash.sortBy(body, sort.split(',') || 'createdAt'))
   })
 }
 
