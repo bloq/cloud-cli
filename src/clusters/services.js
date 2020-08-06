@@ -11,9 +11,11 @@ const config = require('../config')
 /**
  * Retrieves cluster associated services
  *
+ * @param {Object} params object
+ * @param {string} params.sort Key used to sort the output
  * @returns {Promise} The services promise
  */
-async function getServices () {
+async function getServices ({ sort }) {
   consola.info('Retrieving list of available services')
 
   const env = config.get('env') || 'prod'
@@ -38,15 +40,22 @@ async function getServices () {
     process.stdout.write('\n')
     console.table(
       lodash.sortBy(
-        body.map(({ chain, id, metadata, vendor, network }) => ({
+        body.map(({ chain, createdAt, id, metadata, vendor, network }) => ({
           chain,
           network,
           software: metadata.software,
           performance: metadata.performance,
           region: vendor.region,
-          id
+          id,
+          createdAt
         })),
-        ['chain', 'network', 'software', 'performance', 'region']
+        sort.split(',') || [
+          'chain',
+          'network',
+          'software',
+          'performance',
+          'region'
+        ]
       )
     )
 
