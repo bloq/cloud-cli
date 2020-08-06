@@ -62,7 +62,9 @@ ClusterCommand.flags = {
     description: 'answer "yes" to prompts',
     default: false
   }),
-  clusterId: flags.string({ char: 'i', description: 'cluster id' })
+  clusterId: flags.string({ char: 'i', description: 'cluster id' }),
+  sort: flags.string({ char: 'S', description: 'results sorting key' }),
+  json: flags.boolean({ char: 'j', description: 'JSON output' })
 }
 
 ClusterCommand.args = [

@@ -14,7 +14,9 @@ const MIN_ENTROPY = config.get('passwordEntropy')
 function isEmailValid (email) {
   // eslint-disable-next-line max-len
   const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // eslint-disable-line
-  if (EMAIL_REGEX.test(String(email).toLowerCase())) { return true }
+  if (EMAIL_REGEX.test(String(email).toLowerCase())) {
+    return true
+  }
 
   return 'The email is not valid.'
 }
@@ -27,11 +29,15 @@ function isEmailValid (email) {
  */
 function isUserValid (user) {
   // eslint-disable-next-line max-len
-  const USER_REGEX = /user-[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
-  if (USER_REGEX.test(user)) { return true }
+  const USER_REGEX = /user-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i
+  if (USER_REGEX.test(user)) {
+    return true
+  }
 
   const emailValidation = isEmailValid(user)
-  if (typeof emailValidation === 'boolean') { return true }
+  if (typeof emailValidation === 'boolean') {
+    return true
+  }
 
   return 'The email or account id does not have the correct format.'
 }
@@ -44,8 +50,10 @@ function isUserValid (user) {
  */
 function isUuidValid (uuid) {
   // eslint-disable-next-line max-len
-  const UUID_REGEX = /[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/
-  if (UUID_REGEX.test(uuid)) { return true }
+  const UUID_REGEX = /[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i
+  if (UUID_REGEX.test(uuid)) {
+    return true
+  }
 
   return 'The token does not have the correct format.'
 }
@@ -74,7 +82,10 @@ function isPasswordValid (password) {
   const passwordEntropy = stringEntropy(password)
   if (passwordEntropy < MIN_ENTROPY) {
     // eslint-disable-next-line max-len
-    return `The password provided is not strong enough. The password rate is ${((passwordEntropy * 100) / MIN_ENTROPY).toFixed()} and you need to reach 100, try adding more or different characters.`
+    return `The password provided is not strong enough. The password rate is ${(
+      (passwordEntropy * 100) /
+      MIN_ENTROPY
+    ).toFixed()} and you need to reach 100, try adding more or different characters.`
   }
 
   return true
@@ -88,7 +99,9 @@ function isPasswordValid (password) {
  * @returns {boolean|string} string with error message or true
  */
 function arePasswordEquals (password1, password2) {
-  if (password1 === password2) { return true }
+  if (password1 === password2) {
+    return true
+  }
 
   return 'Passwords do not match.'
 }
@@ -101,7 +114,9 @@ function arePasswordEquals (password1, password2) {
  * @returns {boolean|string} string with error message or true
  */
 function isZipCodeValid (countryCode, zipCode) {
-  return postalCodesValidator.validate(countryCode, zipCode) === true ? true : 'The zip code is invalid'
+  return postalCodesValidator.validate(countryCode, zipCode) === true
+    ? true
+    : 'The zip code is invalid'
 }
 
 module.exports = {

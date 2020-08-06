@@ -1,5 +1,6 @@
 'use strict'
 
+const { sortBy } = require('lodash')
 const ora = require('ora')
 const consola = require('consola')
 const request = require('request')
@@ -11,11 +12,12 @@ const config = require('../config')
  * Retrieves cluster
  *
  * @param {Object} params object
- * @param {Object} params.accessToken Account access token
- * @param {Object} params.all Boolean defining if it should show killed clusters
+ * @param {string} params.accessToken Account access token
+ * @param {boolean} params.all Flag defining if it should show killed clusters
+ * @param {string} params.sort Key used to sort the output
  * @returns {Promise} The information cluster promise
  */
-async function listClusters ({ accessToken, all }) {
+async function listClusters ({ accessToken, all, sort }) {
   consola.info('Retrieving clusters.')
 
   const Authorization = `Bearer ${accessToken}`
@@ -45,6 +47,7 @@ async function listClusters ({ accessToken, all }) {
       id,
       name,
       network,
+      service,
       serviceData = {},
       state,
       stoppedAt
@@ -57,6 +60,7 @@ async function listClusters ({ accessToken, all }) {
         subdomain: name,
         state,
         createdAt,
+        service,
         version: serviceData.software,
         performance: serviceData.performance
       }
@@ -79,7 +83,7 @@ async function listClusters ({ accessToken, all }) {
 
     consola.success(`Got ${body.length} clusters:`)
     process.stdout.write('\n')
-    console.table(body)
+    console.table(sortBy(body, sort || 'createdAt'))
   })
 }
 
