@@ -21,7 +21,7 @@ class ClusterCommand extends Command {
         return clusters.remove({ accessToken, ...flags })
 
       case 'services':
-        return clusters.services()
+        return clusters.services({ ...flags })
 
       case 'update':
         return clusters.update({ accessToken, ...flags })
@@ -63,7 +63,11 @@ ClusterCommand.flags = {
     default: false
   }),
   clusterId: flags.string({ char: 'i', description: 'cluster id' }),
-  sort: flags.string({ char: 'S', description: 'results sorting key' }),
+  sort: flags.string({
+    char: 'S',
+    description: 'results sorting key',
+    default: ''
+  }),
   json: flags.boolean({ char: 'j', description: 'JSON output' })
 }
 
