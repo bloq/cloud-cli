@@ -85,16 +85,13 @@ async function createCluster (params) {
       return consola.error(`Error initializing the new cluster: ${body.code}`)
     }
 
-    process.stdout.write('\n')
-
-    coppyToClipboard(body.id, 'Cluster id')
-
     const creds =
       body.auth.type === 'jwt'
         ? '* Auth:\t\tJWT'
         : `* User:\t\t${body.auth.user}
     * Password:\t\t${body.auth.pass}`
 
+    process.stdout.write('\n')
     consola.success(`Initialized new cluster from service ${serviceId}
     * ID:\t\t${body.id}
     * Name:\t\t${body.name}
@@ -107,6 +104,9 @@ async function createCluster (params) {
     * Region:\t\t${body.region}
     * State:\t\t${body.state}
     ${creds}`)
+
+    process.stdout.write('\n')
+    coppyToClipboard(body.id, 'Cluster id')
   })
 }
 

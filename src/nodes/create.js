@@ -59,9 +59,6 @@ async function createNode ({ accessToken, serviceId, authType }) {
     }
 
     const { id, auth, state, chain, network, serviceData, ip } = data.body
-    process.stdout.write('\n')
-
-    coppyToClipboard(id, 'Node id')
 
     const creds =
       auth.type === 'jwt'
@@ -69,6 +66,7 @@ async function createNode ({ accessToken, serviceId, authType }) {
         : `* User:\t\t${auth.user}
     * Password:\t\t${auth.pass}`
 
+    process.stdout.write('\n')
     consola.success(`Initialized new node from service ${serviceId}
     * ID:\t\t${id}
     * Chain:\t\t${chain}
@@ -78,6 +76,9 @@ async function createNode ({ accessToken, serviceId, authType }) {
     * State:\t\t${state}
     * IP:\t\t${ip}
     ${creds}`)
+
+    process.stdout.write('\n')
+    coppyToClipboard(id, 'Node id')
   })
 }
 
