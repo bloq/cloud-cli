@@ -1,8 +1,10 @@
+os: linux
+dist: bionic
+
 language: node_js
 node_js:
-  - "8"
-
-cache: npm
+  - '10'
+  - '12'
 
 script:
-  - npm run lint
+  - npm run lint -- --quiet
