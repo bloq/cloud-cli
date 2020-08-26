@@ -61,9 +61,14 @@ async function infoCluster ({ accessToken, clusterId }) {
 
     const creds =
       body.auth.type === 'jwt'
-        ? '* Auth:\t\tJWT'
-        : `* User:\t\t${body.auth.user}
+        ? `
+    * Auth:\t\tJWT`
+        : body.auth.type === 'basic'
+          ? `
+    * User:\t\t${body.auth.user}
     * Password:\t\t${body.auth.pass}`
+          : `
+    * Auth:\t\tnone`
 
     process.stdout.write('\n')
 
@@ -77,8 +82,7 @@ async function infoCluster ({ accessToken, clusterId }) {
     * Domain:\t\t${body.domain}
     * Capacity:\t\t${body.onDemandCapacity}:${body.capacity}
     * Region:\t\t${body.region}
-    * State:\t\t${body.state}
-    ${creds}`)
+    * State:\t\t${body.state}${creds}`)
   })
 }
 
