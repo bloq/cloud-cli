@@ -37,9 +37,9 @@ ClusterCommand.flags = {
   serviceId: flags.string({ char: 's', description: 'service id' }),
   authType: flags.enum({
     char: 't',
-    description: 'auth type (jwt or basic)',
+    description: 'auth type: jwt, basic or none',
     default: 'basic',
-    options: ['jwt', 'basic']
+    options: ['jwt', 'basic', 'none']
   }),
   capacity: flags.integer({
     char: 'c',
