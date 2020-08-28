@@ -86,10 +86,15 @@ async function createCluster (params) {
     }
 
     const creds =
-      body.auth.type === 'jwt'
-        ? '* Auth:\t\tJWT'
-        : `* User:\t\t${body.auth.user}
+    body.auth.type === 'jwt'
+      ? `
+    * Auth:\t\tJWT`
+      : body.auth.type === 'basic'
+        ? `
+    * User:\t\t${body.auth.user}
     * Password:\t\t${body.auth.pass}`
+        : `
+    * Auth:\t\tnone`
 
     process.stdout.write('\n')
     consola.success(`Initialized new cluster from service ${serviceId}
@@ -102,8 +107,7 @@ async function createCluster (params) {
     * Domain:\t\t${body.domain}
     * Capacity:\t\t${body.onDemandCapacity}:${body.capacity}
     * Region:\t\t${body.region}
-    * State:\t\t${body.state}
-    ${creds}`)
+    * State:\t\t${body.state}${creds}`)
 
     process.stdout.write('\n')
     coppyToClipboard(body.id, 'Cluster id')

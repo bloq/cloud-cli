@@ -71,7 +71,6 @@ async function infoCluster ({ accessToken, clusterId }) {
     * Auth:\t\tnone`
 
     process.stdout.write('\n')
-
     consola.success(`Retrieved cluster with id ${clusterId}
     * ID:\t\t${body.id}
     * Name:\t\t${body.name}
