@@ -1,6 +1,6 @@
 {
   "name": "@bloq/cloud-cli",
-  "version": "2.6.1",
+  "version": "2.7.0",
   "description": "BloqCloud CLI",
   "keywords": [
     "oclif"
