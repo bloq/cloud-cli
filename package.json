@@ -44,7 +44,7 @@
     "fast-password-entropy": "1.1.1",
     "inquirer": "6.3.1",
     "jwt-decode": "2.2.0",
-    "node-fetch": "2.6.0",
+    "node-fetch": "2.6.1",
     "ora": "3.1.0",
     "postal-codes-js": "2.1.0",
     "request": "2.88.0",
