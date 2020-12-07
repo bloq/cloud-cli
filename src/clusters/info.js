@@ -7,6 +7,20 @@ const inquirer = require('inquirer')
 
 const config = require('../config')
 
+const getState = body =>
+  body.state === 'started' && body.updatingService ? 'updating' : body.state
+
+const getCreds = body =>
+  body.auth.type === 'jwt'
+    ? `
+    * Auth:\t\tJWT`
+    : body.auth.type === 'basic'
+      ? `
+    * User:\t\t${body.auth.user}
+    * Password:\t\t${body.auth.pass}`
+      : `
+    * Auth:\t\tnone`
+
 /**
  * Retrieves cluster information by ID
  *
@@ -24,7 +38,8 @@ async function infoCluster ({ accessToken, clusterId }) {
     ])
     clusterId = prompt.clusterId
     if (!clusterId) {
-      return consola.error('Missing cluster id')
+      consola.error('Missing cluster id')
+      return
     }
   }
 
@@ -34,41 +49,35 @@ async function infoCluster ({ accessToken, clusterId }) {
   const url = `${serviceUrl}/users/me/clusters/${clusterId}`
   const spinner = ora().start()
 
-  return request.get(url, { headers: { Authorization }, json: true }, function (
+  request.get(url, { headers: { Authorization }, json: true }, function (
     err,
     data
   ) {
     spinner.stop()
+
     if (err) {
-      return consola.error(`Error retrieving the cluster: ${err}.`)
+      consola.error(`Error retrieving the cluster: ${err}.`)
+      return
     }
 
     if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
+      consola.error('Your session has expired')
+      return
     }
 
     if (data.statusCode === 404) {
-      return consola.error(
+      consola.error(
         'Error retrieving cluster information, requested resource not found'
       )
+      return
     }
 
     const { body } = data
 
     if (data.statusCode !== 200) {
-      return consola.error(`Error retrieving the cluster: ${body.code}`)
+      consola.error(`Error retrieving the cluster: ${body.code}`)
+      return
     }
-
-    const creds =
-      body.auth.type === 'jwt'
-        ? `
-    * Auth:\t\tJWT`
-        : body.auth.type === 'basic'
-          ? `
-    * User:\t\t${body.auth.user}
-    * Password:\t\t${body.auth.pass}`
-          : `
-    * Auth:\t\tnone`
 
     process.stdout.write('\n')
     consola.success(`Retrieved cluster with id ${clusterId}
@@ -81,7 +90,7 @@ async function infoCluster ({ accessToken, clusterId }) {
     * Domain:\t\t${body.domain}
     * Capacity:\t\t${body.onDemandCapacity}:${body.capacity}
     * Region:\t\t${body.region}
-    * State:\t\t${body.state}${creds}`)
+    * State:\t\t${getState(body)}${getCreds(body)}`)
   })
 }
 
