@@ -7,27 +7,27 @@ const clusters = require('../clusters')
 
 class ClusterCommand extends Command {
   async run () {
-    const { args, flags } = this.parse(ClusterCommand)
+    const { args, flags: _flags } = this.parse(ClusterCommand)
     const accessToken = config.get('accessToken')
 
     switch (args.operation) {
       case 'create':
-        return clusters.create({ accessToken, ...flags })
+        return clusters.create({ accessToken, ..._flags })
 
       case 'info':
-        return clusters.info({ accessToken, ...flags })
+        return clusters.info({ accessToken, ..._flags })
 
       case 'remove':
-        return clusters.remove({ accessToken, ...flags })
+        return clusters.remove({ accessToken, ..._flags })
 
       case 'services':
-        return clusters.services({ ...flags })
+        return clusters.services({ ..._flags })
 
       case 'update':
-        return clusters.update({ accessToken, ...flags })
+        return clusters.update({ accessToken, ..._flags })
 
       default:
-        return clusters.list({ accessToken, ...flags })
+        return clusters.list({ accessToken, ..._flags })
     }
   }
 }
@@ -68,7 +68,11 @@ ClusterCommand.flags = {
     description: 'results sorting key',
     default: ''
   }),
-  json: flags.boolean({ char: 'j', description: 'JSON output' })
+  json: flags.boolean({ char: 'j', description: 'JSON output' }),
+  abort: flags.boolean({
+    description: 'Abort an (update) operation',
+    default: false
+  })
 }
 
 ClusterCommand.args = [

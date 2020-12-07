@@ -52,7 +52,8 @@ async function listClusters ({ accessToken, all, sort }) {
       service,
       serviceData = {},
       state,
-      stoppedAt
+      stoppedAt,
+      updatingService
     }) {
       const cluster = {
         id,
@@ -60,7 +61,7 @@ async function listClusters ({ accessToken, all, sort }) {
         network,
         name: alias || name,
         subdomain: name,
-        state,
+        state: state === 'started' && updatingService ? 'updating' : state,
         health: healthCount && healthCount / capacity,
         createdAt,
         service,
