@@ -7,6 +7,25 @@ const ora = require('ora')
 
 const config = require('../config')
 
+const env = config.get('env')
+const serviceUrl = config.get(`services.${env}.nodes.url`)
+
+const getConfirmationMessage = flags =>
+  flags.abort
+    ? 'You will cancel the current service update process of the cluster'
+    : `You will update the cluster's ${
+      flags.serviceId ? `service to ${flags.serviceId} and ` : ''
+    }capacity to ${flags.capacity} total and ${
+      flags.onDemandCapacity
+    } on-demand`
+
+const getUrlAndMethod = ({ abort, clusterId }) => ({
+  method: abort ? 'delete' : 'patch',
+  url: `${serviceUrl}/users/me/clusters/${clusterId}${
+    abort ? '/updatingService' : ''
+  }`
+})
+
 /**
  * Update a cluster's capacity by ID
  *
@@ -31,55 +50,55 @@ async function updateCluster ({ accessToken, ...flags }) {
     },
     {
       name: 'yes',
-      message: `You will update the cluster's ${
-        flags.serviceId ? `service to ${flags.serviceId} and ` : ''
-      }capacity to ${flags.capacity} total and ${
-        flags.onDemandCapacity
-      } on-demand. Do you want to continue?`,
+      message: `${getConfirmationMessage(flags)}. Do you want to continue?`,
       type: 'confirm',
       default: false,
       when: () => !flags.yes
     }
   ])
 
-  const { yes, clusterId, capacity, onDemandCapacity, serviceId } = {
+  const { yes, clusterId, capacity, onDemandCapacity, serviceId, abort } = {
     ...flags,
     ...prompt
   }
 
   if (!yes) {
-    return consola.error('Update canceled')
+    consola.error('No action taken')
+    return
   }
-
-  const env = config.get('env') || 'prod'
-  const serviceUrl = config.get(`services.${env}.nodes.url`)
-  const url = `${serviceUrl}/users/me/clusters/${clusterId}`
-  const authorization = `Bearer ${accessToken}`
-  // const json = { clusterId, capacity, onDemandCapacity }
 
   const spinner = ora().start()
 
   try {
+    const { method, url } = getUrlAndMethod({ abort, clusterId })
+    const authorization = `Bearer ${accessToken}`
+    const body = abort
+      ? null
+      : JSON.stringify({ capacity, onDemandCapacity, serviceId })
+
     const res = await fetch(url, {
-      method: 'patch',
+      method,
       headers: { authorization, 'content-type': 'application/json' },
-      body: JSON.stringify({ capacity, onDemandCapacity, serviceId })
+      body
     })
 
     if (!res.ok) {
       const data = await res.json()
 
       if (data.status === 401 || data.status === 403) {
-        return consola.error('Your session has expired')
+        consola.error('Your session has expired')
+        return
       }
 
       if (data.status === 404) {
-        return consola.error('Cluster not found')
+        consola.error('Cluster not found')
+        return
       }
 
       if (data.status !== 200) {
         console.log(data)
-        return consola.error(`Error updating the cluster: ${data.title}`)
+        consola.error(`Error updating the cluster: ${data.title}`)
+        return
       }
     }
 
