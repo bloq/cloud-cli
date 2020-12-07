@@ -73,7 +73,7 @@ async function infoCluster ({ accessToken, clusterId }) {
     process.stdout.write('\n')
     consola.success(`Retrieved cluster with id ${clusterId}
     * ID:\t\t${body.id}
-    * Name:\t\t${body.name}
+    * Name:\t\t${body.alias || body.name}
     * Chain:\t\t${body.chain}
     * Network:\t\t${body.network}
     * Version:\t\t${body.serviceData.software}
