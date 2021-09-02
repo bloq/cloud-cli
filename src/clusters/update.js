@@ -102,7 +102,7 @@ async function updateCluster ({ accessToken, ...flags }) {
       }
     }
 
-    consola.success(`Cluster ${clusterId} updated successfully`)
+    consola.success(`Cluster ${clusterId} update successfully initiated`)
   } catch (err) {
     consola.error(`Error updating the cluster: ${err.message}`)
   } finally {
