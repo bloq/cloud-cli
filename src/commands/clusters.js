@@ -84,7 +84,15 @@ ClusterCommand.args = [
     required: true,
     description: 'Specify the type of cluster operation to run',
     default: 'list',
-    options: ['create', 'disable', 'info', 'list', 'remove', 'services', 'update']
+    options: [
+      'create',
+      'disable',
+      'info',
+      'list',
+      'remove',
+      'services',
+      'update'
+    ]
   }
 ]
 
