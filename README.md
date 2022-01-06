@@ -21,7 +21,7 @@ $ npm install -g @bloq/cloud-cli
 $ bcl COMMAND
 running command...
 $ bcl (-v|--version|version)
-@bloq/cloud-cli/2.8.0 darwin-x64 node-v14.15.1
+@bloq/cloud-cli/2.8.0 darwin-x64 node-v14.17.6
 $ bcl --help [COMMAND]
 USAGE
   $ bcl COMMAND
@@ -86,7 +86,8 @@ USAGE
   $ bcl clusters OPERATION
 
 ARGUMENTS
-  OPERATION  (create|info|list|remove|services|update) [default: list] Specify the type of cluster operation to run
+  OPERATION  (create|disable|info|list|remove|services|update) [default: list] Specify the type of cluster operation to
+             run
 
 OPTIONS
   -S, --sort=sort                          results sorting key
