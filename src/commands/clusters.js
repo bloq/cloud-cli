@@ -14,7 +14,7 @@ class ClusterCommand extends Command {
       case 'create':
         return clusters.create({ accessToken, ..._flags })
 
-      case 'disable':
+      case 'disable-service':
         return clusters.disable({ accessToken, ..._flags })
 
       case 'info':
@@ -86,7 +86,7 @@ ClusterCommand.args = [
     default: 'list',
     options: [
       'create',
-      'disable',
+      'disable-service',
       'info',
       'list',
       'remove',
