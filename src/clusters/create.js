@@ -82,18 +82,20 @@ async function createCluster (params) {
     const { body } = data
 
     if (data.statusCode !== 201) {
-      return consola.error(`Error initializing the new cluster: ${body.code}`)
+      return consola.error(
+        `Error initializing the new cluster: ${body.detail || body.code}`
+      )
     }
 
     const creds =
-    body.auth.type === 'jwt'
-      ? `
-    * Auth:\t\tJWT`
-      : body.auth.type === 'basic'
+      body.auth.type === 'jwt'
         ? `
+    * Auth:\t\tJWT`
+        : body.auth.type === 'basic'
+          ? `
     * User:\t\t${body.auth.user}
     * Password:\t\t${body.auth.pass}`
-        : `
+          : `
     * Auth:\t\tnone`
 
     process.stdout.write('\n')
