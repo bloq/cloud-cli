@@ -9,11 +9,6 @@ const config = require('../config')
 const env = config.get('env')
 const serviceUrl = config.get(`services.${env}.nodes.url`)
 
-const getConfirmationMessage = flags =>
-  flags.abort
-    ? 'You will cancel the current service disable process'
-    : `You will disable the service ${flags.serviceId}`
-
 const getUrlAndMethod = ({ serviceId }) => ({
   method: 'delete',
   url: `${serviceUrl}/services/cluster/${serviceId}`
@@ -37,24 +32,12 @@ async function disable ({ accessToken, ...flags }) {
       type: 'text',
       when: () => !flags.serviceId,
       validate: input => !!input
-    },
-    {
-      name: 'yes',
-      message: `${getConfirmationMessage(flags)}. Do you want to continue?`,
-      type: 'confirm',
-      default: false,
-      when: () => !flags.yes
     }
   ])
 
-  const { yes, serviceId } = {
+  const { serviceId } = {
     ...flags,
     ...prompt
-  }
-
-  if (!yes) {
-    consola.error('No action taken')
-    return
   }
 
   const spinner = ora().start()
@@ -88,7 +71,7 @@ async function disable ({ accessToken, ...flags }) {
 
     consola.success(`Service ${serviceId} disabled successfully`)
   } catch (err) {
-    consola.error(`Error updating the service: ${err.message}`)
+    consola.error(`Error disabling the service: ${err.message}`)
   } finally {
     spinner.stop()
   }
