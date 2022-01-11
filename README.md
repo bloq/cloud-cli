@@ -8,14 +8,16 @@
 [![License](https://img.shields.io/npm/l/cloud-cli.svg)](https://github.com/bloqpriv/cloud-cli/blob/master/package.json)
 
 <!-- toc -->
-* [cloud-cli](#cloud-cli)
-* [Usage](#usage)
-* [Commands](#commands)
-<!-- tocstop -->
+
+- [cloud-cli](#cloud-cli)
+- [Usage](#usage)
+- [Commands](#commands)
+  <!-- tocstop -->
 
 # Usage
 
 <!-- usage -->
+
 ```sh-session
 $ npm install -g @bloq/cloud-cli
 $ bcl COMMAND
@@ -27,27 +29,29 @@ USAGE
   $ bcl COMMAND
 ...
 ```
+
 <!-- usagestop -->
 
 # Commands
 
 <!-- commands -->
-* [`bcl client-keys OPERATION`](#bcl-client-keys-operation)
-* [`bcl client-token`](#bcl-client-token)
-* [`bcl clusters OPERATION`](#bcl-clusters-operation)
-* [`bcl conf [KEY] [VALUE]`](#bcl-conf-key-value)
-* [`bcl connect METHOD`](#bcl-connect-method)
-* [`bcl events`](#bcl-events)
-* [`bcl help [COMMAND]`](#bcl-help-command)
-* [`bcl login`](#bcl-login)
-* [`bcl logout`](#bcl-logout)
-* [`bcl nodes OPERATION`](#bcl-nodes-operation)
-* [`bcl profile`](#bcl-profile)
-* [`bcl signup`](#bcl-signup)
-* [`bcl status`](#bcl-status)
-* [`bcl update-password`](#bcl-update-password)
-* [`bcl user-keys OPERATION`](#bcl-user-keys-operation)
-* [`bcl verify`](#bcl-verify)
+
+- [`bcl client-keys OPERATION`](#bcl-client-keys-operation)
+- [`bcl client-token`](#bcl-client-token)
+- [`bcl clusters OPERATION`](#bcl-clusters-operation)
+- [`bcl conf [KEY] [VALUE]`](#bcl-conf-key-value)
+- [`bcl connect METHOD`](#bcl-connect-method)
+- [`bcl events`](#bcl-events)
+- [`bcl help [COMMAND]`](#bcl-help-command)
+- [`bcl login`](#bcl-login)
+- [`bcl logout`](#bcl-logout)
+- [`bcl nodes OPERATION`](#bcl-nodes-operation)
+- [`bcl profile`](#bcl-profile)
+- [`bcl signup`](#bcl-signup)
+- [`bcl status`](#bcl-status)
+- [`bcl update-password`](#bcl-update-password)
+- [`bcl user-keys OPERATION`](#bcl-user-keys-operation)
+- [`bcl verify`](#bcl-verify)
 
 ## `bcl client-keys OPERATION`
 
@@ -353,4 +357,5 @@ DESCRIPTION
 ```
 
 _See code: [src/commands/verify.js](https://github.com/bloqpriv/cloud-cli/blob/v2.8.0/src/commands/verify.js)_
+
 <!-- commandsstop -->
