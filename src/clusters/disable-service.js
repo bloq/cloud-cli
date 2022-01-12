@@ -53,19 +53,17 @@ async function disable ({ accessToken, ...flags }) {
     if (!res.ok) {
       const data = await res.json()
 
-      if (data.status === 401 || data.status === 403) {
-        consola.error('Unauthorized/Forbidden')
-        return
+      if (data.status === 401) {
+        throw new Error('Unauthorized')
       }
-
+      if (data.status === 403) {
+        throw new Error('Forbidden')
+      }
       if (data.status === 404) {
-        consola.error('Service not found')
-        return
+        throw new Error('Service not found')
       }
-
       if (data.status !== 200) {
-        consola.error(`Error disabling the service: ${data.title}`)
-        return
+        throw new Error(data.title)
       }
     }
 
