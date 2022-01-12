@@ -53,18 +53,7 @@ async function disable ({ accessToken, ...flags }) {
     if (!res.ok) {
       const data = await res.json()
 
-      if (data.status === 401) {
-        throw new Error('Unauthorized')
-      }
-      if (data.status === 403) {
-        throw new Error('Forbidden')
-      }
-      if (data.status === 404) {
-        throw new Error('Service not found')
-      }
-      if (data.status !== 200) {
-        throw new Error(data.title)
-      }
+      throw new Error(data.detail || data.title || res.statusText)
     }
 
     consola.success(`Service ${serviceId} disabled successfully`)
