@@ -6,12 +6,14 @@ const { Command } = require('@oclif/command')
 const config = require('../config')
 
 class ProfileCommand extends Command {
-  async run () {
+  async run() {
     const user = config.get('user')
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error('User is not authenticated. Use login command to start a new session.')
+      return consola.error(
+        'User is not authenticated. Use login command to start a new session.'
+      )
     }
 
     consola.info(`Retrieving profile for user ${user}`)
@@ -19,31 +21,35 @@ class ProfileCommand extends Command {
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/users/me`
 
-    request.get(url, {
-      headers: { Authorization }
-    }, function (err, data) {
-      if (err) {
-        return consola.error(`Error retrieving user profile: ${err}`)
-      }
+    request.get(
+      url,
+      {
+        headers: { Authorization }
+      },
+      function (err, data) {
+        if (err) {
+          return consola.error(`Error retrieving user profile: ${err}`)
+        }
 
-      if (data.statusCode === 401 || data.statusCode === 403) {
-        return consola.error('Your session has expired')
-      }
+        if (data.statusCode === 401 || data.statusCode === 403) {
+          return consola.error('Your session has expired')
+        }
 
-      const body = JSON.parse(data.body)
-      if (data.statusCode !== 200) {
-        return consola.error(`Error trying to get user profile: ${body.code}`)
-      }
+        const body = JSON.parse(data.body)
+        if (data.statusCode !== 200) {
+          return consola.error(`Error trying to get user profile: ${body.code}`)
+        }
 
-      const { verifiedAt, id, displayName, email } = body
+        const { verifiedAt, id, displayName, email } = body
 
-      consola.success(`Retrieved user profile:
+        consola.success(`Retrieved user profile:
         * id:\t\t${id}
         * displayName:\t${displayName}
         * email:\t${email}
         * verified:\t${!!verifiedAt}
       `)
-    })
+      }
+    )
   }
 }
 

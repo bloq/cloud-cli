@@ -15,7 +15,7 @@ const config = require('../config')
  * @param {Object} params.clusterId Cluster ID
  * @returns {Promise} The remove cluster promise
  */
-async function removeCluster ({ accessToken, clusterId }) {
+async function removeCluster({ accessToken, clusterId }) {
   consola.info('Removing cluster')
 
   if (!clusterId) {

@@ -13,7 +13,7 @@ const env = config.get('env') || 'prod'
 const services = config.get('services')
 const get = promisify(request.get)
 
-function getStatus (url) {
+function getStatus(url) {
   return get({ url, timeout: 5000 })
     .then(res => res.statusCode === 200)
     .catch(function (err) {
@@ -25,7 +25,7 @@ function getStatus (url) {
 }
 
 class StatusCommand extends Command {
-  async run () {
+  async run() {
     consola.info(`Retrieving Bloq status: ${env}`)
 
     const spinner = ora().start()

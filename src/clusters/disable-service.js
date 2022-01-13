@@ -22,7 +22,7 @@ const getUrlAndMethod = ({ serviceId }) => ({
  * @param {Object} params.serviceId Service ID
  * @returns {Promise} The update service promise
  */
-async function disable ({ accessToken, ...flags }) {
+async function disable({ accessToken, ...flags }) {
   consola.info('Disabling service')
 
   const prompt = await inquirer.prompt([

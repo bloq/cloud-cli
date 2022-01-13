@@ -2,7 +2,7 @@
 
 const { expect, test } = require('@oclif/test')
 
-describe('hello', () => {
+describe('hello', function () {
   test
     .stdout()
     .command(['hello'])

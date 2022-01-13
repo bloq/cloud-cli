@@ -12,12 +12,14 @@ require('console.table')
  * @param  {string} accessToken local access token
  * @returns {undefined}
  */
-async function listClientKeys (user, accessToken) {
+async function listClientKeys(user, accessToken) {
   consola.info(`Getting client keys for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.accounts.url`)}/users/me/client-keys`
+  const url = `${config.get(
+    `services.${env}.accounts.url`
+  )}/users/me/client-keys`
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
@@ -30,7 +32,11 @@ async function listClientKeys (user, accessToken) {
 
     const body = JSON.parse(data.body)
     if (data.statusCode !== 200) {
-      return consola.error(`Error listing client keys: ${body.code || body.message} | ${data.statusCode}.`)
+      return consola.error(
+        `Error listing client keys: ${body.code || body.message} | ${
+          data.statusCode
+        }.`
+      )
     }
 
     if (!body.length) {

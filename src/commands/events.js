@@ -8,13 +8,15 @@ const config = require('../config')
 require('console.table')
 
 class EventsCommand extends Command {
-  async run () {
+  async run() {
     const user = config.get('user')
     const accessToken = config.get('accessToken')
     const { flags } = this.parse(EventsCommand)
 
     if (!user || !accessToken) {
-      return consola.error('User is not authenticated. Use login command to start a new session.')
+      return consola.error(
+        'User is not authenticated. Use login command to start a new session.'
+      )
     }
 
     consola.info(`Retrieving events for user ${user}`)
@@ -39,12 +41,19 @@ class EventsCommand extends Command {
         return consola.error(`Error retrieving events: ${body.code}`)
       }
 
-      let events = (body.map(function ({ id, service, serviceData, createdAt }) {
-        return { id, service, serviceData: JSON.stringify(serviceData), createdAt }
-      }))
+      let events = body.map(function ({ id, service, serviceData, createdAt }) {
+        return {
+          id,
+          service,
+          serviceData: JSON.stringify(serviceData),
+          createdAt
+        }
+      })
 
       if (flags.service) {
-        events = events.filter(e => e.service.toLowerCase().includes(flags.service))
+        events = events.filter(e =>
+          e.service.toLowerCase().includes(flags.service)
+        )
       }
 
       consola.success(`Retrieved ${events.length} events:`)

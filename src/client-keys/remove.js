@@ -13,7 +13,7 @@ const config = require('../config')
  * @param  {Object} flags set of options retrieved by cli
  * @returns {undefined}
  */
-async function removeClientKey (user, accessToken, flags) {
+async function removeClientKey(user, accessToken, flags) {
   consola.info(`Removing client key for user ${user}.`)
   let { clientId } = flags
 

@@ -16,7 +16,7 @@ const config = require('../config')
  * @param {Object} params.nodeId Node ID
  * @returns {Promise} The remove node promise
  */
-async function removeNode ({ accessToken, nodeId }) {
+async function removeNode({ accessToken, nodeId }) {
   consola.info('Removing node')
 
   const payload = jwtDecode(accessToken)
@@ -55,34 +55,37 @@ async function removeNode ({ accessToken, nodeId }) {
   )}/users/me/nodes/${nodeId}`
   const spinner = ora().start()
 
-  return request.del(url, { headers: { Authorization }, json: true }, function (
-    err,
-    data
-  ) {
-    spinner.stop()
-    if (err) {
-      return consola.error(`Error removing the node: ${err}.`)
-    }
+  return request.del(
+    url,
+    { headers: { Authorization }, json: true },
+    function (err, data) {
+      spinner.stop()
+      if (err) {
+        return consola.error(`Error removing the node: ${err}.`)
+      }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
-    }
+      if (data.statusCode === 401 || data.statusCode === 403) {
+        return consola.error('Your session has expired')
+      }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
-    }
+      if (data.statusCode === 401 || data.statusCode === 403) {
+        return consola.error('Your session has expired')
+      }
 
-    if (data.statusCode === 404) {
-      return consola.error('Error removing node, requested resource not found')
-    }
+      if (data.statusCode === 404) {
+        return consola.error(
+          'Error removing node, requested resource not found'
+        )
+      }
 
-    const { body } = data
-    if (data.statusCode !== 204) {
-      return consola.error(`Error removing the node: ${body.code}`)
-    }
+      const { body } = data
+      if (data.statusCode !== 204) {
+        return consola.error(`Error removing the node: ${body.code}`)
+      }
 
-    consola.success(`Node with id ${nodeId} removed successfully`)
-  })
+      consola.success(`Node with id ${nodeId} removed successfully`)
+    }
+  )
 }
 
 module.exports = removeNode

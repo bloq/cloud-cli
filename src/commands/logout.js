@@ -6,15 +6,20 @@ const inquirer = require('inquirer')
 const config = require('../config')
 
 class LogoutCommand extends Command {
-  async run () {
+  async run() {
     const user = config.get('user')
-    consola.info(user ? `Clearing local data for ${user}` : 'Clearing local data')
+    consola.info(
+      user ? `Clearing local data for ${user}` : 'Clearing local data'
+    )
 
-    const { confirmation } = await inquirer.prompt([{
-      name: 'confirmation',
-      message: 'All your local data will be removed. Do you want to continue?',
-      type: 'confirm'
-    }])
+    const { confirmation } = await inquirer.prompt([
+      {
+        name: 'confirmation',
+        message:
+          'All your local data will be removed. Do you want to continue?',
+        type: 'confirm'
+      }
+    ])
 
     if (!confirmation) {
       return consola.info('Logout aborted.')

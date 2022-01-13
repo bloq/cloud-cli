@@ -6,12 +6,14 @@ const clientKeys = require('../client-keys')
 const config = require('../config')
 
 class ClientKeysCommand extends Command {
-  async run () {
+  async run() {
     const user = config.get('user')
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error('User is not authenticated. Use login command to start a new session.')
+      return consola.error(
+        'User is not authenticated. Use login command to start a new session.'
+      )
     }
 
     const { args, flags } = this.parse(ClientKeysCommand)

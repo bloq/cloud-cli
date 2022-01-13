@@ -17,7 +17,7 @@ const config = require('../config')
  * @param {string} params.sort Key used to sort the output
  * @returns {Promise} The information cluster promise
  */
-async function listClusters ({ accessToken, all, sort }) {
+async function listClusters({ accessToken, all, sort }) {
   consola.info('Retrieving clusters.')
 
   const Authorization = `Bearer ${accessToken}`

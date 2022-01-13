@@ -5,14 +5,16 @@ const request = require('request')
 const config = require('../config')
 require('console.table')
 
-async function listUserKeys (user, accessToken, { type }) {
+async function listUserKeys(user, accessToken, { type }) {
   consola.info(`Getting user keys for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   let url = `${config.get(`services.${env}.accounts.url`)}/users/me/keys`
 
-  if (type) { url += `/${type}` }
+  if (type) {
+    url += `/${type}`
+  }
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
@@ -25,14 +27,20 @@ async function listUserKeys (user, accessToken, { type }) {
 
     const body = JSON.parse(data.body)
     if (data.statusCode !== 201) {
-      return consola.error(`Error listing user keys: ${body.code || body.message} | ${data.statusCode}.`)
+      return consola.error(
+        `Error listing user keys: ${body.code || body.message} | ${
+          data.statusCode
+        }.`
+      )
     }
 
     process.stdout.write('\n')
 
     for (const keys in body) {
       const keyType = keys.replace('keys', '')
-      if (type && type !== keyType) { continue }
+      if (type && type !== keyType) {
+        continue
+      }
 
       consola.success(`Retrieved ${body[keys].length} ${keyType} user keys:`)
       process.stdout.write('\n')
@@ -47,7 +55,7 @@ async function listUserKeys (user, accessToken, { type }) {
           type: keyType.toUpperCase()
         }
       })
-      console.table((body[keys]))
+      console.table(body[keys])
     }
   })
 }

@@ -15,7 +15,7 @@ const config = require('../config')
  * @param {string} params.sort Key used to sort the output
  * @returns {Promise} The services promise
  */
-async function getServices ({ sort }) {
+async function getServices({ sort }) {
   consola.info('Retrieving list of available services')
 
   const env = config.get('env') || 'prod'

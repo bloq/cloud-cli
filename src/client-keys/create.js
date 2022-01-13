@@ -13,7 +13,7 @@ const { coppyToClipboard } = require('../utils')
  * @param  {string} accessToken local access token
  * @returns {undefined}
  */
-async function createClientKey (user, accessToken) {
+async function createClientKey(user, accessToken) {
   consola.info(`Creating new pair of client keys for user ${user}.`)
 
   const { save } = await inquirer.prompt([
@@ -26,7 +26,9 @@ async function createClientKey (user, accessToken) {
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.accounts.url`)}/users/me/client-keys`
+  const url = `${config.get(
+    `services.${env}.accounts.url`
+  )}/users/me/client-keys`
 
   request.post(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
@@ -39,7 +41,9 @@ async function createClientKey (user, accessToken) {
 
     const body = JSON.parse(data.body)
     if (data.statusCode !== 200) {
-      return consola.error(`Error creating new pair of client keys: ${body.code || body.message}.`)
+      return consola.error(
+        `Error creating new pair of client keys: ${body.code || body.message}.`
+      )
     }
 
     process.stdout.write('\n')

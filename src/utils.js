@@ -9,7 +9,7 @@ const clipboardy = require('clipboardy')
  * @param {string} value What to copy to the clipboard.
  * @param {string} name The name of what is being copied.
  */
-function coppyToClipboard (value, name) {
+function coppyToClipboard(value, name) {
   try {
     clipboardy.write(value)
     consola.info(`${name} was copied to the clipboard.`)

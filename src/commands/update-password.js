@@ -8,7 +8,7 @@ const inquirer = require('inquirer')
 const config = require('../config')
 const { isPasswordValid, arePasswordEquals } = require('../validator')
 class UpdatePasswordCommand extends Command {
-  async run () {
+  async run() {
     const user = config.get('user')
     const accessToken = config.get('accessToken')
 
@@ -29,7 +29,12 @@ class UpdatePasswordCommand extends Command {
     ])
 
     await inquirer.prompt([
-      { name: 'confirmPassword', message: 'Confirm new password', type: 'password', validate: value => arePasswordEquals(value, newPassword) }
+      {
+        name: 'confirmPassword',
+        message: 'Confirm new password',
+        type: 'password',
+        validate: value => arePasswordEquals(value, newPassword)
+      }
     ])
 
     if (oldPassword === newPassword) {

@@ -20,7 +20,7 @@ const {
  *
  * @returns {Promise} password
  */
-async function askForPassowords () {
+async function askForPassowords() {
   const { password, confirmPassword } = await inquirer.prompt([
     {
       name: 'password',
@@ -45,7 +45,7 @@ async function askForPassowords () {
 }
 
 class SignupCommand extends Command {
-  async run () {
+  async run() {
     consola.info('☁️  Welcome to Bloq!')
     consola.info('We will guide you to create your new account')
 
@@ -56,8 +56,18 @@ class SignupCommand extends Command {
     config.delete('clientSecret')
 
     const { email, displayName } = await inquirer.prompt([
-      { name: 'email', message: 'Enter your email address', type: 'input', validate: isEmailValid },
-      { name: 'displayName', message: 'Enter your name', type: 'input', validate: isNotEmpty }
+      {
+        name: 'email',
+        message: 'Enter your email address',
+        type: 'input',
+        validate: isEmailValid
+      },
+      {
+        name: 'displayName',
+        message: 'Enter your name',
+        type: 'input',
+        validate: isNotEmpty
+      }
     ])
 
     const { countryName } = await inquirer.prompt([
@@ -100,21 +110,29 @@ class SignupCommand extends Command {
     const { acceptTerms } = await inquirer.prompt([
       {
         name: 'acceptTerms',
-        message: 'Use of Bloq’s services is subject to the Terms of Service found at https://bloq.cloud/legal \nPlease confirm that you have read and agree to the Terms of Service by selecting [“I accept”]',
+        message:
+          'Use of Bloq’s services is subject to the Terms of Service found at https://bloq.cloud/legal \nPlease confirm that you have read and agree to the Terms of Service by selecting [“I accept”]',
         type: 'list',
         choices: ['Decline', 'I accept']
       }
     ])
 
     if (acceptTerms === 'Decline') {
-      return consola.error('Terms & Conditions must be accepted in order to create a Bloq account and access Bloq services.') // eslint-disable-line
+      return consola.error(
+        'Terms & Conditions must be accepted in order to create a Bloq account and access Bloq services.'
+      ) // eslint-disable-line
     }
 
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/users`
 
     const { confirm } = await inquirer.prompt([
-      { name: 'confirm', message: 'Please check that your information is correct. Do you want to continue?', type: 'confirm' } // eslint-disable-line
+      {
+        name: 'confirm',
+        message:
+          'Please check that your information is correct. Do you want to continue?',
+        type: 'confirm'
+      } // eslint-disable-line
     ])
 
     if (!confirm) {

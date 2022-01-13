@@ -15,7 +15,7 @@ const config = require('../config')
  * @param {Object} params.all Boolean defining if it should show killed nodes
  * @returns {Promise} The information nodes promise
  */
-async function listNodes ({ accessToken, all }) {
+async function listNodes({ accessToken, all }) {
   consola.info('Retrieving all nodes')
 
   const Authorization = `Bearer ${accessToken}`
@@ -23,64 +23,65 @@ async function listNodes ({ accessToken, all }) {
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
   const spinner = ora().start()
 
-  request.get(url, { headers: { Authorization }, json: true }, function (
-    err,
-    data
-  ) {
-    spinner.stop()
-    if (err) {
-      return consola.error(`Error retrieving all nodes: ${err}.`)
-    }
+  request.get(
+    url,
+    { headers: { Authorization }, json: true },
+    function (err, data) {
+      spinner.stop()
+      if (err) {
+        return consola.error(`Error retrieving all nodes: ${err}.`)
+      }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
-    }
+      if (data.statusCode === 401 || data.statusCode === 403) {
+        return consola.error('Your session has expired')
+      }
 
-    if (data.statusCode !== 200) {
-      return consola.error(`Error retrieving all nodes: ${data.code}`)
-    }
+      if (data.statusCode !== 200) {
+        return consola.error(`Error retrieving all nodes: ${data.code}`)
+      }
 
-    let { body } = data
-    body = body.map(function ({
-      id,
-      chain,
-      state,
-      network,
-      ip,
-      createdAt,
-      serviceData,
-      stoppedAt
-    }) {
-      const node = {
+      let { body } = data
+      body = body.map(function ({
         id,
         chain,
+        state,
         network,
         ip,
-        state,
         createdAt,
-        version: serviceData.software,
-        performance: serviceData.performance
+        serviceData,
+        stoppedAt
+      }) {
+        const node = {
+          id,
+          chain,
+          network,
+          ip,
+          state,
+          createdAt,
+          version: serviceData.software,
+          performance: serviceData.performance
+        }
+
+        if (all) {
+          node.stoppedAt = stoppedAt || 'N/A'
+        }
+        return node
+      })
+
+      if (!all) {
+        body = body.filter(n => n.state !== 'stopped')
       }
 
-      if (all) {
-        node.stoppedAt = stoppedAt || 'N/A'
+      if (!body.length) {
+        const user = `${config.get('user')}`
+        return consola.success(`No nodes were found for user ${user}`)
       }
-      return node
-    })
 
-    if (!all) {
-      body = body.filter(n => n.state !== 'stopped')
+      consola.success(`Got ${body.length} nodes:`)
+      process.stdout.write('\n')
+      console.table(body)
     }
-
-    if (!body.length) {
-      const user = `${config.get('user')}`
-      return consola.success(`No nodes were found for user ${user}`)
-    }
-
-    consola.success(`Got ${body.length} nodes:`)
-    process.stdout.write('\n')
-    console.table(body)
-  })
+  )
 }
 
 module.exports = listNodes

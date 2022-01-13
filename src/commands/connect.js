@@ -19,7 +19,7 @@ const methods = {
 }
 
 class ConnectCommand extends Command {
-  async run () {
+  async run() {
     const clientId = config.get('clientId')
     const clientSecret = config.get('clientSecret')
     const env = config.get('env')
@@ -28,7 +28,9 @@ class ConnectCommand extends Command {
     const { method } = args
 
     if (!clientId || !clientSecret) {
-      return consola.error('You must provide a valid client-keys pair in order to use connect.')
+      return consola.error(
+        'You must provide a valid client-keys pair in order to use connect.'
+      )
     }
 
     const services = {
