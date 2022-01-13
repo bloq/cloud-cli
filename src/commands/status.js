@@ -13,16 +13,14 @@ const env = config.get('env') || 'prod'
 const services = config.get('services')
 const get = promisify(request.get)
 
-function getStatus(url) {
-  return get({ url, timeout: 5000 })
+const getStatus = (url) => get({ url, timeout: 5000 })
     .then(res => res.statusCode === 200)
     .catch(function (err) {
       if (err.code === 'ECONNREFUSED' || err.code === 'ESOCKETTIMEDOUT') {
         return false
       }
-      return Promise.reject(err)
-    })
-}
+      throw err
+    });
 
 class StatusCommand extends Command {
   async run() {
@@ -38,49 +36,19 @@ class StatusCommand extends Command {
       ),
       getStatus(
         new URL(services[env].nodes.statusEndpoint, services[env].nodes.url)
-      ),
-      getStatus(
-        new URL(
-          services[env].connect.btc.statusEndpoint,
-          services[env].connect.btc.url
-        )
-      ),
-      getStatus(
-        new URL(
-          services[env].connect.bch.statusEndpoint,
-          services[env].connect.bch.url
-        )
       )
     ])
-      .then(function ([
-        isAccountsUp,
-        isNodesUp,
-        isConnectBtcUp,
-        isConnectBchUp
-      ]) {
+      .then(function ([isAccountsUp, isNodesUp]) {
         const status = [
           {
             service: 'Accounts',
             status: isAccountsUp ? 'OK' : 'DOWN',
             url: services[env].accounts.url
           },
-
           {
             service: 'Nodes',
             status: isNodesUp ? 'OK' : 'DOWN',
             url: services[env].nodes.url
-          },
-
-          {
-            service: 'Connect BTC',
-            status: isConnectBtcUp ? 'OK' : 'DOWN',
-            url: services[env].connect.btc.url
-          },
-
-          {
-            service: 'Connect BCH',
-            status: isConnectBchUp ? 'OK' : 'DOWN',
-            url: services[env].connect.bch.url
           }
         ]
 
