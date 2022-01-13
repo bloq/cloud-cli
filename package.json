@@ -1,6 +1,6 @@
 {
   "name": "@bloq/cloud-cli",
-  "version": "2.8.0",
+  "version": "3.0.0",
   "description": "BloqCloud CLI",
   "keywords": [
     "oclif"
@@ -31,48 +31,66 @@
     "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
-    "@bloq/cloud-sdk": "1.0.1",
-    "@oclif/command": "1.5.13",
-    "@oclif/config": "1.12.12",
-    "@oclif/plugin-help": "2.1.6",
+    "@bloq/cloud-sdk": "1.0.2",
+    "@oclif/command": "1.8.16",
+    "@oclif/config": "1.18.2",
+    "@oclif/plugin-help": "2.2.3",
     "clipboardy": "1.2.3",
     "conf": "2.2.0",
-    "conf-cli": "0.1.8",
-    "consola": "2.14.0",
+    "conf-cli": "0.1.9",
+    "consola": "2.15.3",
     "console.table": "0.10.0",
     "country-region-data": "github:bloq/country-region-data#75dbb7c",
     "fast-password-entropy": "1.1.1",
-    "inquirer": "6.3.1",
+    "inquirer": "6.5.2",
     "jwt-decode": "2.2.0",
-    "node-fetch": "2.6.0",
-    "ora": "3.1.0",
-    "postal-codes-js": "2.1.0",
-    "request": "2.88.0",
+    "lodash": "4.17.21",
+    "node-fetch": "2.6.6",
+    "ora": "3.4.0",
+    "postal-codes-js": "2.5.2",
+    "request": "2.88.2",
     "update-notifier": "2.5.0"
   },
   "devDependencies": {
-    "@oclif/dev-cli": "1.22.0",
-    "@oclif/test": "1.2.4",
-    "chai": "4.2.0",
-    "eslint": "6.1.0",
-    "eslint-config-bloq": "2.1.0",
-    "eslint-config-standard": "13.0.1",
-    "eslint-plugin-import": "2.18.2",
-    "eslint-plugin-jsdoc": "4.8.3",
-    "eslint-plugin-mocha": "5.3.0",
-    "eslint-plugin-node": "9.1.0",
-    "eslint-plugin-prefer-arrow": "1.1.5",
-    "eslint-plugin-promise": "4.2.1",
+    "@oclif/dev-cli": "1.26.10",
+    "@oclif/test": "1.2.9",
+    "chai": "4.3.4",
+    "eslint": "8.6.0",
+    "eslint-config-bloq": "3.1.0",
+    "eslint-config-standard": "16.0.3",
+    "eslint-plugin-import": "2.25.4",
+    "eslint-plugin-jsdoc": "37.6.1",
+    "eslint-plugin-mocha": "10.0.3",
+    "eslint-plugin-node": "11.1.0",
+    "eslint-plugin-prefer-arrow": "1.2.3",
+    "eslint-plugin-promise": "6.0.0",
     "eslint-plugin-require-path-exists": "1.1.9",
-    "eslint-plugin-standard": "4.0.0",
-    "husky": "1.3.1",
-    "lint-staged": "9.2.1",
-    "mocha": "6.1.4",
-    "nyc": "14.1.0",
-    "prettier": "1.18.2"
+    "eslint-plugin-standard": "5.0.0",
+    "husky": "4.3.8",
+    "lint-staged": "12.1.7",
+    "mocha": "9.1.3",
+    "nyc": "15.1.0",
+    "prettier": "2.5.1"
   },
   "engines": {
-    "node": ">=8.0.0"
+    "node": ">=12"
+  },
+  "eslintConfig": {
+    "extends": [
+      "bloq",
+      "bloq/node",
+      "prettier"
+    ],
+    "root": true
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.{css,js,json,md}": "prettier --write"
   },
   "oclif": {
     "commands": "./src/commands",
@@ -81,5 +99,13 @@
       "@oclif/plugin-help",
       "conf-cli"
     ]
+  },
+  "prettier": {
+    "arrowParens": "avoid",
+    "quoteProps": "consistent",
+    "semi": false,
+    "singleQuote": true,
+    "tabWidth": 2,
+    "trailingComma": "none"
   }
 }

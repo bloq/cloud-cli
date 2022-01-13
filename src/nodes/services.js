@@ -12,7 +12,7 @@ const config = require('../config')
  *
  * @returns {Promise}
  */
-async function getServices () {
+async function getServices() {
   consola.info('Retrieving list of available services.')
 
   const env = config.get('env') || 'prod'

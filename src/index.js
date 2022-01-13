@@ -8,7 +8,7 @@ require('./updater')
 const configVersion = config.get('version')
 const isInitialized = config.get('isInitialized')
 
-if (isInitialized !== 'true' || (!configVersion || version > configVersion)) {
+if (isInitialized !== 'true' || !configVersion || version > configVersion) {
   config.store = Object.assign(config.store, defaultConfig)
   config.set('isInitialized', 'true')
 }

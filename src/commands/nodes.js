@@ -6,7 +6,7 @@ const config = require('../config')
 const nodes = require('../nodes')
 
 class NodesCommand extends Command {
-  async run () {
+  async run() {
     const { args, flags } = this.parse(NodesCommand)
     const accessToken = config.get('accessToken')
 

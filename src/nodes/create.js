@@ -17,7 +17,7 @@ const { coppyToClipboard } = require('../utils')
  * @param {Object} params.authType Authentication type
  * @returns {Promise} The create node promise
  */
-async function createNode ({ accessToken, serviceId, authType }) {
+async function createNode({ accessToken, serviceId, authType }) {
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
     return consola.error('Only admin users can create nodes with the CLI')
@@ -35,39 +35,39 @@ async function createNode ({ accessToken, serviceId, authType }) {
   const json = { serviceId, authType }
   const spinner = ora().start()
 
-  return request.post(url, { headers: { Authorization }, json }, function (
-    err,
-    data
-  ) {
-    spinner.stop()
-    if (err) {
-      return consola.error(`Error initializing the new node: ${err}`)
-    }
+  return request.post(
+    url,
+    { headers: { Authorization }, json },
+    function (err, data) {
+      spinner.stop()
+      if (err) {
+        return consola.error(`Error initializing the new node: ${err}`)
+      }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
-    }
+      if (data.statusCode === 401 || data.statusCode === 403) {
+        return consola.error('Your session has expired')
+      }
 
-    if (data.statusCode === 404) {
-      return consola.error(
-        'Error initializing the new node, requested resource not found'
-      )
-    }
+      if (data.statusCode === 404) {
+        return consola.error(
+          'Error initializing the new node, requested resource not found'
+        )
+      }
 
-    if (data.statusCode !== 201) {
-      return consola.error(`Error initializing the new node: ${data.code}`)
-    }
+      if (data.statusCode !== 201) {
+        return consola.error(`Error initializing the new node: ${data.code}`)
+      }
 
-    const { id, auth, state, chain, network, serviceData, ip } = data.body
+      const { id, auth, state, chain, network, serviceData, ip } = data.body
 
-    const creds =
-      auth.type === 'jwt'
-        ? '* Auth:\t\tJWT'
-        : `* User:\t\t${auth.user}
+      const creds =
+        auth.type === 'jwt'
+          ? '* Auth:\t\tJWT'
+          : `* User:\t\t${auth.user}
     * Password:\t\t${auth.pass}`
 
-    process.stdout.write('\n')
-    consola.success(`Initialized new node from service ${serviceId}
+      process.stdout.write('\n')
+      consola.success(`Initialized new node from service ${serviceId}
     * ID:\t\t${id}
     * Chain:\t\t${chain}
     * Network:\t\t${network}
@@ -77,9 +77,10 @@ async function createNode ({ accessToken, serviceId, authType }) {
     * IP:\t\t${ip}
     ${creds}`)
 
-    process.stdout.write('\n')
-    coppyToClipboard(id, 'Node id')
-  })
+      process.stdout.write('\n')
+      coppyToClipboard(id, 'Node id')
+    }
+  )
 }
 
 module.exports = createNode

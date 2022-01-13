@@ -15,10 +15,10 @@ const getCreds = body =>
     ? `
     * Auth:\t\tJWT`
     : body.auth.type === 'basic'
-      ? `
+    ? `
     * User:\t\t${body.auth.user}
     * Password:\t\t${body.auth.pass}`
-      : `
+    : `
     * Auth:\t\tnone`
 
 /**
@@ -29,7 +29,7 @@ const getCreds = body =>
  * @param {Object} params.clusterId Cluster ID
  * @returns {Promise} The information cluster promise
  */
-async function infoCluster ({ accessToken, clusterId }) {
+async function infoCluster({ accessToken, clusterId }) {
   consola.info('Retrieving cluster information')
 
   if (!clusterId) {
@@ -49,38 +49,38 @@ async function infoCluster ({ accessToken, clusterId }) {
   const url = `${serviceUrl}/users/me/clusters/${clusterId}`
   const spinner = ora().start()
 
-  request.get(url, { headers: { Authorization }, json: true }, function (
-    err,
-    data
-  ) {
-    spinner.stop()
+  request.get(
+    url,
+    { headers: { Authorization }, json: true },
+    function (err, data) {
+      spinner.stop()
 
-    if (err) {
-      consola.error(`Error retrieving the cluster: ${err}.`)
-      return
-    }
+      if (err) {
+        consola.error(`Error retrieving the cluster: ${err}.`)
+        return
+      }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      consola.error('Your session has expired')
-      return
-    }
+      if (data.statusCode === 401 || data.statusCode === 403) {
+        consola.error('Your session has expired')
+        return
+      }
 
-    if (data.statusCode === 404) {
-      consola.error(
-        'Error retrieving cluster information, requested resource not found'
-      )
-      return
-    }
+      if (data.statusCode === 404) {
+        consola.error(
+          'Error retrieving cluster information, requested resource not found'
+        )
+        return
+      }
 
-    const { body } = data
+      const { body } = data
 
-    if (data.statusCode !== 200) {
-      consola.error(`Error retrieving the cluster: ${body.code}`)
-      return
-    }
+      if (data.statusCode !== 200) {
+        consola.error(`Error retrieving the cluster: ${body.code}`)
+        return
+      }
 
-    process.stdout.write('\n')
-    consola.success(`Retrieved cluster with id ${clusterId}
+      process.stdout.write('\n')
+      consola.success(`Retrieved cluster with id ${clusterId}
     * ID:\t\t${body.id}
     * Name:\t\t${body.alias || body.name}
     * Chain:\t\t${body.chain}
@@ -91,7 +91,8 @@ async function infoCluster ({ accessToken, clusterId }) {
     * Capacity:\t\t${body.onDemandCapacity}:${body.capacity}
     * Region:\t\t${body.region}
     * State:\t\t${getState(body)}${getCreds(body)}`)
-  })
+    }
+  )
 }
 
 module.exports = infoCluster

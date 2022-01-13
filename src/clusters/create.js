@@ -22,14 +22,9 @@ const CLUSTER_MAX_CAPACITY = 10
  * @param {Object} params.onDemandCapacity Clusters on-demand capacity
  * @returns {Promise} The create cluster promise
  */
-async function createCluster (params) {
-  const {
-    accessToken,
-    authType,
-    capacity,
-    onDemandCapacity,
-    serviceId
-  } = params
+async function createCluster(params) {
+  const { accessToken, authType, capacity, onDemandCapacity, serviceId } =
+    params
 
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
@@ -60,46 +55,46 @@ async function createCluster (params) {
   const json = { serviceId, authType, capacity, onDemandCapacity }
   const spinner = ora().start()
 
-  return request.post(url, { headers: { Authorization }, json }, function (
-    err,
-    data
-  ) {
-    spinner.stop()
-    if (err) {
-      return consola.error(`Error initializing the new cluster: ${err}`)
-    }
+  return request.post(
+    url,
+    { headers: { Authorization }, json },
+    function (err, data) {
+      spinner.stop()
+      if (err) {
+        return consola.error(`Error initializing the new cluster: ${err}`)
+      }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
-    }
+      if (data.statusCode === 401 || data.statusCode === 403) {
+        return consola.error('Your session has expired')
+      }
 
-    if (data.statusCode === 404) {
-      return consola.error(
-        'Error initializing the new cluster, requested resource not found'
-      )
-    }
+      if (data.statusCode === 404) {
+        return consola.error(
+          'Error initializing the new cluster, requested resource not found'
+        )
+      }
 
-    const { body } = data
+      const { body } = data
 
-    if (data.statusCode !== 201) {
-      return consola.error(
-        `Error initializing the new cluster: ${body.detail || body.code}`
-      )
-    }
+      if (data.statusCode !== 201) {
+        return consola.error(
+          `Error initializing the new cluster: ${body.detail || body.code}`
+        )
+      }
 
-    const creds =
-      body.auth.type === 'jwt'
-        ? `
+      const creds =
+        body.auth.type === 'jwt'
+          ? `
     * Auth:\t\tJWT`
-        : body.auth.type === 'basic'
+          : body.auth.type === 'basic'
           ? `
     * User:\t\t${body.auth.user}
     * Password:\t\t${body.auth.pass}`
           : `
     * Auth:\t\tnone`
 
-    process.stdout.write('\n')
-    consola.success(`Initialized new cluster from service ${serviceId}
+      process.stdout.write('\n')
+      consola.success(`Initialized new cluster from service ${serviceId}
     * ID:\t\t${body.id}
     * Name:\t\t${body.name}
     * Chain:\t\t${body.chain}
@@ -111,9 +106,10 @@ async function createCluster (params) {
     * Region:\t\t${body.region}
     * State:\t\t${body.state}${creds}`)
 
-    process.stdout.write('\n')
-    coppyToClipboard(body.id, 'Cluster id')
-  })
+      process.stdout.write('\n')
+      coppyToClipboard(body.id, 'Cluster id')
+    }
+  )
 }
 
 module.exports = createCluster

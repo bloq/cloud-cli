@@ -37,7 +37,7 @@ const getUrlAndMethod = ({ abort, clusterId }) => ({
  * @param {Object} params.serviceId Service ID
  * @returns {Promise} The update cluster promise
  */
-async function updateCluster ({ accessToken, ...flags }) {
+async function updateCluster({ accessToken, ...flags }) {
   consola.info('Updating cluster')
 
   const prompt = await inquirer.prompt([

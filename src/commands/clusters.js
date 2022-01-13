@@ -6,7 +6,7 @@ const config = require('../config')
 const clusters = require('../clusters')
 
 class ClusterCommand extends Command {
-  async run () {
+  async run() {
     const { args, flags: _flags } = this.parse(ClusterCommand)
     const accessToken = config.get('accessToken')
 

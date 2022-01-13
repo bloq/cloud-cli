@@ -11,9 +11,10 @@ const MIN_ENTROPY = config.get('passwordEntropy')
  * @param  {string} email the email address
  * @returns {boolean|string} string with error message or true
  */
-function isEmailValid (email) {
+function isEmailValid(email) {
   // eslint-disable-next-line max-len
-  const EMAIL_REGEX = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // eslint-disable-line
+  const EMAIL_REGEX =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/ // eslint-disable-line
   if (EMAIL_REGEX.test(String(email).toLowerCase())) {
     return true
   }
@@ -27,9 +28,10 @@ function isEmailValid (email) {
  * @param  {string} user the user email or id
  * @returns {boolean|string} string with error message or true
  */
-function isUserValid (user) {
+function isUserValid(user) {
   // eslint-disable-next-line max-len
-  const USER_REGEX = /user-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i
+  const USER_REGEX =
+    /user-[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i
   if (USER_REGEX.test(user)) {
     return true
   }
@@ -48,9 +50,10 @@ function isUserValid (user) {
  * @param  {string} uuid the uuid
  * @returns {boolean|string} string with error message or true
  */
-function isUuidValid (uuid) {
+function isUuidValid(uuid) {
   // eslint-disable-next-line max-len
-  const UUID_REGEX = /[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i
+  const UUID_REGEX =
+    /[0-9a-f]{8}-[0-9a-f]{4}-[4][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}/i
   if (UUID_REGEX.test(uuid)) {
     return true
   }
@@ -64,7 +67,7 @@ function isUuidValid (uuid) {
  * @param  {any} value the value
  * @returns {boolean|string} string with error message or true
  */
-function isNotEmpty (value) {
+function isNotEmpty(value) {
   if (value === '' || value === undefined || value === null) {
     return 'The value can not be empty'
   }
@@ -78,7 +81,7 @@ function isNotEmpty (value) {
  * @param  {string} password the password
  * @returns {boolean|string} string with error message or true
  */
-function isPasswordValid (password) {
+function isPasswordValid(password) {
   const passwordEntropy = stringEntropy(password)
   if (passwordEntropy < MIN_ENTROPY) {
     // eslint-disable-next-line max-len
@@ -98,7 +101,7 @@ function isPasswordValid (password) {
  * @param  {string} password2 the second password
  * @returns {boolean|string} string with error message or true
  */
-function arePasswordEquals (password1, password2) {
+function arePasswordEquals(password1, password2) {
   if (password1 === password2) {
     return true
   }
@@ -113,7 +116,7 @@ function arePasswordEquals (password1, password2) {
  * @param  {string} zipCode the zip code
  * @returns {boolean|string} string with error message or true
  */
-function isZipCodeValid (countryCode, zipCode) {
+function isZipCodeValid(countryCode, zipCode) {
   return postalCodesValidator.validate(countryCode, zipCode) === true
     ? true
     : 'The zip code is invalid'

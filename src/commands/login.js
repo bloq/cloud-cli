@@ -7,7 +7,7 @@ const config = require('../config')
 
 const { Command, flags } = require('@oclif/command')
 
-function saveUser (user) {
+function saveUser(user) {
   config.set('user', user)
   consola.info(
     'Account saved. Next time you only need -p flag (--password) to login.'
@@ -15,7 +15,7 @@ function saveUser (user) {
 }
 
 class LoginCommand extends Command {
-  async run () {
+  async run() {
     consola.info('☁️  Welcome to Bloq!')
     const { flags } = this.parse(LoginCommand)
     let { user, password } = flags

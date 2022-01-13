@@ -5,7 +5,7 @@ const request = require('request')
 const config = require('../config')
 const inquirer = require('inquirer')
 
-async function infoUserKey (user, accessToken, { type, keyId }) {
+async function infoUserKey(user, accessToken, { type, keyId }) {
   if (!type) {
     const prompt = await inquirer.prompt([
       { name: 'type', message: 'Enter the key type', type: 'text' }
@@ -20,14 +20,18 @@ async function infoUserKey (user, accessToken, { type, keyId }) {
     ])
 
     keyId = prompt.keyId
-    if (!keyId) { return consola.error('Missing key id') }
+    if (!keyId) {
+      return consola.error('Missing key id')
+    }
   }
 
   consola.info(`Getting ${type} user keys with id ${keyId} for user ${user}.`)
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.accounts.url`)}/users/me/keys/${type}/${keyId}`
+  const url = `${config.get(
+    `services.${env}.accounts.url`
+  )}/users/me/keys/${type}/${keyId}`
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     if (err) {
@@ -40,7 +44,11 @@ async function infoUserKey (user, accessToken, { type, keyId }) {
 
     const body = JSON.parse(data.body)
     if (data.statusCode !== 201) {
-      return consola.error(`Error getting user key: ${body.code || body.message} | ${data.statusCode}.`)
+      return consola.error(
+        `Error getting user key: ${body.code || body.message} | ${
+          data.statusCode
+        }.`
+      )
     }
 
     consola.success(`
@@ -50,7 +58,9 @@ async function infoUserKey (user, accessToken, { type, keyId }) {
     * Type:\t\t${type}
     `)
 
-    if (body.keylist) { consola.success('\n', body.keylist) }
+    if (body.keylist) {
+      consola.success('\n', body.keylist)
+    }
   })
 }
 

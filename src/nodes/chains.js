@@ -12,7 +12,7 @@ const config = require('../config')
  *
  * @returns {Promise} The chains promise
  */
-async function getChains () {
+async function getChains() {
   consola.info('Retrieving list of available blockchains.')
 
   const env = config.get('env') || 'prod'
