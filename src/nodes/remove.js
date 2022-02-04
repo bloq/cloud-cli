@@ -20,8 +20,10 @@ async function removeNode({ accessToken, nodeId }) {
   consola.info('Removing node')
 
   const payload = jwtDecode(accessToken)
-  if (!payload.aud.includes('manager')) {
-    return consola.error('Only admin users can manage nodes with the CLI')
+  if (!payload.aud.includes('account')) {
+    return consola.error(
+      'Only authenticated users can remove nodes with the CLI'
+    )
   }
 
   if (!nodeId) {
@@ -29,6 +31,7 @@ async function removeNode({ accessToken, nodeId }) {
       { name: 'nodeId', message: 'Enter the node id', type: 'text' }
     ])
 
+    // eslint-disable-next-line no-param-reassign
     nodeId = prompt.nodeId
     if (!nodeId) {
       return consola.error('Missing node id')
@@ -83,7 +86,7 @@ async function removeNode({ accessToken, nodeId }) {
         return consola.error(`Error removing the node: ${body.code}`)
       }
 
-      consola.success(`Node with id ${nodeId} removed successfully`)
+      return consola.success(`Node with id ${nodeId} removed successfully`)
     }
   )
 }
