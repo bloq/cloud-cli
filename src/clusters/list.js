@@ -14,27 +14,33 @@ const config = require('../config')
  * @param {Object} params object
  * @param {string} params.accessToken Account access token
  * @param {boolean} params.all Flag defining if it should show killed clusters
+ * @param {string} params.allClusters List clusters from all users
  * @param {string} params.sort Key used to sort the output
+
  * @returns {Promise} The information cluster promise
  */
-async function listClusters({ accessToken, all, sort }) {
-  consola.info('Retrieving clusters.')
+async function listClusters({ accessToken, all, allClusters, sort }) {
+  consola.info('Retrieving clusters...')
 
   const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.nodes.url`)}/users/me/clusters`
+  const url = `${config.get(`services.${env}.nodes.url`)}${
+    allClusters ? '/clusters' : '/users/me/clusters'
+  }`
   const spinner = ora().start()
 
   request.get(url, { headers: { Authorization } }, function (err, data) {
     spinner.stop()
-    if (err) {
-      return consola.error(`Error retrieving all clusters: ${err}.`)
-    }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
+    if (err) {
+      return consola.error(`Error retrieving all clusters: ${err}`)
+    }
+    if (data.statusCode === 401) {
       return consola.error('Your session has expired')
     }
-
+    if (data.statusCode === 403) {
+      return consola.error('Permission denied')
+    }
     if (data.statusCode !== 200) {
       return consola.error(`Error retrieving all clusters: ${data.code}`)
     }
@@ -53,10 +59,12 @@ async function listClusters({ accessToken, all, sort }) {
       serviceData = {},
       state,
       stoppedAt,
-      updatingService
+      updatingService,
+      user
     }) {
       const cluster = {
         id,
+        user,
         chain,
         network,
         name: alias || name,
@@ -87,6 +95,7 @@ async function listClusters({ accessToken, all, sort }) {
 
     consola.success(`Got ${body.length} clusters:`)
     process.stdout.write('\n')
+    // eslint-disable-next-line no-console
     console.table(lodash.sortBy(body, sort.split(',') || 'createdAt'))
   })
 }

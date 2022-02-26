@@ -56,7 +56,13 @@ ClusterCommand.flags = {
   }),
   all: flags.boolean({
     char: 'a',
-    description: 'list all clusters',
+    description: 'list all clusters, started and stopped',
+    default: false,
+    required: false
+  }),
+  allClusters: flags.boolean({
+    char: 'A',
+    description: 'list all clusters from every user (admins only)',
     default: false,
     required: false
   }),
