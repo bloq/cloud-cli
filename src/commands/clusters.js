@@ -60,9 +60,9 @@ ClusterCommand.flags = {
     default: false,
     required: false
   }),
-  allUsers: flags.boolean({
+  allClusters: flags.boolean({
     char: 'A',
-    description: '[Admin profiles only] list all clusters from every user',
+    description: 'list all clusters from every user (admins only)',
     default: false,
     required: false
   }),
