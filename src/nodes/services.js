@@ -2,6 +2,7 @@
 
 const ora = require('ora')
 const consola = require('consola')
+const lodash = require('lodash')
 const request = require('request')
 require('console.table')
 
@@ -36,14 +37,19 @@ async function getServices() {
 
     process.stdout.write('\n')
     console.table(
-      body.map(({ chain, id, metadata, vendor, network }) => ({
-        chain,
-        network,
-        software: metadata.software,
-        performance: metadata.performance,
-        region: vendor.region,
-        id
-      }))
+      lodash.sortBy(
+        body
+          .filter(s => !s.disabled)
+          .map(({ chain, id, metadata, vendor, network }) => ({
+            chain,
+            network,
+            software: metadata.software,
+            performance: metadata.performance,
+            region: vendor.region,
+            id
+          })),
+        ['chain', 'network', 'software', 'performance', 'region']
+      )
     )
 
     return body

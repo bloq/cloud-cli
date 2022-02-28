@@ -42,18 +42,15 @@ async function getServices({ sort }) {
       lodash.sortBy(
         body
           .filter(s => !s.disabled)
-          .map(({ chain, createdAt, id, metadata, vendor, network }) => ({
+          .map(({ chain, id, metadata, vendor, network }) => ({
             chain,
-            performance: metadata.performance,
-            software: metadata.software,
             network,
-            vendor: vendor.name,
+            software: metadata.software,
+            performance: metadata.performance,
             region: vendor.region,
-            id,
-            amiPrefix: metadata.amiPrefix,
-            createdAt
+            id
           })),
-        sort.split(',') || [
+        (sort && sort.split(',')) || [
           'chain',
           'network',
           'software',
