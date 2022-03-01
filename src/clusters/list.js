@@ -51,11 +51,10 @@ async function listClusters({ accessToken, all, allClusters, sort }) {
       capacity,
       chain,
       createdAt,
-      healthCount,
+      healthCount = 0,
       id,
       name,
       network,
-      service,
       serviceData = {},
       state,
       stoppedAt,
@@ -64,21 +63,22 @@ async function listClusters({ accessToken, all, allClusters, sort }) {
     }) {
       const cluster = {
         id,
-        user,
         chain,
         network,
         name: alias || name,
         subdomain: name,
         state: state === 'started' && updatingService ? 'updating' : state,
-        health: healthCount && healthCount / capacity,
+        health: `${Math.round((healthCount / capacity) * 100)}%`,
         createdAt,
-        service,
         version: serviceData.software,
         performance: serviceData.performance
       }
 
       if (all) {
         cluster.stoppedAt = stoppedAt
+      }
+      if (allClusters) {
+        cluster.user = user.email
       }
 
       return cluster
