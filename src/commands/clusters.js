@@ -51,8 +51,7 @@ ClusterCommand.flags = {
   }),
   onDemandCapacity: flags.integer({
     char: 'o',
-    description: 'on-demand capacity',
-    default: 1
+    description: 'on-demand capacity'
   }),
   all: flags.boolean({
     char: 'a',
