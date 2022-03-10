@@ -11,6 +11,9 @@ class ClusterCommand extends Command {
     const accessToken = config.get('accessToken')
 
     switch (args.operation) {
+      case 'chains':
+        return clusters.chains()
+
       case 'create':
         return clusters.create({ accessToken, ..._flags })
 
@@ -90,6 +93,7 @@ ClusterCommand.args = [
     description: 'Specify the type of cluster operation to run',
     default: 'list',
     options: [
+      'chains',
       'create',
       'disable-service',
       'info',

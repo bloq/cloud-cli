@@ -1,6 +1,7 @@
 'use strict'
 
 const create = require('./create')
+const chains = require('./chains')
 const disable = require('./disable-service')
 const info = require('./info')
 const list = require('./list')
@@ -10,6 +11,7 @@ const update = require('./update')
 
 module.exports = {
   create,
+  chains,
   disable,
   info,
   list,
