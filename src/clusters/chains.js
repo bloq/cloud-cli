@@ -16,7 +16,7 @@ async function getChains() {
   consola.info('Retrieving list of available blockchains.')
 
   const env = config.get('env') || 'prod'
-  const url = `${config.get(`services.${env}.nodes.url`)}/chains/nodes`
+  const url = `${config.get(`services.${env}.nodes.url`)}/chains/cluster`
   const spinner = ora().start()
 
   return request.get(url, { json: true }, function (err, data) {
@@ -25,8 +25,12 @@ async function getChains() {
       return consola.error(`Error retrieving available blockchains: ${err}.`)
     }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
+    if (data.statusCode === 401) {
+      return consola.error('Unauthorized')
+    }
+
+    if (data.statusCode === 403) {
+      return consola.error('Your session has expired', data)
     }
 
     const { body } = data
