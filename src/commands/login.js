@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 'use strict'
 const ora = require('ora')
 const request = require('request')
@@ -42,7 +43,11 @@ class LoginCommand extends Command {
 
     if (!password) {
       const prompt = await inquirer.prompt([
-        { name: 'password', message: 'Enter your password', type: 'password' }
+        {
+          name: 'password',
+          message: 'Enter your password (without quotes)',
+          type: 'password'
+        }
       ])
 
       password = prompt.password
@@ -94,8 +99,11 @@ class LoginCommand extends Command {
 LoginCommand.description = 'Login to your Bloq account'
 
 LoginCommand.flags = {
-  user: flags.string({ char: 'u', description: 'email address or account id' }),
-  password: flags.string({ char: 'p', description: 'password' })
+  password: flags.string({
+    char: 'p',
+    description: `'password', surrounded by quotes`
+  }),
+  user: flags.string({ char: 'u', description: 'email address or account id' })
 }
 
 module.exports = LoginCommand
