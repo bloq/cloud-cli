@@ -13,9 +13,11 @@ const coppyToClipboard = (value, name) =>
   clipboardy
     .write(value)
     .then(() => consola.info(`${name} was copied to the clipboard.`))
-    .catch(err => {
-      consola.error(`Could not copy ${name} to the clipboard: ${err}`)
-    })
+    .catch(err =>
+      err.stderr && err.stderr.includes('xsel')
+        ? null
+        : consola.error(`Could not copy ${name} to the clipboard: ${err}`)
+    )
 
 module.exports = {
   coppyToClipboard
