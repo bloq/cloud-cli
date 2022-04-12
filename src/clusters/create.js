@@ -2,7 +2,7 @@
 
 const ora = require('ora')
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
@@ -55,61 +55,61 @@ async function createCluster(params) {
   const json = { serviceId, authType, capacity, onDemandCapacity }
   const spinner = ora().start()
 
-  return request.post(
-    url,
-    { headers: { Authorization }, json },
-    function (err, data) {
+  return fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization
+    },
+    body: JSON.stringify(json)
+  })
+    .then(res => {
       spinner.stop()
-      if (err) {
-        return consola.error(`Error initializing the new cluster: ${err}`)
-      }
-
-      if (data.statusCode === 401 || data.statusCode === 403) {
+      if (res.status === 401 || res.status === 403) {
         return consola.error('Your session has expired')
       }
 
-      if (data.statusCode === 404) {
+      if (res.status === 404) {
         return consola.error(
           'Error initializing the new cluster, requested resource not found'
         )
       }
-
-      const { body } = data
-
-      if (data.statusCode !== 201) {
+      if (res.status !== 201) {
         return consola.error(
-          `Error initializing the new cluster: ${body.detail || body.code}`
+          `Error initializing the new cluster: ${res.status || res.statusText}`
         )
       }
-
+      return res.json()
+    })
+    .then(res => {
       const creds =
-        body.auth.type === 'jwt'
+        res.auth.type === 'jwt'
           ? `
     * Auth:\t\tJWT`
-          : body.auth.type === 'basic'
+          : res.auth.type === 'basic'
           ? `
-    * User:\t\t${body.auth.user}
-    * Password:\t\t${body.auth.pass}`
+    * User:\t\t${res.auth.user}
+    * Password:\t\t${res.auth.pass}`
           : `
     * Auth:\t\tnone`
 
       process.stdout.write('\n')
       consola.success(`Initialized new cluster from service ${serviceId}
-    * ID:\t\t${body.id}
-    * Name:\t\t${body.name}
-    * Chain:\t\t${body.chain}
-    * Network:\t\t${body.network}
-    * Version:\t\t${body.serviceData.software}
-    * Performance:\t${body.serviceData.performance}
-    * Domain:\t\t${body.domain}
-    * Capacity:\t\t${body.onDemandCapacity}:${body.capacity}
-    * Region:\t\t${body.region}
-    * State:\t\t${body.state}${creds}`)
+    * ID:\t\t${res.id}
+    * Name:\t\t${res.name}
+    * Chain:\t\t${res.chain}
+    * Network:\t\t${res.network}
+    * Version:\t\t${res.serviceData.software}
+    * Performance:\t${res.serviceData.performance}
+    * Domain:\t\t${res.domain}
+    * Capacity:\t\t${res.onDemandCapacity}:${res.capacity}
+    * Region:\t\t${res.region}
+    * State:\t\t${res.state}${creds}`)
 
       process.stdout.write('\n')
-      coppyToClipboard(body.id, 'Cluster id')
-    }
-  )
+      coppyToClipboard(res.id, 'Cluster id')
+    })
+    .catch(err => consola.error(`Error initializing the new cluster: ${err}`))
 }
 
 module.exports = createCluster

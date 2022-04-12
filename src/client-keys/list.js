@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 const config = require('../config')
 require('console.table')
 
@@ -15,39 +15,45 @@ require('console.table')
 async function listClientKeys(user, accessToken) {
   consola.info(`Getting client keys for user ${user}.`)
 
-  const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(
     `services.${env}.accounts.url`
   )}/users/me/client-keys`
 
-  request.get(url, { headers: { Authorization } }, function (err, data) {
-    if (err) {
-      return consola.error(`Error listing client keys: ${err}.`)
+  const params = {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
     }
+  }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
-    }
+  fetch(url, params)
+    .then(res => {
+      if (res.status === 401 || res.status === 403) {
+        return consola.error('Your session has expired')
+      }
 
-    const body = JSON.parse(data.body)
-    if (data.statusCode !== 200) {
-      return consola.error(
-        `Error listing client keys: ${body.code || body.message} | ${
-          data.statusCode
-        }.`
-      )
-    }
+      if (res.status !== 200) {
+        return consola.error(
+          `Error listing client keys: ${res.status || res.statusText}.`
+        )
+      }
 
-    if (!body.length) {
-      const user = `${config.get('user')}`
-      return consola.success(`No client-keys were found for user ${user}`)
-    }
+      return res.json()
+    })
+    .then(data => {
+      if (!data.length) {
+        const userId = `${config.get('user')}`
+        return consola.success(`No client-keys were found for user ${userId}`)
+      }
 
-    consola.success(`Retrieved ${body.length} client keys:`)
-    process.stdout.write('\n')
-    console.table(body)
-  })
+      consola.success(`Retrieved ${data.length} client keys:`)
+      process.stdout.write('\n')
+      // eslint-disable-next-line no-console
+      return console.table(data)
+    })
+    .catch(err => consola.error(`Error listing client keys: ${err}.`))
 }
 
 module.exports = listClientKeys

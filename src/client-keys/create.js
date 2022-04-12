@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 const inquirer = require('inquirer')
 const config = require('../config')
 const { coppyToClipboard } = require('../utils')
@@ -24,44 +24,56 @@ async function createClientKey(user, accessToken) {
     }
   ])
 
-  const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(
     `services.${env}.accounts.url`
   )}/users/me/client-keys`
 
-  request.post(url, { headers: { Authorization } }, function (err, data) {
-    if (err) {
-      return consola.error(`Error creating new pair of client keys: ${err}.`)
+  const params = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${accessToken}`
     }
+  }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
-    }
+  fetch(url, params)
+    .then(res => {
+      if (res.status === 401 || res.status === 403) {
+        return consola.error('Your session has expired')
+      }
 
-    const body = JSON.parse(data.body)
-    if (data.statusCode !== 200) {
-      return consola.error(
-        `Error creating new pair of client keys: ${body.code || body.message}.`
-      )
-    }
+      if (res.status !== 200) {
+        return consola.error(
+          `Error creating new pair of client keys: ${
+            res.status || res.statusText
+          }.`
+        )
+      }
 
-    process.stdout.write('\n')
-    consola.success(`Generated new client keys:
-    * Client ID:\t${body.clientId}
-    * Client Secret:\t${body.clientSecret}
+      return res.json()
+    })
+    .then(data => {
+      process.stdout.write('\n')
+      consola.success(`Generated new client keys:
+    * Client ID:\t${data.clientId}
+    * Client Secret:\t${data.clientSecret}
     `)
 
-    coppyToClipboard(body.clientSecret, 'Client secret')
-    consola.warn(
-      'You will NOT be able to see your client secret again. Remember to copy it and keep it safe.'
-    )
+      consola.warn(
+        'You will NOT be able to see your client secret again. Remember to copy it and keep it safe.'
+      )
 
-    if (save) {
-      config.set('clientId', body.clientId)
-      config.set('clientSecret', body.clientSecret)
-    }
-  })
+      if (save) {
+        config.set('clientId', data.clientId)
+        config.set('clientSecret', data.clientSecret)
+      }
+
+      return coppyToClipboard(data.clientSecret, 'Client secret')
+    })
+    .catch(err =>
+      consola.error(`Error creating new pair of client keys: ${err}.`)
+    )
 }
 
 module.exports = createClientKey

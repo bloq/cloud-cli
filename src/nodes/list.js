@@ -2,7 +2,7 @@
 
 const ora = require('ora')
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 require('console.table')
 
 const config = require('../config')
@@ -23,24 +23,32 @@ async function listNodes({ accessToken, all }) {
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
   const spinner = ora().start()
 
-  request.get(
-    url,
-    { headers: { Authorization }, json: true },
-    function (err, data) {
-      spinner.stop()
-      if (err) {
-        return consola.error(`Error retrieving all nodes: ${err}.`)
-      }
+  const params = {
+    method: 'GET',
+    headers: {
+      Authorization,
+      'Content-Type': 'application/json'
+    }
+  }
 
-      if (data.statusCode === 401 || data.statusCode === 403) {
+  fetch(url, params)
+    .then(res => {
+      spinner.stop()
+
+      if (res.status === 401 || res.status === 403) {
         return consola.error('Your session has expired')
       }
 
-      if (data.statusCode !== 200) {
-        return consola.error(`Error retrieving all nodes: ${data.code}`)
+      if (res.status !== 200) {
+        return consola.error(
+          `Error retrieving all nodes: ${res.statusText || res.status}`
+        )
       }
 
-      let { body } = data
+      return res.json()
+    })
+    .then(res => {
+      let body = res
       body = body.map(function ({
         id,
         chain,
@@ -79,9 +87,13 @@ async function listNodes({ accessToken, all }) {
 
       consola.success(`Got ${body.length} nodes:`)
       process.stdout.write('\n')
-      console.table(body)
-    }
-  )
+      // eslint-disable-next-line no-console
+      return console.table(body)
+    })
+    .catch(err => {
+      spinner.stop()
+      return consola.error(`Error retrieving all nodes: ${err}.`)
+    })
 }
 
 module.exports = listNodes

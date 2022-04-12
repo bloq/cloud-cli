@@ -2,7 +2,6 @@
 
 const consola = require('consola')
 const fetch = require('node-fetch').default
-
 const inquirer = require('inquirer')
 const { Command } = require('@oclif/command')
 

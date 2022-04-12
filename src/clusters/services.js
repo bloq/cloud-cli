@@ -3,7 +3,7 @@
 const ora = require('ora')
 const consola = require('consola')
 const lodash = require('lodash')
-const request = require('request')
+const fetch = require('node-fetch').default
 require('console.table')
 
 const config = require('../config')
@@ -22,46 +22,54 @@ async function getServices({ sort }) {
   const url = `${config.get(`services.${env}.nodes.url`)}/services/cluster`
   const spinner = ora().start()
 
-  return request.get(url, {}, function (err, data) {
-    spinner.stop()
-    if (err) {
-      return consola.error(`Error retrieving available services: ${err}.`)
-    }
+  const params = {
+    method: 'GET'
+  }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
-    }
+  return fetch(url, params)
+    .then(res => {
+      spinner.stop()
 
-    const body = JSON.parse(data.body)
-    if (data.statusCode !== 200) {
-      return consola.error(`Error retrieving available services: ${body.code}`)
-    }
+      if (res.statusCode === 401 || res.statusCode === 403) {
+        return consola.error('Your session has expired')
+      }
 
-    process.stdout.write('\n')
-    console.table(
-      lodash.sortBy(
-        body
-          .filter(s => !s.disabled)
-          .map(({ chain, id, metadata, vendor, network }) => ({
-            chain,
-            network,
-            software: metadata.software,
-            performance: metadata.performance,
-            region: vendor.region,
-            id
-          })),
-        (sort && sort.split(',')) || [
-          'chain',
-          'network',
-          'software',
-          'performance',
-          'region'
-        ]
+      if (res.status !== 200) {
+        return consola.error(
+          `Error retrieving available services: ${res.status}`
+        )
+      }
+
+      return res.json()
+    })
+    .then(res => {
+      process.stdout.write('\n')
+      // eslint-disable-next-line no-console
+      console.table(
+        lodash.sortBy(
+          res
+            .filter(s => !s.disabled)
+            .map(({ chain, id, metadata, vendor, network }) => ({
+              chain,
+              network,
+              software: metadata.software,
+              performance: metadata.performance,
+              region: vendor.region,
+              id
+            })),
+          (sort && sort.split(',')) || [
+            'chain',
+            'network',
+            'software',
+            'performance',
+            'region'
+          ]
+        )
       )
-    )
 
-    return body
-  })
+      return res
+    })
+    .catch(err => consola.error(`Error retrieving available services: ${err}.`))
 }
 
 module.exports = getServices
