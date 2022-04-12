@@ -1,61 +1,75 @@
 'use strict'
 
 const URL = require('url').URL
-const ora = require('ora')
 const consola = require('consola')
-const request = require('request')
-const { promisify } = require('util')
+const fetch = require('node-fetch').default
 const { Command } = require('@oclif/command')
 const config = require('../config')
 require('console.table')
 
 const env = config.get('env') || 'prod'
 const services = config.get('services')
-const get = promisify(request.get)
 
-const getStatus = (url) => get({ url, timeout: 5000 })
-    .then(res => res.statusCode === 200)
-    .catch(function (err) {
-      if (err.code === 'ECONNREFUSED' || err.code === 'ESOCKETTIMEDOUT') {
-        return false
+const accountsUrl = new URL(
+  services[env].accounts.statusEndpoint,
+  services[env].accounts.url
+)
+
+const nodesUrl = new URL(
+  services[env].nodes.statusEndpoint,
+  services[env].nodes.url
+)
+
+const servicePromise = (url, name) =>
+  fetch(url)
+    .then(res => {
+      const response = {
+        service: name,
+        status: res.status === 200 ? 'OK' : 'DOWN',
+        url
       }
-      throw err
-    });
+      return response
+    })
+    .catch(function (err) {
+      const response = {
+        service: name,
+        status:
+          err.code === 'ECONNREFUSED' ||
+          err.code === 'ESOCKETTIMEDOUT' ||
+          err.code === 'ENOTFOUND'
+            ? 'DOWN'
+            : 'UNKNOWN',
+        url
+      }
+      return response
+    })
+
+const timePromise = (url, name) =>
+  new Promise(resolve => {
+    setTimeout(resolve, 5000, {
+      service: name,
+      status: 'TIMEOUT',
+      url
+    })
+  })
 
 class StatusCommand extends Command {
   async run() {
     consola.info(`Retrieving Bloq status: ${env}`)
 
-    const spinner = ora().start()
     Promise.all([
-      getStatus(
-        new URL(
-          services[env].accounts.statusEndpoint,
-          services[env].accounts.url
-        )
-      ),
-      getStatus(
-        new URL(services[env].nodes.statusEndpoint, services[env].nodes.url)
-      )
+      Promise.race([
+        timePromise(accountsUrl, 'Accounts'),
+        servicePromise(accountsUrl, 'Accounts')
+      ]),
+      Promise.race([
+        timePromise(nodesUrl, 'Nodes'),
+        servicePromise(nodesUrl, 'Nodes')
+      ])
     ])
-      .then(function ([isAccountsUp, isNodesUp]) {
-        const status = [
-          {
-            service: 'Accounts',
-            status: isAccountsUp ? 'OK' : 'DOWN',
-            url: services[env].accounts.url
-          },
-          {
-            service: 'Nodes',
-            status: isNodesUp ? 'OK' : 'DOWN',
-            url: services[env].nodes.url
-          }
-        ]
-
-        spinner.stop()
-
-        consola.info(`Bloq status: ${env}\n`)
-        console.table(status)
+      .then(res => {
+        // eslint-disable-next-line no-console
+        console.table(res)
       })
       .catch(function (err) {
         consola.error(err)
