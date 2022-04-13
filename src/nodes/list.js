@@ -49,6 +49,10 @@ async function listNodes({ accessToken, all }) {
     })
     .then(res => {
       let body = res
+      if (!body.length) {
+        const user = `${config.get('user')}`
+        return consola.success(`No nodes were found for user ${user}`)
+      }
       body = body.map(function ({
         id,
         chain,
@@ -78,11 +82,6 @@ async function listNodes({ accessToken, all }) {
 
       if (!all) {
         body = body.filter(n => n.state !== 'stopped')
-      }
-
-      if (!body.length) {
-        const user = `${config.get('user')}`
-        return consola.success(`No nodes were found for user ${user}`)
       }
 
       consola.success(`Got ${body.length} nodes:`)
