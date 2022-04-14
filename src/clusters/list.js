@@ -58,7 +58,7 @@ async function listClusters({ accessToken, all, allClusters, sort }) {
     })
     .then(function (data) {
       let body = data
-
+      if (!body) return
       if (!body.length) {
         const user = `${config.get('user')}`
         return consola.success(`No clusters were found for user ${user}`)

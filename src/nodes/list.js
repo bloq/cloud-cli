@@ -49,6 +49,8 @@ async function listNodes({ accessToken, all }) {
     })
     .then(res => {
       let body = res
+      if (!body) return
+
       if (!body.length) {
         const user = `${config.get('user')}`
         return consola.success(`No nodes were found for user ${user}`)
