@@ -2,7 +2,7 @@
 
 const ora = require('ora')
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
@@ -35,30 +35,39 @@ async function createNode({ accessToken, serviceId, authType }) {
   const json = { serviceId, authType }
   const spinner = ora().start()
 
-  return request.post(
-    url,
-    { headers: { Authorization }, json },
-    function (err, data) {
-      spinner.stop()
-      if (err) {
-        return consola.error(`Error initializing the new node: ${err}`)
-      }
+  const params = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Authorization
+    },
+    body: JSON.stringify(json)
+  }
 
-      if (data.statusCode === 401 || data.statusCode === 403) {
+  fetch(url, params)
+    .then(res => {
+      spinner.stop()
+
+      if (res.status === 401 || res.status === 403) {
         return consola.error('Your session has expired')
       }
 
-      if (data.statusCode === 404) {
+      if (res.status === 404) {
         return consola.error(
           'Error initializing the new node, requested resource not found'
         )
       }
 
-      if (data.statusCode !== 201) {
-        return consola.error(`Error initializing the new node: ${data.code}`)
+      if (res.status !== 201) {
+        return consola.error(
+          `Error initializing the new node: ${res.statusText || res.status}`
+        )
       }
 
-      const { id, auth, state, chain, network, serviceData, ip } = data.body
+      return res.json()
+    })
+    .then(res => {
+      const { id, auth, state, chain, network, serviceData, ip } = res
 
       const creds =
         auth.type === 'jwt'
@@ -79,8 +88,11 @@ async function createNode({ accessToken, serviceId, authType }) {
 
       process.stdout.write('\n')
       coppyToClipboard(id, 'Node id')
-    }
-  )
+    })
+    .catch(err => {
+      spinner.stop()
+      return consola.error(`Error initializing the new node: ${err}`)
+    })
 }
 
 module.exports = createNode

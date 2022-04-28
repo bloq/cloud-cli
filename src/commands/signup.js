@@ -2,7 +2,7 @@
 
 const ora = require('ora')
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 const inquirer = require('inquirer')
 const countriesData = require('country-region-data')
 const { Command } = require('@oclif/command')
@@ -120,7 +120,7 @@ class SignupCommand extends Command {
     if (acceptTerms === 'Decline') {
       return consola.error(
         'Terms & Conditions must be accepted in order to create a Bloq account and access Bloq services.'
-      ) // eslint-disable-line
+      )
     }
 
     const env = config.get('env') || 'prod'
@@ -132,15 +132,19 @@ class SignupCommand extends Command {
         message:
           'Please check that your information is correct. Do you want to continue?',
         type: 'confirm'
-      } // eslint-disable-line
+      }
     ])
 
     if (!confirm) {
       return consola.error('Bloq signup aborted')
     }
 
-    const body = {
-      json: {
+    const params = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: {
         email,
         displayName,
         password,
@@ -156,21 +160,20 @@ class SignupCommand extends Command {
     consola.info('Creating your new Bloq account')
     const spinner = ora().start()
 
-    request.post(url, body, function (err, data) {
-      spinner.stop()
-      if (err) {
-        return consola.error(`Error creating Bloq account: ${err}`)
-      }
+    fetch(url, params)
+      .then(res => {
+        spinner.stop()
 
-      if (data.statusCode !== 201) {
-        return consola.error(
-          `Error creating Bloq account: ${data.body.code || data.body.message}`
-        )
-      }
+        if (res.status !== 201) {
+          return consola.error(
+            `Error creating Bloq account: ${res.statusText || res.status}`
+          )
+        }
 
-      consola.success('Generated new Bloq account')
-      consola.info(`Email sent to ${email} confirm your account.`)
-    })
+        consola.success('Generated new Bloq account')
+        return consola.info(`Email sent to ${email} confirm your account.`)
+      })
+      .catch(err => consola.error(`Error creating Bloq account: ${err}`))
   }
 }
 

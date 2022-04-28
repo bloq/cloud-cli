@@ -1,7 +1,8 @@
+/* eslint-disable no-param-reassign */
 'use strict'
 
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 const config = require('../config')
 const inquirer = require('inquirer')
 
@@ -33,35 +34,43 @@ async function infoUserKey(user, accessToken, { type, keyId }) {
     `services.${env}.accounts.url`
   )}/users/me/keys/${type}/${keyId}`
 
-  request.get(url, { headers: { Authorization } }, function (err, data) {
-    if (err) {
-      return consola.error(`Error getting user key: ${err}.`)
+  const params = {
+    method: 'GET',
+    headers: {
+      Authorization,
+      'Content-Type': 'application/json'
     }
+  }
 
-    if (data.statusCode === 401 || data.statusCode === 403) {
-      return consola.error('Your session has expired')
-    }
+  fetch(url, params)
+    .then(res => {
+      if (res.status === 401 || res.status === 403) {
+        return consola.error('Your session has expired')
+      }
 
-    const body = JSON.parse(data.body)
-    if (data.statusCode !== 201) {
-      return consola.error(
-        `Error getting user key: ${body.code || body.message} | ${
-          data.statusCode
-        }.`
-      )
-    }
+      if (res.status !== 201) {
+        return consola.error(
+          `Error getting user key: ${res.statusText || res.status}.`
+        )
+      }
 
-    consola.success(`
-    * ID:\t\t${keyId}
-    * Value:\t\t${body.email || body.address}
-    * Verified At:\t${body.veriedAt || '-'}
-    * Type:\t\t${type}
-    `)
+      return res.json()
+    })
+    .then(res => {
+      let body = res
 
-    if (body.keylist) {
-      consola.success('\n', body.keylist)
-    }
-  })
+      consola.success(`
+      * ID:\t\t${keyId}
+      * Value:\t\t${body.email || body.address}
+      * Verified At:\t${body.veriedAt || '-'}
+      * Type:\t\t${type}
+      `)
+
+      if (body.keylist) {
+        consola.success('\n', body.keylist)
+      }
+    })
+    .catch(err => consola.error(`Error getting user key: ${err}.`))
 }
 
 module.exports = infoUserKey

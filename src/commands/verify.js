@@ -1,7 +1,7 @@
 'use strict'
 
 const ora = require('ora')
-const request = require('request')
+const fetch = require('node-fetch').default
 const consola = require('consola')
 const inquirer = require('inquirer')
 const { Command, flags } = require('@oclif/command')
@@ -54,30 +54,35 @@ class VerifyCommand extends Command {
 
     const spinner = ora().start()
 
-    request.put(url, {}, function (err, data) {
-      spinner.stop()
-      if (err) {
-        return consola.error(`Error verifying your account: ${err}`)
-      }
+    const params = {
+      method: 'PUT'
+    }
 
-      if (data.statusCode === 404) {
-        return consola.error('User does not exist')
-      }
+    fetch(url, params)
+      .then(res => {
+        spinner.stop()
 
-      if (data.statusCode !== 204) {
-        const body = JSON.parse(data.body)
-        if (body.code === 'UserVerified') {
-          return consola.warn(`Your account is already verified
-            To start a new session run the command: bcl login -u ${user}`)
+        if (res.status === 404) {
+          return consola.error('User does not exist')
         }
-        return consola.error(`Error verifying your account: ${body.code}`)
-      }
 
-      consola.success(`The account ${user} has been validated.`)
-      consola.info(
-        `You can now start a new session running the command: bcl login -u ${user}`
-      )
-    })
+        if (res.status === 204) {
+          consola.success(`The account ${user} has been validated.`)
+          return consola.info(
+            `You can now start a new session running the command: bcl login -u ${user}`
+          )
+        }
+        return res.json()
+      })
+      .then(function (res) {
+        if (res.code === 'UserVerified') {
+          return consola.warn(`Your account is already verified
+          To start a new session run the command: bcl login -u ${user}`)
+        }
+
+        return consola.error(`Error verifying your account: ${res.code}`)
+      })
+      .catch(err => consola.error(`Error verifying your account: ${err}`))
   }
 }
 

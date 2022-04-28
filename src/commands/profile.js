@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 const { Command } = require('@oclif/command')
 const config = require('../config')
 
@@ -17,39 +17,42 @@ class ProfileCommand extends Command {
     }
 
     consola.info(`Retrieving profile for user ${user}`)
-    const Authorization = `Bearer ${accessToken}`
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/users/me`
 
-    request.get(
-      url,
-      {
-        headers: { Authorization }
-      },
-      function (err, data) {
-        if (err) {
-          return consola.error(`Error retrieving user profile: ${err}`)
-        }
+    const params = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
+      }
+    }
 
-        if (data.statusCode === 401 || data.statusCode === 403) {
+    fetch(url, params)
+      .then(res => {
+        if (res.status === 401 || res.status === 403) {
           return consola.error('Your session has expired')
         }
 
-        const body = JSON.parse(data.body)
-        if (data.statusCode !== 200) {
-          return consola.error(`Error trying to get user profile: ${body.code}`)
+        if (res.status !== 200) {
+          return consola.error(
+            `Error trying to get user profile: ${res.statusText || res.status}.`
+          )
         }
 
-        const { verifiedAt, id, displayName, email } = body
+        return res.json()
+      })
+      .then(res => {
+        const { verifiedAt, id, displayName, email } = res
 
         consola.success(`Retrieved user profile:
-        * id:\t\t${id}
-        * displayName:\t${displayName}
-        * email:\t${email}
-        * verified:\t${!!verifiedAt}
-      `)
-      }
-    )
+      * id:\t\t${id}
+      * displayName:\t${displayName}
+      * email:\t${email}
+      * verified:\t${!!verifiedAt}
+    `)
+      })
+      .catch(err => consola.error(`Error retrieving user profile: ${err}`))
   }
 }
 

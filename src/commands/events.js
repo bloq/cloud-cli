@@ -2,7 +2,7 @@
 
 const ora = require('ora')
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 const { Command, flags } = require('@oclif/command')
 const config = require('../config')
 require('console.table')
@@ -21,45 +21,54 @@ class EventsCommand extends Command {
 
     consola.info(`Retrieving events for user ${user}`)
 
-    const Authorization = `Bearer ${accessToken}`
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/users/me/events`
     const spinner = ora().start()
 
-    request.get(url, { headers: { Authorization } }, function (err, data) {
-      spinner.stop()
-      if (err) {
-        return consola.error(`Error retrieving events: ${err}`)
+    const params = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`
       }
+    }
 
-      if (data.statusCode === 401 || data.statusCode === 403) {
-        return consola.error('Your session has expired')
-      }
+    fetch(url, params)
+      .then(res => {
+        spinner.stop()
 
-      const body = JSON.parse(data.body)
-      if (data.statusCode !== 200) {
-        return consola.error(`Error retrieving events: ${body.code}`)
-      }
+        if (res.status === 401 || res.status === 403) {
+          return consola.error('Your session has expired')
+        }
 
-      let events = body.map(function ({ id, service, serviceData, createdAt }) {
-        return {
+        if (res.status !== 200) {
+          return consola.error(
+            `Error retrieving events: ${res.statusText || res.status}.`
+          )
+        }
+
+        return res.json()
+      })
+      .then(function (res) {
+        let events = res.map(({ id, service, serviceData, createdAt }) => ({
           id,
           service,
           serviceData: JSON.stringify(serviceData),
           createdAt
+        }))
+
+        if (flags.service) {
+          events = events.filter(e =>
+            e.service.toLowerCase().includes(flags.service)
+          )
         }
+
+        consola.success(`Retrieved ${events.length} events:`)
+        process.stdout.write('\n')
+        // eslint-disable-next-line no-console
+        return console.table(events)
       })
-
-      if (flags.service) {
-        events = events.filter(e =>
-          e.service.toLowerCase().includes(flags.service)
-        )
-      }
-
-      consola.success(`Retrieved ${events.length} events:`)
-      process.stdout.write('\n')
-      console.table(events)
-    })
+      .catch(err => consola.error(`Error retrieving events: ${err}`))
   }
 }
 

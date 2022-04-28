@@ -2,7 +2,7 @@
 
 const ora = require('ora')
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 const inquirer = require('inquirer')
 
 const config = require('../config')
@@ -36,6 +36,7 @@ async function infoCluster({ accessToken, clusterId }) {
     const prompt = await inquirer.prompt([
       { name: 'clusterId', message: 'Enter the cluster id', type: 'text' }
     ])
+    // eslint-disable-next-line no-param-reassign
     clusterId = prompt.clusterId
     if (!clusterId) {
       consola.error('Missing cluster id')
@@ -49,50 +50,50 @@ async function infoCluster({ accessToken, clusterId }) {
   const url = `${serviceUrl}/users/me/clusters/${clusterId}`
   const spinner = ora().start()
 
-  request.get(
-    url,
-    { headers: { Authorization }, json: true },
-    function (err, data) {
+  const params = {
+    method: 'GET',
+    headers: { Authorization }
+  }
+  fetch(url, params)
+    .then(res => {
       spinner.stop()
 
-      if (err) {
-        consola.error(`Error retrieving the cluster: ${err}.`)
-        return
+      if (res.status === 401) {
+        return consola.error('Unauthorized')
       }
 
-      if (data.statusCode === 401 || data.statusCode === 403) {
-        consola.error('Your session has expired')
-        return
+      if (res.status === 403) {
+        return consola.error('Your session has expired', res.status)
       }
 
-      if (data.statusCode === 404) {
-        consola.error(
+      if (res.status === 404) {
+        return consola.error(
           'Error retrieving cluster information, requested resource not found'
         )
-        return
       }
 
-      const { body } = data
-
-      if (data.statusCode !== 200) {
-        consola.error(`Error retrieving the cluster: ${body.code}`)
-        return
+      if (res.status !== 200) {
+        return consola.error(
+          `Error retrieving the cluster: ${res.status} || ${res.statusText}`
+        )
       }
-
+      return res.json()
+    })
+    .then(res => {
       process.stdout.write('\n')
       consola.success(`Retrieved cluster with id ${clusterId}
-    * ID:\t\t${body.id}
-    * Name:\t\t${body.alias || body.name}
-    * Chain:\t\t${body.chain}
-    * Network:\t\t${body.network}
-    * Version:\t\t${body.serviceData.software}
-    * Performance:\t${body.serviceData.performance}
-    * Domain:\t\t${body.domain}
-    * Capacity:\t\t${body.onDemandCapacity}:${body.capacity}
-    * Region:\t\t${body.region}
-    * State:\t\t${getState(body)}${getCreds(body)}`)
-    }
-  )
+      * ID:\t\t${res.id}
+      * Name:\t\t${res.alias || res.name}
+      * Chain:\t\t${res.chain}
+      * Network:\t\t${res.network}
+      * Version:\t\t${res.serviceData.software}
+      * Performance:\t${res.serviceData.performance}
+      * Domain:\t\t${res.domain}
+      * Capacity:\t\t${res.onDemandCapacity}:${res.capacity}
+      * Region:\t\t${res.region}
+      * State:\t\t${getState(res)}${getCreds(res)}`)
+    })
+    .catch(err => consola.error(`Error retrieving the cluster: ${err}.`))
 }
 
 module.exports = infoCluster

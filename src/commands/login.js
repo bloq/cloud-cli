@@ -1,6 +1,6 @@
 'use strict'
 const ora = require('ora')
-const request = require('request')
+const fetch = require('node-fetch').default
 const consola = require('consola')
 const inquirer = require('inquirer')
 const config = require('../config')
@@ -58,36 +58,37 @@ class LoginCommand extends Command {
     const url = `${config.get(`services.${env}.accounts.url`)}/auth`
     const spinner = ora().start()
 
-    request.post(
-      url,
-      {
-        headers: { Authorization },
-        json: true
-      },
-      function (err, data) {
+    const params = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization
+      }
+    }
+
+    fetch(url, params)
+      .then(res => {
         spinner.stop()
-        if (err) {
-          return consola.error(`Error retrieving access token: ${err}`)
-        }
 
-        const { statusCode, body } = data
-
-        if (statusCode === 401 || statusCode === 403) {
+        if (res.status === 401 || res.status === 403) {
           return consola.error(
             'The username or password you entered is incorrect'
           )
         }
 
-        if (statusCode !== 200) {
+        if (res.status !== 200) {
           return consola.error(
-            `Error retrieving access token: ${body.code || body.message}`
+            `Error retrieving access token: ${res.statusText || res.status}`
           )
         }
 
-        config.set('accessToken', body.accessToken)
-        consola.success('Login success. Your session expires in 12h.')
-      }
-    )
+        return res.json()
+      })
+      .then(res => {
+        config.set('accessToken', res.accessToken)
+        return consola.success('Login success. Your session expires in 12h.')
+      })
+      .catch(err => consola.error(`Error retrieving access token: ${err}`))
   }
 }
 

@@ -2,7 +2,7 @@
 
 const ora = require('ora')
 const consola = require('consola')
-const request = require('request')
+const fetch = require('node-fetch').default
 const inquirer = require('inquirer')
 const config = require('../config')
 
@@ -34,30 +34,38 @@ async function infoNode({ accessToken, nodeId }) {
   )}/users/me/nodes/${nodeId}`
   const spinner = ora().start()
 
-  return request.get(
-    url,
-    { headers: { Authorization }, json: true },
-    function (err, data) {
-      spinner.stop()
-      if (err) {
-        return consola.error(`Error retrieving the node: ${err}.`)
-      }
+  const params = {
+    method: 'GET',
+    headers: {
+      Authorization,
+      'Content-Type': 'application/json'
+    }
+  }
 
-      if (data.statusCode === 401 || data.statusCode === 403) {
+  fetch(url, params)
+    .then(res => {
+      spinner.stop()
+
+      if (res.status === 401 || res.status === 403) {
         return consola.error('Your session has expired')
       }
 
-      if (data.statusCode === 404) {
+      if (res.status === 404) {
         return consola.error(
           'Error retrieving node information, requested resource not found'
         )
       }
 
-      const { body } = data
-      if (data.statusCode !== 200) {
-        return consola.error(`Error retrieving the node: ${body.code}.`)
+      if (res.status !== 200) {
+        return consola.error(
+          `Error retrieving the node: ${res.statusText || res.status}.`
+        )
       }
 
+      return res.json()
+    })
+    .then(res => {
+      let body = res
       const {
         id,
         auth,
@@ -88,8 +96,11 @@ async function infoNode({ accessToken, nodeId }) {
     * State:\t\t${state}
     * IP:\t\t${ip}
     ${creds}`)
-    }
-  )
+    })
+    .catch(err => {
+      spinner.stop()
+      return consola.error(`Error retrieving the node: ${err}.`)
+    })
 }
 
 module.exports = infoNode
