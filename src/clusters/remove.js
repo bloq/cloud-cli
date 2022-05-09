@@ -15,7 +15,7 @@ const config = require('../config')
  * @param {Object} params.clusterId Cluster ID
  * @returns {Promise} The remove cluster promise
  */
-async function removeCluster({ accessToken, clusterId }) {
+async function removeCluster({ accessToken, clusterId, force }) {
   consola.info('Removing cluster')
 
   if (!clusterId) {
@@ -45,7 +45,7 @@ async function removeCluster({ accessToken, clusterId }) {
 
   const env = config.get('env') || 'prod'
   const serviceUrl = config.get(`services.${env}.nodes.url`)
-  const url = `${serviceUrl}/users/me/clusters/${clusterId}`
+  const url = `${serviceUrl}/users/me/clusters/${clusterId}?force=${force}`
   const spinner = ora().start()
 
   const params = {
