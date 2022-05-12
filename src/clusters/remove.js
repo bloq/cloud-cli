@@ -45,7 +45,9 @@ async function removeCluster({ accessToken, clusterId, force }) {
 
   const env = config.get('env') || 'prod'
   const serviceUrl = config.get(`services.${env}.nodes.url`)
-  const url = `${serviceUrl}/users/me/clusters/${clusterId}?force=${force}`
+  const url = force
+    ? `${serviceUrl}/users/me/clusters/${clusterId}?force=${force}`
+    : `${serviceUrl}/users/me/clusters/${clusterId}`
   const spinner = ora().start()
 
   const params = {
