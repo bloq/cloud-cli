@@ -68,6 +68,12 @@ ClusterCommand.flags = {
     default: false,
     required: false
   }),
+  force: flags.boolean({
+    char: 'F',
+    description: 'force remove cluster from any user (admins only)',
+    default: false,
+    required: false
+  }),
   yes: flags.boolean({
     char: 'y',
     description: 'answer "yes" to prompts',
