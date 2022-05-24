@@ -1,8 +1,7 @@
 'use strict'
 
-const ora = require('ora')
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
@@ -29,29 +28,13 @@ async function createNode({ accessToken, serviceId, authType }) {
 
   consola.info(`Initializing a new node from service ${serviceId}`)
 
-  const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
   const json = { serviceId, authType }
-  const spinner = ora().start()
+  const body = JSON.stringify(json)
 
-  const params = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization
-    },
-    body: JSON.stringify(json)
-  }
-
-  fetch(url, params)
-    .then(res => {
-      spinner.stop()
-
-      if (res.status === 401 || res.status === 403) {
-        return consola.error('Your session has expired')
-      }
-
+  return fetcher(url, 'POST', accessToken, body).then(res => {
+    if (!res.ok) {
       if (res.status === 404) {
         return consola.error(
           'Error initializing the new node, requested resource not found'
@@ -64,19 +47,20 @@ async function createNode({ accessToken, serviceId, authType }) {
         )
       }
 
-      return res.json()
-    })
-    .then(res => {
-      const { id, auth, state, chain, network, serviceData, ip } = res
+      return consola.error(`Error initializing the new node: ${res.status}`)
+    }
 
-      const creds =
-        auth.type === 'jwt'
-          ? '* Auth:\t\tJWT'
-          : `* User:\t\t${auth.user}
+    const { id, auth, state, chain, network, serviceData, ip } = res.data
+
+    const creds =
+      auth.type === 'jwt'
+        ? '* Auth:\t\tJWT'
+        : `* User:\t\t${auth.user}
     * Password:\t\t${auth.pass}`
 
-      process.stdout.write('\n')
-      consola.success(`Initialized new node from service ${serviceId}
+    coppyToClipboard(id, 'Node id')
+    process.stdout.write('\n')
+    return consola.success(`Initialized new node from service ${serviceId}
     * ID:\t\t${id}
     * Chain:\t\t${chain}
     * Network:\t\t${network}
@@ -85,14 +69,7 @@ async function createNode({ accessToken, serviceId, authType }) {
     * State:\t\t${state}
     * IP:\t\t${ip}
     ${creds}`)
-
-      process.stdout.write('\n')
-      coppyToClipboard(id, 'Node id')
-    })
-    .catch(err => {
-      spinner.stop()
-      return consola.error(`Error initializing the new node: ${err}`)
-    })
+  })
 }
 
 module.exports = createNode

@@ -1,8 +1,7 @@
 'use strict'
 
-const ora = require('ora')
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -17,43 +16,18 @@ async function getChains() {
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/chains/nodes`
-  const spinner = ora().start()
 
-  const params = {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json'
-    }
-  }
+  return fetcher(url, 'GET').then(res => {
+    if (!res.ok)
+      return consola.error(
+        `Error retrieving available blockchains: ${res.status}`
+      )
 
-  fetch(url, params)
-    .then(res => {
-      spinner.stop()
-
-      if (res.status === 401 || res.status === 403) {
-        return consola.error('Your session has expired')
-      }
-
-      if (res.status !== 200) {
-        return consola.error(
-          `Error retrieving available blockchains: ${
-            res.statusText || res.status
-          }`
-        )
-      }
-      return res.json()
-    })
-    .then(res => {
-      process.stdout.write('\n')
-      // eslint-disable-next-line no-console
-      console.table(res)
-
-      return res
-    })
-    .catch(err => {
-      spinner.stop()
-      return consola.error(`Error retrieving available blockchains: ${err}.`)
-    })
+    const data = res.data
+    process.stdout.write('\n')
+    // eslint-disable-next-line no-console
+    return console.table(data)
+  })
 }
 
 module.exports = getChains

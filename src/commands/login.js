@@ -1,3 +1,4 @@
+/* eslint-disable no-shadow */
 'use strict'
 const ora = require('ora')
 const fetch = require('node-fetch').default
@@ -66,7 +67,7 @@ class LoginCommand extends Command {
       }
     }
 
-    fetch(url, params)
+    return fetch(url, params)
       .then(res => {
         spinner.stop()
 
@@ -82,13 +83,13 @@ class LoginCommand extends Command {
           )
         }
 
-        return res.json()
+        return res.json().then(data => ({ ok: true, status: res.status, data }))
       })
       .then(res => {
-        config.set('accessToken', res.accessToken)
+        if (!res.ok) return consola.error(`${res.message} (${res.status})`)
+        config.set('accessToken', res.data.accessToken)
         return consola.success('Login success. Your session expires in 12h.')
       })
-      .catch(err => consola.error(`Error retrieving access token: ${err}`))
   }
 }
 

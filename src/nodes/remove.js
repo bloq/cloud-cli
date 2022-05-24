@@ -1,8 +1,8 @@
+/* eslint-disable no-param-reassign */
 'use strict'
 
-const ora = require('ora')
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
 const inquirer = require('inquirer')
 
 const config = require('../config')
@@ -42,47 +42,16 @@ async function removeNode({ accessToken, nodeId }) {
     return consola.error('Remove node was canceled.')
   }
 
-  const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(
     `services.${env}.nodes.url`
   )}/users/me/nodes/${nodeId}`
-  const spinner = ora().start()
 
-  const params = {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization
-    }
-  }
+  return fetcher(url, 'DELETE', accessToken).then(res => {
+    if (!res.ok) return consola.error(`Error removing the node: ${res.status}`)
 
-  fetch(url, params)
-    .then(res => {
-      spinner.stop()
-
-      if (res.status === 401 || res.status === 403) {
-        return consola.error('Your session has expired')
-      }
-
-      if (res.status === 404) {
-        return consola.error(
-          'Error removing node, requested resource not found'
-        )
-      }
-
-      if (res.status !== 204) {
-        return consola.error(
-          `Error removing the node: ${res.statusText || res.status}`
-        )
-      }
-
-      consola.success(`Node with id ${nodeId} removed successfully`)
-    })
-    .catch(err => {
-      spinner.stop()
-      return consola.error(`Error removing the node: ${err}.`)
-    })
+    return consola.success(`Node with id ${nodeId} removed successfully`)
+  })
 }
 
 module.exports = removeNode

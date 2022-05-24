@@ -1,9 +1,8 @@
 'use strict'
 
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
 const inquirer = require('inquirer')
-const ora = require('ora')
 
 const config = require('../config')
 
@@ -64,36 +63,20 @@ async function updateCluster({ accessToken, ...flags }) {
 
   if (!yes) {
     consola.error('No action taken')
-    return
+    return null
   }
 
-  const spinner = ora().start()
+  const { method, url } = getUrlAndMethod({ abort, clusterId })
+  const body = abort
+    ? null
+    : JSON.stringify({ capacity, onDemandCapacity, serviceId })
 
-  try {
-    const { method, url } = getUrlAndMethod({ abort, clusterId })
-    const authorization = `Bearer ${accessToken}`
-    const body = abort
-      ? null
-      : JSON.stringify({ capacity, onDemandCapacity, serviceId })
+  return fetcher(url, method, accessToken, body).then(res => {
+    if (!res.ok)
+      return consola.error(`Error updating the service: ${res.status}`)
 
-    const res = await fetch(url, {
-      method,
-      headers: { authorization, 'content-type': 'application/json' },
-      body
-    })
-
-    if (!res.ok) {
-      const data = await res.json()
-
-      throw new Error(data.detail || data.title || res.statusText)
-    }
-
-    consola.success(`Cluster ${clusterId} update successfully initiated`)
-  } catch (err) {
-    consola.error(`Error updating the cluster: ${err.message}`)
-  } finally {
-    spinner.stop()
-  }
+    return consola.success(`Service ${serviceId} disabled successfully`)
+  })
 }
 
 module.exports = updateCluster

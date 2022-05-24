@@ -2,7 +2,7 @@
 'use strict'
 
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
 const config = require('../config')
 const inquirer = require('inquirer')
 
@@ -28,49 +28,26 @@ async function infoUserKey(user, accessToken, { type, keyId }) {
 
   consola.info(`Getting ${type} user keys with id ${keyId} for user ${user}.`)
 
-  const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(
     `services.${env}.accounts.url`
   )}/users/me/keys/${type}/${keyId}`
 
-  const params = {
-    method: 'GET',
-    headers: {
-      Authorization,
-      'Content-Type': 'application/json'
-    }
-  }
+  return fetcher(url, 'GET', accessToken).then(res => {
+    if (!res.ok) return consola.error(`Error getting user key: ${res.status}`)
+    let body = res.data
 
-  fetch(url, params)
-    .then(res => {
-      if (res.status === 401 || res.status === 403) {
-        return consola.error('Your session has expired')
-      }
-
-      if (res.status !== 201) {
-        return consola.error(
-          `Error getting user key: ${res.statusText || res.status}.`
-        )
-      }
-
-      return res.json()
-    })
-    .then(res => {
-      let body = res
-
-      consola.success(`
+    consola.success(`
       * ID:\t\t${keyId}
       * Value:\t\t${body.email || body.address}
       * Verified At:\t${body.veriedAt || '-'}
       * Type:\t\t${type}
       `)
 
-      if (body.keylist) {
-        consola.success('\n', body.keylist)
-      }
-    })
-    .catch(err => consola.error(`Error getting user key: ${err}.`))
+    if (body.keylist) {
+      consola.success('\n', body.keylist)
+    }
+  })
 }
 
 module.exports = infoUserKey

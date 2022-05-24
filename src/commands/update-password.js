@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
 const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
 
@@ -47,31 +47,14 @@ class UpdatePasswordCommand extends Command {
       `services.${env}.accounts.url`
     )}/users/me/password`
     const json = { newPassword, oldPassword }
+    const body = JSON.stringify(json)
 
-    const params = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-      },
-      body: JSON.stringify(json)
-    }
+    return fetcher(url, 'PUT', accessToken, body).then(res => {
+      if (!res.ok)
+        return consola.error(`Error updating user password: ${res.status}`)
 
-    fetch(url, params)
-      .then(res => {
-        if (res.status === 400) {
-          return consola.error(
-            `Error updating user password: ${res.statusText}`
-          )
-        }
-
-        if (res.status !== 204) {
-          return consola.error('Error updating user password.')
-        }
-
-        return consola.success('User password updated')
-      })
-      .catch(err => consola.error(`Error updating user password: ${err}`))
+      return consola.success('User password updated')
+    })
   }
 }
 
