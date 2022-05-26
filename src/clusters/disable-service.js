@@ -1,8 +1,9 @@
 'use strict'
 const consola = require('consola')
 const { fetcher } = require('../utils')
-const inquirer = require('inquirer')
+const { isFormatValid } = require('../validator')
 
+const inquirer = require('inquirer')
 const config = require('../config')
 
 /**
@@ -22,7 +23,7 @@ async function disable({ accessToken, ...flags }) {
       message: 'Enter the service id',
       type: 'text',
       when: () => !flags.serviceId,
-      validate: input => !!input
+      validate: input => isFormatValid('cluster', input)
     }
   ])
 

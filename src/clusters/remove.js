@@ -2,8 +2,9 @@
 
 const consola = require('consola')
 const { fetcher } = require('../utils')
-const inquirer = require('inquirer')
+const { isFormatValid } = require('../validator')
 
+const inquirer = require('inquirer')
 const config = require('../config')
 
 /**
@@ -19,7 +20,12 @@ async function removeCluster({ accessToken, clusterId, force }) {
 
   if (!clusterId) {
     const prompt = await inquirer.prompt([
-      { name: 'clusterId', message: 'Enter the cluster id', type: 'text' }
+      {
+        name: 'clusterId',
+        message: 'Enter the cluster id',
+        type: 'text',
+        validate: input => isFormatValid('cluster', input)
+      }
     ])
 
     // eslint-disable-next-line no-param-reassign

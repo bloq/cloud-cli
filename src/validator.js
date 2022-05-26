@@ -1,7 +1,7 @@
 'use strict'
 const stringEntropy = require('fast-password-entropy')
 const postalCodesValidator = require('postal-codes-js')
-
+const consola = require('consola')
 const config = require('./config')
 const MIN_ENTROPY = config.get('passwordEntropy')
 
@@ -61,6 +61,23 @@ function isUuidValid(uuid) {
   return 'The token does not have the correct format.'
 }
 
+function isFormatValid(name, value) {
+  const pattern =
+    '-[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+  const reg = new RegExp(
+    `^(?=.{0,${name.length + pattern.length}}$)${name}${pattern}$`
+  )
+
+  if (!reg.test(value)) {
+    // eslint-disable-next-line no-console
+    consola.error(
+      ` "${value}" is not a valid ${name}. Please check the format.\n`
+    )
+    return false
+  }
+  return true
+}
+
 /**
  *  Check if a value is empty or not
  *
@@ -116,15 +133,15 @@ function arePasswordEquals(password1, password2) {
  * @param  {string} zipCode the zip code
  * @returns {boolean|string} string with error message or true
  */
-function isZipCodeValid(countryCode, zipCode) {
-  return postalCodesValidator.validate(countryCode, zipCode) === true
+const isZipCodeValid = (countryCode, zipCode) =>
+  postalCodesValidator.validate(countryCode, zipCode) === true
     ? true
     : 'The zip code is invalid'
-}
 
 module.exports = {
   isUserValid,
   isUuidValid,
+  isFormatValid,
   isEmailValid,
   isNotEmpty,
   arePasswordEquals,

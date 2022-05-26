@@ -3,6 +3,8 @@
 
 const consola = require('consola')
 const { fetcher } = require('../utils')
+const { isFormatValid } = require('../validator')
+
 const inquirer = require('inquirer')
 const config = require('../config')
 
@@ -19,7 +21,12 @@ async function infoNode({ accessToken, nodeId }) {
 
   if (!nodeId) {
     const prompt = await inquirer.prompt([
-      { name: 'nodeId', message: 'Enter the node id', type: 'text' }
+      {
+        name: 'nodeId',
+        message: 'Enter the node id',
+        type: 'text',
+        validate: input => isFormatValid('node', input)
+      }
     ])
     nodeId = prompt.nodeId
     if (!nodeId) {

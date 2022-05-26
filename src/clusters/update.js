@@ -2,8 +2,9 @@
 
 const consola = require('consola')
 const { fetcher } = require('../utils')
-const inquirer = require('inquirer')
+const { isFormatValid } = require('../validator')
 
+const inquirer = require('inquirer')
 const config = require('../config')
 
 const env = config.get('env')
@@ -45,7 +46,7 @@ async function updateCluster({ accessToken, ...flags }) {
       message: 'Enter the cluster id',
       type: 'text',
       when: () => !flags.clusterId,
-      validate: input => !!input
+      validate: input => isFormatValid('cluster', input)
     },
     {
       name: 'yes',
