@@ -30,7 +30,8 @@ async function infoNode({ accessToken, nodeId }) {
     ])
     nodeId = prompt.nodeId
     if (!nodeId) {
-      return consola.error('Missing node id')
+      consola.error('Missing node id')
+      return
     }
   }
 
@@ -39,11 +40,14 @@ async function infoNode({ accessToken, nodeId }) {
     `services.${env}.nodes.url`
   )}/users/me/nodes/${nodeId}`
 
+  // eslint-disable-next-line consistent-return
   return fetcher(url, 'GET', accessToken).then(res => {
-    if (!res.ok)
-      return consola.error(
+    if (!res.ok) {
+      consola.error(
         `Error retrieving node information, requested resource not found: ${res.status}`
       )
+      return
+    }
     let body = res.data
     const {
       id,
@@ -64,7 +68,7 @@ async function infoNode({ accessToken, nodeId }) {
 
     process.stdout.write('\n')
 
-    return consola.success(`Retrieved node with id ${nodeId}
+    consola.success(`Retrieved node with id ${nodeId}
     * ID:\t\t${id}
     * Started At:\t${createdAt}
     * Stopped At:\t${stoppedAt || 'N/A'}

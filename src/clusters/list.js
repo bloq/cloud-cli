@@ -27,14 +27,19 @@ async function listClusters({ accessToken, all, allClusters, sort }) {
   }`
 
   return fetcher(url, 'GET', accessToken).then(res => {
-    if (!res.ok)
-      return consola.error(`Error retrieving all clusters: ${res.status}`)
+    if (!res.ok) {
+      consola.error(`Error retrieving all clusters: ${res.status}`)
+      return
+    }
 
     let body = res.data
-    if (!body) return null
+    if (!body) {
+      return
+    }
     if (!body.length) {
       const user = `${config.get('user')}`
-      return consola.success(`No clusters were found for user ${user}`)
+      consola.success(`No clusters were found for user ${user}`)
+      return
     }
 
     body = body.map(function ({
@@ -82,7 +87,7 @@ async function listClusters({ accessToken, all, allClusters, sort }) {
     consola.success(`Got ${body.length} clusters:`)
     process.stdout.write('\n')
     // eslint-disable-next-line no-console
-    return console.table(lodash.sortBy(body, sort.split(',') || 'createdAt'))
+    console.table(lodash.sortBy(body, sort.split(',') || 'createdAt'))
   })
 }
 

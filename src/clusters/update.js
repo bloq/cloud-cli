@@ -73,10 +73,12 @@ async function updateCluster({ accessToken, ...flags }) {
     : JSON.stringify({ capacity, onDemandCapacity, serviceId })
 
   return fetcher(url, method, accessToken, body).then(res => {
-    if (!res.ok)
-      return consola.error(`Error updating the service: ${res.status}`)
+    if (!res.ok) {
+      consola.error(`Error updating the service: ${res.status}`)
+      return
+    }
 
-    return consola.success(`Service ${serviceId} disabled successfully`)
+    consola.success(`Service ${serviceId} disabled successfully`)
   })
 }
 

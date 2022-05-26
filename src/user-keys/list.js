@@ -16,7 +16,10 @@ async function listUserKeys(user, accessToken, { type }) {
   }
 
   return fetcher(url, 'GET', accessToken).then(res => {
-    if (!res.ok) return consola.error(`Error listing user keys: ${res.status}`)
+    if (!res.ok) {
+      consola.error(`Error listing user keys: ${res.status}`)
+      return
+    }
 
     const body = res.data
 
@@ -42,7 +45,7 @@ async function listUserKeys(user, accessToken, { type }) {
         }
       })
       // eslint-disable-next-line no-console
-      return console.table(body[keys])
+      console.table(body[keys])
     }
   })
 }

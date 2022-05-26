@@ -18,15 +18,15 @@ async function getChains() {
   const url = `${config.get(`services.${env}.nodes.url`)}/chains/nodes`
 
   return fetcher(url, 'GET').then(res => {
-    if (!res.ok)
-      return consola.error(
-        `Error retrieving available blockchains: ${res.status}`
-      )
+    if (!res.ok) {
+      consola.error(`Error retrieving available blockchains: ${res.status}`)
+      return
+    }
 
     const data = res.data
     process.stdout.write('\n')
     // eslint-disable-next-line no-console
-    return console.table(data)
+    console.table(data)
   })
 }
 

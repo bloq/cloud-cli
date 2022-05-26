@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 'use strict'
 
 const consola = require('consola')
@@ -27,23 +28,27 @@ async function createCluster(params) {
 
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
-    return consola.error('Only admin users can create clusters with the CLI')
+    consola.error('Only admin users can create clusters with the CLI')
+    return
   }
 
   if (!serviceId) {
-    return consola.error('Missing service id value (-s or --serviceId)')
+    consola.error('Missing service id value (-s or --serviceId)')
+    return
   }
 
   if (capacity < CLUSTER_MIN_CAPACITY || capacity > CLUSTER_MAX_CAPACITY) {
-    return consola.error(
+    consola.error(
       `Wrong cluster capacity. Capacity should be between ${CLUSTER_MIN_CAPACITY} and ${CLUSTER_MAX_CAPACITY}`
     )
+    return
   }
 
   if (onDemandCapacity < 1 || onDemandCapacity > capacity) {
-    return consola.error(
+    consola.error(
       `Wrong on-demand cluster capacity. Capacity should be between ${1} and ${capacity}`
     )
+    return
   }
 
   consola.info(`Creating a new cluster from service ${serviceId}.`)
@@ -54,9 +59,10 @@ async function createCluster(params) {
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/clusters`
 
   return fetcher(url, 'POST', accessToken, body).then(res => {
-    if (!res.ok)
-      return consola.error(`Error initializing the new cluster: ${res.status}`)
-
+    if (!res.ok) {
+      consola.error(`Error initializing the new cluster: ${res.status}`)
+      return
+    }
     const data = res.data
     const creds =
       data.auth.type === 'jwt'
@@ -71,7 +77,7 @@ async function createCluster(params) {
 
     coppyToClipboard(data.id, 'Cluster id')
     process.stdout.write('\n')
-    return consola.success(`Initialized new cluster from service ${serviceId}
+    consola.success(`Initialized new cluster from service ${serviceId}
     * ID:\t\t${data.id}
     * Name:\t\t${data.name}
     * Chain:\t\t${data.chain}

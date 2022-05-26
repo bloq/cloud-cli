@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 'use strict'
 
 const consola = require('consola')
@@ -19,11 +20,13 @@ const { coppyToClipboard } = require('../utils')
 async function createNode({ accessToken, serviceId, authType }) {
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
-    return consola.error('Only admin users can create nodes with the CLI')
+    consola.error('Only admin users can create nodes with the CLI')
+    return
   }
 
   if (!serviceId) {
-    return consola.error('Missing service id value (-s or --serviceId)')
+    consola.error('Missing service id value (-s or --serviceId)')
+    return
   }
 
   consola.info(`Initializing a new node from service ${serviceId}`)
@@ -36,18 +39,21 @@ async function createNode({ accessToken, serviceId, authType }) {
   return fetcher(url, 'POST', accessToken, body).then(res => {
     if (!res.ok) {
       if (res.status === 404) {
-        return consola.error(
+        consola.error(
           'Error initializing the new node, requested resource not found'
         )
+        return
       }
 
       if (res.status !== 201) {
-        return consola.error(
+        consola.error(
           `Error initializing the new node: ${res.statusText || res.status}`
         )
+        return
       }
 
-      return consola.error(`Error initializing the new node: ${res.status}`)
+      consola.error(`Error initializing the new node: ${res.status}`)
+      return
     }
 
     const { id, auth, state, chain, network, serviceData, ip } = res.data
@@ -60,7 +66,7 @@ async function createNode({ accessToken, serviceId, authType }) {
 
     coppyToClipboard(id, 'Node id')
     process.stdout.write('\n')
-    return consola.success(`Initialized new node from service ${serviceId}
+    consola.success(`Initialized new node from service ${serviceId}
     * ID:\t\t${id}
     * Chain:\t\t${chain}
     * Network:\t\t${network}

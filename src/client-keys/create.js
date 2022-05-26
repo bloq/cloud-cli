@@ -29,10 +29,10 @@ async function createClientKey(user, accessToken) {
   )}/users/me/client-keys`
 
   return fetcher(url, 'POST', accessToken).then(res => {
-    if (!res.ok)
-      return consola.error(
-        `Error creating new pair of client keys: ${res.status}`
-      )
+    if (!res.ok) {
+      consola.error(`Error creating new pair of client keys: ${res.status}`)
+      return
+    }
     process.stdout.write('\n')
     consola.success(`Generated new client keys:
     * Client ID:\t${res.data.clientId}
@@ -48,7 +48,7 @@ async function createClientKey(user, accessToken) {
       config.set('clientSecret', res.data.clientSecret)
     }
 
-    return coppyToClipboard(res.data.clientSecret, 'Client secret')
+    coppyToClipboard(res.data.clientSecret, 'Client secret')
   })
 }
 

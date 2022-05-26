@@ -22,7 +22,8 @@ class LogoutCommand extends Command {
     ])
 
     if (!confirmation) {
-      return consola.info('Logout aborted.')
+      consola.info('Logout aborted.')
+      return
     }
 
     consola.success('All your local data was removed')

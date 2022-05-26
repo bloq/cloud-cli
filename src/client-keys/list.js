@@ -21,16 +21,19 @@ async function listClientKeys(user, accessToken) {
   )}/users/me/client-keys`
 
   return fetcher(url, 'GET', accessToken).then(res => {
-    if (!res.ok)
-      return consola.error(`Error listing client keys: ${res.status}`)
+    if (!res.ok) {
+      consola.error(`Error listing client keys: ${res.status}`)
+      return
+    }
     if (!res.data.length) {
       const userId = `${config.get('user')}`
-      return consola.success(`No client-keys were found for user ${userId}`)
+      consola.success(`No client-keys were found for user ${userId}`)
+      return
     }
     consola.success(`Retrieved ${res.data.length} client keys`)
     process.stdout.write('\n')
     // eslint-disable-next-line no-console
-    return console.table(res.data)
+    console.table(res.data)
   })
 }
 

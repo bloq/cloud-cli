@@ -47,17 +47,19 @@ class ClientTokenCommand extends Command {
     return fetcher(url, 'POST', accessToken, body).then(res => {
       if (!res.ok) {
         if (res.status === 401 || res.status === 403) {
-          return consola.error('Your client keys are invalid')
+          consola.error('Your client keys are invalid')
+          return
         }
-        return consola.error(
-          `Error generating client accessToken: ${res.status}`
-        )
+        consola.error(`Error generating client accessToken: ${res.status}`)
+        return
       }
       const data = res.data
 
       if (!data.accessToken || !data.refreshToken) {
-        return consola.error('Error generating client accessToken.')
+        consola.error('Error generating client accessToken.')
+        return
       }
+
       consola.success(
         'Generated new tokens: \n\n' +
           `\t* clientAccessToken:  ${data.accessToken} \n` +
@@ -69,7 +71,7 @@ class ClientTokenCommand extends Command {
         config.set('refreshToken', data.refreshToken)
       }
 
-      return coppyToClipboard(data.accessToken, 'Client access token')
+      coppyToClipboard(data.accessToken, 'Client access token')
     })
   }
 }

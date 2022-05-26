@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 'use strict'
 
@@ -31,7 +32,8 @@ async function removeNode({ accessToken, nodeId }) {
 
     nodeId = prompt.nodeId
     if (!nodeId) {
-      return consola.error('Missing node id')
+      consola.error('Missing node id')
+      return
     }
   }
 
@@ -45,7 +47,8 @@ async function removeNode({ accessToken, nodeId }) {
   ])
 
   if (!confirmation) {
-    return consola.error('Remove node was canceled.')
+    consola.error('Remove node was canceled.')
+    return
   }
 
   const env = config.get('env') || 'prod'
@@ -54,9 +57,12 @@ async function removeNode({ accessToken, nodeId }) {
   )}/users/me/nodes/${nodeId}`
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
-    if (!res.ok) return consola.error(`Error removing the node: ${res.status}`)
+    if (!res.ok) {
+      consola.error(`Error removing the node: ${res.status}`)
+      return
+    }
 
-    return consola.success(`Node with id ${nodeId} removed successfully`)
+    consola.success(`Node with id ${nodeId} removed successfully`)
   })
 }
 

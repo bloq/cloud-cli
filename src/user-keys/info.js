@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 'use strict'
 
@@ -22,7 +23,8 @@ async function infoUserKey(user, accessToken, { type, keyId }) {
 
     keyId = prompt.keyId
     if (!keyId) {
-      return consola.error('Missing key id')
+      consola.error('Missing key id')
+      return
     }
   }
 
@@ -34,7 +36,11 @@ async function infoUserKey(user, accessToken, { type, keyId }) {
   )}/users/me/keys/${type}/${keyId}`
 
   return fetcher(url, 'GET', accessToken).then(res => {
-    if (!res.ok) return consola.error(`Error getting user key: ${res.status}`)
+    if (!res.ok) {
+      consola.error(`Error getting user key: ${res.status}`)
+      return
+    }
+
     let body = res.data
 
     consola.success(`

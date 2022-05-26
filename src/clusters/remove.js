@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 'use strict'
 
 const consola = require('consola')
@@ -31,7 +32,8 @@ async function removeCluster({ accessToken, clusterId, force }) {
     // eslint-disable-next-line no-param-reassign
     clusterId = prompt.clusterId
     if (!clusterId) {
-      return consola.error('Missing cluster id')
+      consola.error('Missing cluster id')
+      return
     }
   }
 
@@ -45,7 +47,8 @@ async function removeCluster({ accessToken, clusterId, force }) {
   ])
 
   if (!confirmation) {
-    return consola.error('Remove cluster was canceled.')
+    consola.error('Remove cluster was canceled.')
+    return
   }
 
   const env = config.get('env') || 'prod'
@@ -55,10 +58,12 @@ async function removeCluster({ accessToken, clusterId, force }) {
     : `${serviceUrl}/users/me/clusters/${clusterId}`
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
-    if (!res.ok)
-      return consola.error(`Error removing the cluster: ${res.message}`)
+    if (!res.ok) {
+      consola.error(`Error removing the cluster: ${res.message}`)
+      return
+    }
 
-    return consola.success(`Cluster with ID ${clusterId} removed successfully`)
+    consola.success(`Cluster with ID ${clusterId} removed successfully`)
   })
 }
 

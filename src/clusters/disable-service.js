@@ -38,9 +38,11 @@ async function disable({ accessToken, ...flags }) {
   )
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
-    if (!res.ok)
-      return consola.error(`Error disabling the service: ${res.status}`)
-    return consola.success(`Service ${serviceId} disabled successfully`)
+    if (!res.ok) {
+      consola.error(`Error disabling the service: ${res.status}`)
+      return
+    }
+    consola.success(`Service ${serviceId} disabled successfully`)
   })
 }
 

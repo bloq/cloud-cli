@@ -21,15 +21,15 @@ async function getServices({ sort }) {
   const url = `${config.get(`services.${env}.nodes.url`)}/services/cluster`
 
   return fetcher(url, 'GET').then(res => {
-    if (!res.ok)
-      return consola.error(
-        `Error retrieving available services: ${res.message}`
-      )
+    if (!res.ok) {
+      consola.error(`Error retrieving available services: ${res.message}`)
+      return
+    }
 
     const data = res.data
     process.stdout.write('\n')
     // eslint-disable-next-line no-console
-    return console.table(
+    console.table(
       lodash.sortBy(
         data
           .filter(s => !s.disabled)

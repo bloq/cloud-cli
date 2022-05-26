@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 'use strict'
 
 const consola = require('consola')
@@ -13,9 +14,10 @@ class UpdatePasswordCommand extends Command {
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error(
+      consola.error(
         'User is not authenticated. Use login command to start a new session.'
       )
+      return
     }
 
     const { oldPassword, newPassword } = await inquirer.prompt([
@@ -38,7 +40,8 @@ class UpdatePasswordCommand extends Command {
     ])
 
     if (oldPassword === newPassword) {
-      return consola.error('New password must be different from old password')
+      consola.error('New password must be different from old password')
+      return
     }
 
     consola.info(`Updating password for user ${user}`)
@@ -50,10 +53,12 @@ class UpdatePasswordCommand extends Command {
     const body = JSON.stringify(json)
 
     return fetcher(url, 'PUT', accessToken, body).then(res => {
-      if (!res.ok)
-        return consola.error(`Error updating user password: ${res.status}`)
+      if (!res.ok) {
+        consola.error(`Error updating user password: ${res.status}`)
+        return
+      }
 
-      return consola.success('User password updated')
+      consola.success('User password updated')
     })
   }
 }

@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 'use strict'
 
 const consola = require('consola')
@@ -11,9 +12,10 @@ class ProfileCommand extends Command {
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error(
+      consola.error(
         'User is not authenticated. Use login command to start a new session.'
       )
+      return
     }
 
     consola.info(`Retrieving profile for user ${user}`)
@@ -21,11 +23,13 @@ class ProfileCommand extends Command {
     const url = `${config.get(`services.${env}.accounts.url`)}/users/me`
 
     return fetcher(url, 'GET', accessToken).then(res => {
-      if (!res.ok)
-        return consola.error(`Error trying to get user profile: ${res.status}`)
+      if (!res.ok) {
+        consola.error(`Error trying to get user profile: ${res.status}`)
+        return
+      }
       const { verifiedAt, id, displayName, email } = res.data
 
-      return consola.success(`Retrieved user profile:
+      consola.success(`Retrieved user profile:
       * id:\t\t${id}
       * displayName:\t${displayName}
       * email:\t${email}

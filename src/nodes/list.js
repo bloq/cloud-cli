@@ -21,13 +21,19 @@ async function listNodes({ accessToken, all }) {
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
 
   return fetcher(url, 'GET', accessToken).then(res => {
-    if (!res.ok) return consola.error(`Error retrieving nodes: ${res.status}`)
+    if (!res.ok) {
+      consola.error(`Error retrieving nodes: ${res.status}`)
+      return
+    }
     let body = res.data
-    if (!body) return null
+    if (!body) {
+      return
+    }
 
     if (!body.length) {
       const user = `${config.get('user')}`
-      return consola.success(`No nodes were found for user ${user}`)
+      consola.info(`No nodes were found for user ${user}`)
+      return
     }
     body = body.map(function ({
       id,
@@ -63,7 +69,7 @@ async function listNodes({ accessToken, all }) {
     consola.success(`Got ${body.length} nodes:`)
     process.stdout.write('\n')
     // eslint-disable-next-line no-console
-    return console.table(body)
+    console.table(body)
   })
 }
 

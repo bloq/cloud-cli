@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 'use strict'
 
 const consola = require('consola')
@@ -44,7 +45,10 @@ async function infoCluster({ accessToken, clusterId }) {
     ])
     // eslint-disable-next-line no-param-reassign
     clusterId = prompt.clusterId
-    if (!clusterId) return consola.error('Missing cluster id')
+    if (!clusterId) {
+      consola.error('Missing cluster id')
+      return
+    }
   }
 
   const env = config.get('env') || 'prod'
@@ -53,11 +57,13 @@ async function infoCluster({ accessToken, clusterId }) {
   )}/users/me/clusters/${clusterId}`
 
   return fetcher(url, 'GET', accessToken).then(res => {
-    if (!res.ok) return consola.error(`Error retrieving cluster: ${res.status}`)
-
+    if (!res.ok) {
+      consola.error(`Error retrieving cluster: ${res.status}`)
+      return
+    }
     const data = res.data
     process.stdout.write('\n')
-    return consola.success(`Retrieved cluster with id ${clusterId}
+    consola.success(`Retrieved cluster with id ${clusterId}
       * ID:\t\t${data.id}
       * Name:\t\t${data.alias || data.name}
       * Chain:\t\t${data.chain}

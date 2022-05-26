@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-shadow */
 'use strict'
 
@@ -14,9 +15,10 @@ class EventsCommand extends Command {
     const { flags } = this.parse(EventsCommand)
 
     if (!user || !accessToken) {
-      return consola.error(
+      consola.error(
         'User is not authenticated. Use login command to start a new session.'
       )
+      return
     }
 
     consola.info(`Retrieving events for user ${user}`)
@@ -25,8 +27,11 @@ class EventsCommand extends Command {
     const url = `${config.get(`services.${env}.accounts.url`)}/users/me/events`
 
     return fetcher(url, 'GET', accessToken).then(res => {
-      if (!res.ok)
-        return consola.error(`Error retrieving events: ${res.status}`)
+      if (!res.ok) {
+        consola.error(`Error retrieving events: ${res.status}`)
+        return
+      }
+
       const data = res.data
 
       let events = data.map(({ id, service, serviceData, createdAt }) => ({
@@ -45,7 +50,7 @@ class EventsCommand extends Command {
       consola.success(`Retrieved ${events.length} events:`)
       process.stdout.write('\n')
       // eslint-disable-next-line no-console
-      return console.table(events)
+      console.table(events)
     })
   }
 }

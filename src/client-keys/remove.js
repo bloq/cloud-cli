@@ -24,7 +24,8 @@ async function removeClientKey(user, accessToken, flags) {
 
     clientId = prompt.clientId
     if (!clientId) {
-      return consola.error('Missing client id')
+      consola.error('Missing client id')
+      return
     }
   }
 
@@ -38,7 +39,8 @@ async function removeClientKey(user, accessToken, flags) {
   ])
 
   if (!confirmation) {
-    return consola.error('Remove client key was canceled.')
+    consola.error('Remove client key was canceled.')
+    return
   }
 
   const env = config.get('env') || 'prod'
@@ -48,15 +50,18 @@ async function removeClientKey(user, accessToken, flags) {
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
     if (!res.ok) {
-      if (res.status !== 204) {
-        return consola.error(
-          `Error removing client-key: ${res.status || res.statusText}.`
-        )
-      }
-      return consola.error(`Error removing the client-key: ${res.message}`)
+      consola.error(`Error removing the client-key: ${res.message}`)
+      return
     }
 
-    return consola.success(`Removed client key with id ${clientId}`)
+    if (res.status !== 204) {
+      consola.error(
+        `Error removing client-key: ${res.status || res.statusText}.`
+      )
+      return
+    }
+
+    consola.success(`Removed client key with id ${clientId}`)
   })
 }
 

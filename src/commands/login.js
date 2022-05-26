@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-shadow */
 'use strict'
 const ora = require('ora')
@@ -48,7 +49,8 @@ class LoginCommand extends Command {
 
       password = prompt.password
       if (!password) {
-        return consola.error('Missing password')
+        consola.error('Missing password')
+        return
       }
     }
 
@@ -72,23 +74,27 @@ class LoginCommand extends Command {
         spinner.stop()
 
         if (res.status === 401 || res.status === 403) {
-          return consola.error(
-            'The username or password you entered is incorrect'
-          )
+          consola.error('The username or password you entered is incorrect')
+          return
         }
 
         if (res.status !== 200) {
-          return consola.error(
+          consola.error(
             `Error retrieving access token: ${res.statusText || res.status}`
           )
+          return
         }
 
         return res.json().then(data => ({ ok: true, status: res.status, data }))
       })
       .then(res => {
-        if (!res.ok) return consola.error(`${res.message} (${res.status})`)
+        if (!res.ok) {
+          consola.error(`${res.message} (${res.status})`)
+          return
+        }
+
         config.set('accessToken', res.data.accessToken)
-        return consola.success('Login success. Your session expires in 12h.')
+        consola.success('Login success. Your session expires in 12h.')
       })
   }
 }

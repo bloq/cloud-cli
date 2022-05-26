@@ -118,9 +118,10 @@ class SignupCommand extends Command {
     ])
 
     if (acceptTerms === 'Decline') {
-      return consola.error(
+      consola.error(
         'Terms & Conditions must be accepted in order to create a Bloq account and access Bloq services.'
       )
+      return
     }
 
     const env = config.get('env') || 'prod'
@@ -136,7 +137,8 @@ class SignupCommand extends Command {
     ])
 
     if (!confirm) {
-      return consola.error('Bloq signup aborted')
+      consola.error('Bloq signup aborted')
+      return
     }
 
     const params = {
@@ -165,13 +167,14 @@ class SignupCommand extends Command {
         spinner.stop()
 
         if (res.status !== 201) {
-          return consola.error(
+          consola.error(
             `Error creating Bloq account: ${res.statusText || res.status}`
           )
+          return
         }
 
         consola.success('Generated new Bloq account')
-        return consola.info(`Email sent to ${email} confirm your account.`)
+        consola.info(`Email sent to ${email} confirm your account.`)
       })
       .catch(err => consola.error(`Error creating Bloq account: ${err}`))
   }
