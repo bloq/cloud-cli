@@ -1,10 +1,11 @@
+/* eslint-disable consistent-return */
 'use strict'
 
-const ora = require('ora')
 const consola = require('consola')
-const fetch = require('node-fetch').default
-const inquirer = require('inquirer')
+const { fetcher } = require('../utils')
+const { isFormatValid } = require('../validator')
 
+const inquirer = require('inquirer')
 const config = require('../config')
 
 /**
@@ -20,13 +21,19 @@ async function removeCluster({ accessToken, clusterId, force }) {
 
   if (!clusterId) {
     const prompt = await inquirer.prompt([
-      { name: 'clusterId', message: 'Enter the cluster id', type: 'text' }
+      {
+        name: 'clusterId',
+        message: 'Enter the cluster id',
+        type: 'text',
+        validate: input => isFormatValid('cluster', input)
+      }
     ])
 
     // eslint-disable-next-line no-param-reassign
     clusterId = prompt.clusterId
     if (!clusterId) {
-      return consola.error('Missing cluster id')
+      consola.error('Missing cluster id')
+      return
     }
   }
 
@@ -40,7 +47,8 @@ async function removeCluster({ accessToken, clusterId, force }) {
   ])
 
   if (!confirmation) {
-    return consola.error('Remove cluster was canceled.')
+    consola.error('Remove cluster was canceled.')
+    return
   }
 
   const env = config.get('env') || 'prod'
@@ -48,44 +56,15 @@ async function removeCluster({ accessToken, clusterId, force }) {
   const url = force
     ? `${serviceUrl}/users/me/clusters/${clusterId}?force=${force}`
     : `${serviceUrl}/users/me/clusters/${clusterId}`
-  const spinner = ora().start()
 
-  const params = {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+  return fetcher(url, 'DELETE', accessToken).then(res => {
+    if (!res.ok) {
+      consola.error(`Error removing the cluster: ${res.message}`)
+      return
     }
-  }
 
-  return fetch(url, params)
-    .then(res => {
-      spinner.stop()
-
-      if (res.status === 401 || res.status === 403) {
-        return consola.error('Your session has expired')
-      }
-
-      if (res.status === 404) {
-        return consola.error(
-          'Error removing cluster, requested resource not found'
-        )
-      }
-
-      if (res.status !== 204) {
-        return consola.error(
-          `Error removing the cluster:: ${res.statusText || res.status}.`
-        )
-      }
-
-      return consola.success(
-        `Cluster with ID ${clusterId} removed successfully`
-      )
-    })
-    .catch(err => {
-      spinner.stop()
-      return consola.error(`Error removing the cluster: ${err}.`)
-    })
+    consola.success(`Cluster with ID ${clusterId} removed successfully`)
+  })
 }
 
 module.exports = removeCluster

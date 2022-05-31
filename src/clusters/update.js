@@ -1,10 +1,10 @@
 'use strict'
 
 const consola = require('consola')
-const fetch = require('node-fetch').default
-const inquirer = require('inquirer')
-const ora = require('ora')
+const { fetcher } = require('../utils')
+const { isFormatValid } = require('../validator')
 
+const inquirer = require('inquirer')
 const config = require('../config')
 
 const env = config.get('env')
@@ -46,7 +46,7 @@ async function updateCluster({ accessToken, ...flags }) {
       message: 'Enter the cluster id',
       type: 'text',
       when: () => !flags.clusterId,
-      validate: input => !!input
+      validate: input => isFormatValid('cluster', input)
     },
     {
       name: 'yes',
@@ -64,36 +64,22 @@ async function updateCluster({ accessToken, ...flags }) {
 
   if (!yes) {
     consola.error('No action taken')
-    return
+    return null
   }
 
-  const spinner = ora().start()
+  const { method, url } = getUrlAndMethod({ abort, clusterId })
+  const body = abort
+    ? null
+    : JSON.stringify({ capacity, onDemandCapacity, serviceId })
 
-  try {
-    const { method, url } = getUrlAndMethod({ abort, clusterId })
-    const authorization = `Bearer ${accessToken}`
-    const body = abort
-      ? null
-      : JSON.stringify({ capacity, onDemandCapacity, serviceId })
-
-    const res = await fetch(url, {
-      method,
-      headers: { authorization, 'content-type': 'application/json' },
-      body
-    })
-
+  return fetcher(url, method, accessToken, body).then(res => {
     if (!res.ok) {
-      const data = await res.json()
-
-      throw new Error(data.detail || data.title || res.statusText)
+      consola.error(`Error updating the service: ${res.status}`)
+      return
     }
 
-    consola.success(`Cluster ${clusterId} update successfully initiated`)
-  } catch (err) {
-    consola.error(`Error updating the cluster: ${err.message}`)
-  } finally {
-    spinner.stop()
-  }
+    consola.success(`Service ${serviceId} disabled successfully`)
+  })
 }
 
 module.exports = updateCluster

@@ -1,8 +1,8 @@
+/* eslint-disable consistent-return */
 'use strict'
 
-const ora = require('ora')
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
@@ -28,88 +28,67 @@ async function createCluster(params) {
 
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
-    return consola.error('Only admin users can create clusters with the CLI')
+    consola.error('Only admin users can create clusters with the CLI')
+    return
   }
 
   if (!serviceId) {
-    return consola.error('Missing service id value (-s or --serviceId)')
+    consola.error('Missing service id value (-s or --serviceId)')
+    return
   }
 
   if (capacity < CLUSTER_MIN_CAPACITY || capacity > CLUSTER_MAX_CAPACITY) {
-    return consola.error(
+    consola.error(
       `Wrong cluster capacity. Capacity should be between ${CLUSTER_MIN_CAPACITY} and ${CLUSTER_MAX_CAPACITY}`
     )
+    return
   }
 
   if (onDemandCapacity < 1 || onDemandCapacity > capacity) {
-    return consola.error(
+    consola.error(
       `Wrong on-demand cluster capacity. Capacity should be between ${1} and ${capacity}`
     )
+    return
   }
 
   consola.info(`Creating a new cluster from service ${serviceId}.`)
 
-  const Authorization = `Bearer ${accessToken}`
+  const json = { serviceId, authType, capacity, onDemandCapacity }
+  const body = JSON.stringify(json)
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/clusters`
-  const json = { serviceId, authType, capacity, onDemandCapacity }
-  const spinner = ora().start()
 
-  return fetch(url, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      Authorization
-    },
-    body: JSON.stringify(json)
-  })
-    .then(res => {
-      spinner.stop()
-      if (res.status === 401 || res.status === 403) {
-        return consola.error('Your session has expired')
-      }
-
-      if (res.status === 404) {
-        return consola.error(
-          'Error initializing the new cluster, requested resource not found'
-        )
-      }
-      if (res.status !== 201) {
-        return consola.error(
-          `Error initializing the new cluster: ${res.status || res.statusText}`
-        )
-      }
-      return res.json()
-    })
-    .then(res => {
-      const creds =
-        res.auth.type === 'jwt'
-          ? `
+  return fetcher(url, 'POST', accessToken, body).then(res => {
+    if (!res.ok) {
+      consola.error(`Error initializing the new cluster: ${res.status}`)
+      return
+    }
+    const data = res.data
+    const creds =
+      data.auth.type === 'jwt'
+        ? `
     * Auth:\t\tJWT`
-          : res.auth.type === 'basic'
-          ? `
-    * User:\t\t${res.auth.user}
-    * Password:\t\t${res.auth.pass}`
-          : `
+        : data.auth.type === 'basic'
+        ? `
+    * User:\t\t${data.auth.user}
+    * Password:\t\t${data.auth.pass}`
+        : `
     * Auth:\t\tnone`
 
-      process.stdout.write('\n')
-      consola.success(`Initialized new cluster from service ${serviceId}
-    * ID:\t\t${res.id}
-    * Name:\t\t${res.name}
-    * Chain:\t\t${res.chain}
-    * Network:\t\t${res.network}
-    * Version:\t\t${res.serviceData.software}
-    * Performance:\t${res.serviceData.performance}
-    * Domain:\t\t${res.domain}
-    * Capacity:\t\t${res.onDemandCapacity}:${res.capacity}
-    * Region:\t\t${res.region}
-    * State:\t\t${res.state}${creds}`)
-
-      process.stdout.write('\n')
-      coppyToClipboard(res.id, 'Cluster id')
-    })
-    .catch(err => consola.error(`Error initializing the new cluster: ${err}`))
+    coppyToClipboard(data.id, 'Cluster id')
+    process.stdout.write('\n')
+    consola.success(`Initialized new cluster from service ${serviceId}
+    * ID:\t\t${data.id}
+    * Name:\t\t${data.name}
+    * Chain:\t\t${data.chain}
+    * Network:\t\t${data.network}
+    * Version:\t\t${data.serviceData.software}
+    * Performance:\t${data.serviceData.performance}
+    * Domain:\t\t${data.domain}
+    * Capacity:\t\t${data.onDemandCapacity}:${data.capacity}
+    * Region:\t\t${data.region}
+    * State:\t\t${data.state}${creds}\n\n`)
+  })
 }
 
 module.exports = createCluster

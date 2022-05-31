@@ -1,8 +1,10 @@
+/* eslint-disable no-param-reassign */
 'use strict'
 
-const ora = require('ora')
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
+const { isFormatValid } = require('../validator')
+
 const inquirer = require('inquirer')
 const config = require('../config')
 
@@ -19,73 +21,54 @@ async function infoNode({ accessToken, nodeId }) {
 
   if (!nodeId) {
     const prompt = await inquirer.prompt([
-      { name: 'nodeId', message: 'Enter the node id', type: 'text' }
+      {
+        name: 'nodeId',
+        message: 'Enter the node id',
+        type: 'text',
+        validate: input => isFormatValid('node', input)
+      }
     ])
     nodeId = prompt.nodeId
     if (!nodeId) {
-      return consola.error('Missing node id')
+      consola.error('Missing node id')
+      return
     }
   }
 
-  const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
   const url = `${config.get(
     `services.${env}.nodes.url`
   )}/users/me/nodes/${nodeId}`
-  const spinner = ora().start()
 
-  const params = {
-    method: 'GET',
-    headers: {
-      Authorization,
-      'Content-Type': 'application/json'
+  // eslint-disable-next-line consistent-return
+  return fetcher(url, 'GET', accessToken).then(res => {
+    if (!res.ok) {
+      consola.error(
+        `Error retrieving node information, requested resource not found: ${res.status}`
+      )
+      return
     }
-  }
-
-  fetch(url, params)
-    .then(res => {
-      spinner.stop()
-
-      if (res.status === 401 || res.status === 403) {
-        return consola.error('Your session has expired')
-      }
-
-      if (res.status === 404) {
-        return consola.error(
-          'Error retrieving node information, requested resource not found'
-        )
-      }
-
-      if (res.status !== 200) {
-        return consola.error(
-          `Error retrieving the node: ${res.statusText || res.status}.`
-        )
-      }
-
-      return res.json()
-    })
-    .then(res => {
-      let body = res
-      const {
-        id,
-        auth,
-        state,
-        chain,
-        network,
-        serviceData,
-        ip,
-        stoppedAt,
-        createdAt
-      } = body
-      const creds =
-        auth.type === 'jwt'
-          ? '* Auth:\t\tJWT'
-          : `* User:\t\t${auth.user}
+    let body = res.data
+    const {
+      id,
+      auth,
+      state,
+      chain,
+      network,
+      serviceData,
+      ip,
+      stoppedAt,
+      createdAt
+    } = body
+    const creds =
+      auth.type === 'jwt'
+        ? '* Auth:\t\tJWT'
+        : `* User:\t\t${auth.user}
     * Password:\t\t${auth.pass}`
 
-      process.stdout.write('\n')
+    process.stdout.write('\n')
 
-      consola.success(`Retrieved node with id ${nodeId}
+    consola.success(`Retrieved node with id ${nodeId}
     * ID:\t\t${id}
     * Started At:\t${createdAt}
     * Stopped At:\t${stoppedAt || 'N/A'}
@@ -96,11 +79,7 @@ async function infoNode({ accessToken, nodeId }) {
     * State:\t\t${state}
     * IP:\t\t${ip}
     ${creds}`)
-    })
-    .catch(err => {
-      spinner.stop()
-      return consola.error(`Error retrieving the node: ${err}.`)
-    })
+  })
 }
 
 module.exports = infoNode

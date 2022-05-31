@@ -1,8 +1,9 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-shadow */
 'use strict'
 
-const ora = require('ora')
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
 const { Command, flags } = require('@oclif/command')
 const config = require('../config')
 require('console.table')
@@ -14,61 +15,43 @@ class EventsCommand extends Command {
     const { flags } = this.parse(EventsCommand)
 
     if (!user || !accessToken) {
-      return consola.error(
+      consola.error(
         'User is not authenticated. Use login command to start a new session.'
       )
+      return
     }
 
     consola.info(`Retrieving events for user ${user}`)
 
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/users/me/events`
-    const spinner = ora().start()
 
-    const params = {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
+    return fetcher(url, 'GET', accessToken).then(res => {
+      if (!res.ok) {
+        consola.error(`Error retrieving events: ${res.status}`)
+        return
       }
-    }
 
-    fetch(url, params)
-      .then(res => {
-        spinner.stop()
+      const data = res.data
 
-        if (res.status === 401 || res.status === 403) {
-          return consola.error('Your session has expired')
-        }
+      let events = data.map(({ id, service, serviceData, createdAt }) => ({
+        id,
+        service,
+        serviceData: JSON.stringify(serviceData),
+        createdAt
+      }))
 
-        if (res.status !== 200) {
-          return consola.error(
-            `Error retrieving events: ${res.statusText || res.status}.`
-          )
-        }
+      if (flags.service) {
+        events = events.filter(e =>
+          e.service.toLowerCase().includes(flags.service)
+        )
+      }
 
-        return res.json()
-      })
-      .then(function (res) {
-        let events = res.map(({ id, service, serviceData, createdAt }) => ({
-          id,
-          service,
-          serviceData: JSON.stringify(serviceData),
-          createdAt
-        }))
-
-        if (flags.service) {
-          events = events.filter(e =>
-            e.service.toLowerCase().includes(flags.service)
-          )
-        }
-
-        consola.success(`Retrieved ${events.length} events:`)
-        process.stdout.write('\n')
-        // eslint-disable-next-line no-console
-        return console.table(events)
-      })
-      .catch(err => consola.error(`Error retrieving events: ${err}`))
+      consola.success(`Retrieved ${events.length} events:`)
+      process.stdout.write('\n')
+      // eslint-disable-next-line no-console
+      console.table(events)
+    })
   }
 }
 

@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-shadow */
 'use strict'
 const ora = require('ora')
 const fetch = require('node-fetch').default
@@ -47,7 +49,8 @@ class LoginCommand extends Command {
 
       password = prompt.password
       if (!password) {
-        return consola.error('Missing password')
+        consola.error('Missing password')
+        return
       }
     }
 
@@ -66,29 +69,33 @@ class LoginCommand extends Command {
       }
     }
 
-    fetch(url, params)
+    return fetch(url, params)
       .then(res => {
         spinner.stop()
 
         if (res.status === 401 || res.status === 403) {
-          return consola.error(
-            'The username or password you entered is incorrect'
-          )
+          consola.error('The username or password you entered is incorrect')
+          return
         }
 
         if (res.status !== 200) {
-          return consola.error(
+          consola.error(
             `Error retrieving access token: ${res.statusText || res.status}`
           )
+          return
         }
 
-        return res.json()
+        return res.json().then(data => ({ ok: true, status: res.status, data }))
       })
       .then(res => {
-        config.set('accessToken', res.accessToken)
-        return consola.success('Login success. Your session expires in 12h.')
+        if (!res.ok) {
+          consola.error(`${res.message} (${res.status})`)
+          return
+        }
+
+        config.set('accessToken', res.data.accessToken)
+        consola.success('Login success. Your session expires in 12h.')
       })
-      .catch(err => consola.error(`Error retrieving access token: ${err}`))
   }
 }
 

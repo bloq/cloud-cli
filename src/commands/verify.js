@@ -27,7 +27,8 @@ class VerifyCommand extends Command {
 
       user = prompt.user
       if (!user) {
-        return consola.error('Missing email or account id')
+        consola.error('Missing email or account id')
+        return
       }
     }
 
@@ -43,7 +44,8 @@ class VerifyCommand extends Command {
 
       token = prompt.token
       if (!token) {
-        return consola.error('Missing verification token')
+        consola.error('Missing verification token')
+        return
       }
     }
 
@@ -63,24 +65,27 @@ class VerifyCommand extends Command {
         spinner.stop()
 
         if (res.status === 404) {
-          return consola.error('User does not exist')
+          consola.error('User does not exist')
+          return
         }
 
         if (res.status === 204) {
           consola.success(`The account ${user} has been validated.`)
-          return consola.info(
+          consola.info(
             `You can now start a new session running the command: bcl login -u ${user}`
           )
+          return
         }
         return res.json()
       })
       .then(function (res) {
         if (res.code === 'UserVerified') {
-          return consola.warn(`Your account is already verified
+          consola.warn(`Your account is already verified
           To start a new session run the command: bcl login -u ${user}`)
+          return
         }
 
-        return consola.error(`Error verifying your account: ${res.code}`)
+        consola.error(`Error verifying your account: ${res.code}`)
       })
       .catch(err => consola.error(`Error verifying your account: ${err}`))
   }

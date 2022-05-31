@@ -1,7 +1,8 @@
+/* eslint-disable consistent-return */
 'use strict'
 
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
 const { Command } = require('@oclif/command')
 const inquirer = require('inquirer')
 
@@ -13,9 +14,10 @@ class UpdatePasswordCommand extends Command {
     const accessToken = config.get('accessToken')
 
     if (!user || !accessToken) {
-      return consola.error(
+      consola.error(
         'User is not authenticated. Use login command to start a new session.'
       )
+      return
     }
 
     const { oldPassword, newPassword } = await inquirer.prompt([
@@ -38,7 +40,8 @@ class UpdatePasswordCommand extends Command {
     ])
 
     if (oldPassword === newPassword) {
-      return consola.error('New password must be different from old password')
+      consola.error('New password must be different from old password')
+      return
     }
 
     consola.info(`Updating password for user ${user}`)
@@ -47,31 +50,16 @@ class UpdatePasswordCommand extends Command {
       `services.${env}.accounts.url`
     )}/users/me/password`
     const json = { newPassword, oldPassword }
+    const body = JSON.stringify(json)
 
-    const params = {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-      },
-      body: JSON.stringify(json)
-    }
+    return fetcher(url, 'PUT', accessToken, body).then(res => {
+      if (!res.ok) {
+        consola.error(`Error updating user password: ${res.status}`)
+        return
+      }
 
-    fetch(url, params)
-      .then(res => {
-        if (res.status === 400) {
-          return consola.error(
-            `Error updating user password: ${res.statusText}`
-          )
-        }
-
-        if (res.status !== 204) {
-          return consola.error('Error updating user password.')
-        }
-
-        return consola.success('User password updated')
-      })
-      .catch(err => consola.error(`Error updating user password: ${err}`))
+      consola.success('User password updated')
+    })
   }
 }
 

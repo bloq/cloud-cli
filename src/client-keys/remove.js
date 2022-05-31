@@ -1,9 +1,9 @@
 'use strict'
 
-const consola = require('consola')
-const fetch = require('node-fetch').default
-const inquirer = require('inquirer')
 const config = require('../config')
+const consola = require('consola')
+const { fetcher } = require('../utils')
+const inquirer = require('inquirer')
 
 /**
  *  Removes the giving client key
@@ -24,7 +24,8 @@ async function removeClientKey(user, accessToken, flags) {
 
     clientId = prompt.clientId
     if (!clientId) {
-      return consola.error('Missing client id')
+      consola.error('Missing client id')
+      return
     }
   }
 
@@ -38,15 +39,8 @@ async function removeClientKey(user, accessToken, flags) {
   ])
 
   if (!confirmation) {
-    return consola.error('Remove client key was canceled.')
-  }
-
-  const params = {
-    method: 'DELETE',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
-    }
+    consola.error('Remove client key was canceled.')
+    return
   }
 
   const env = config.get('env') || 'prod'
@@ -54,21 +48,21 @@ async function removeClientKey(user, accessToken, flags) {
     `services.${env}.accounts.url`
   )}/users/me/client-keys/${clientId}`
 
-  return fetch(url, params)
-    .then(res => {
-      if (res.status === 401 || res.status === 403) {
-        return consola.error('Your session has expired')
-      }
+  return fetcher(url, 'DELETE', accessToken).then(res => {
+    if (!res.ok) {
+      consola.error(`Error removing the client-key: ${res.message}`)
+      return
+    }
 
-      if (res.status !== 204) {
-        return consola.error(
-          `Error removing client-key: ${res.status || res.statusText}.`
-        )
-      }
+    if (res.status !== 204) {
+      consola.error(
+        `Error removing client-key: ${res.status || res.statusText}.`
+      )
+      return
+    }
 
-      return consola.success(`Removed client key with id ${clientId}`)
-    })
-    .catch(err => consola.error(`Error removing the client-key: ${err}.`))
+    consola.success(`Removed client key with id ${clientId}`)
+  })
 }
 
 module.exports = removeClientKey

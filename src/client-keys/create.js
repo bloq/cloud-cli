@@ -1,10 +1,9 @@
 'use strict'
 
 const consola = require('consola')
-const fetch = require('node-fetch').default
 const inquirer = require('inquirer')
 const config = require('../config')
-const { coppyToClipboard } = require('../utils')
+const { coppyToClipboard, fetcher } = require('../utils')
 
 /**
  *  Creates a new pair of client keys
@@ -29,51 +28,28 @@ async function createClientKey(user, accessToken) {
     `services.${env}.accounts.url`
   )}/users/me/client-keys`
 
-  const params = {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': `Bearer ${accessToken}`
+  return fetcher(url, 'POST', accessToken).then(res => {
+    if (!res.ok) {
+      consola.error(`Error creating new pair of client keys: ${res.status}`)
+      return
     }
-  }
-
-  fetch(url, params)
-    .then(res => {
-      if (res.status === 401 || res.status === 403) {
-        return consola.error('Your session has expired')
-      }
-
-      if (res.status !== 200) {
-        return consola.error(
-          `Error creating new pair of client keys: ${
-            res.status || res.statusText
-          }.`
-        )
-      }
-
-      return res.json()
-    })
-    .then(data => {
-      process.stdout.write('\n')
-      consola.success(`Generated new client keys:
-    * Client ID:\t${data.clientId}
-    * Client Secret:\t${data.clientSecret}
+    process.stdout.write('\n')
+    consola.success(`Generated new client keys:
+    * Client ID:\t${res.data.clientId}
+    * Client Secret:\t${res.data.clientSecret}
     `)
 
-      consola.warn(
-        'You will NOT be able to see your client secret again. Remember to copy it and keep it safe.'
-      )
-
-      if (save) {
-        config.set('clientId', data.clientId)
-        config.set('clientSecret', data.clientSecret)
-      }
-
-      return coppyToClipboard(data.clientSecret, 'Client secret')
-    })
-    .catch(err =>
-      consola.error(`Error creating new pair of client keys: ${err}.`)
+    consola.warn(
+      'You will NOT be able to see your client secret again. Remember to copy it and keep it safe.'
     )
+
+    if (save) {
+      config.set('clientId', res.data.clientId)
+      config.set('clientSecret', res.data.clientSecret)
+    }
+
+    coppyToClipboard(res.data.clientSecret, 'Client secret')
+  })
 }
 
 module.exports = createClientKey

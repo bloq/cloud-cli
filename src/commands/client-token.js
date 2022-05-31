@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
 const inquirer = require('inquirer')
 const { Command } = require('@oclif/command')
 
@@ -22,7 +22,7 @@ class ClientTokenCommand extends Command {
       consola.info(
         'To create a new client-keys pair run: bcl client-keys create'
       )
-      return
+      return null
     }
 
     consola.info(`Retrieving new client accessToken for ${user}`)
@@ -38,50 +38,41 @@ class ClientTokenCommand extends Command {
 
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/auth/token`
+    const body = JSON.stringify({
+      grantType: 'clientCredentials',
+      clientId,
+      clientSecret
+    })
 
-    const params = {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${accessToken}`
-      },
-      body: JSON.stringify({
-        grantType: 'clientCredentials',
-        clientId,
-        clientSecret
-      })
-    }
-
-    fetch(url, params)
-      .then(res => res.json())
-      .then(data => {
-        if (data.statusCode === 401 || data.statusCode === 403) {
-          return consola.error('Your client keys are invalid')
+    return fetcher(url, 'POST', accessToken, body).then(res => {
+      if (!res.ok) {
+        if (res.status === 401 || res.status === 403) {
+          consola.error('Your client keys are invalid')
+          return
         }
+        consola.error(`Error generating client accessToken: ${res.status}`)
+        return
+      }
+      const data = res.data
 
-        if (!data.accessToken || !data.refreshToken) {
-          return consola.error('Error generating client accessToken.')
-        }
-        consola.success(
-          'Generated new tokens: \n\n' +
-            `\t* clientAccessToken:  ${data.accessToken} \n` +
-            `\t* refreshToken:  ${data.refreshToken}`
-        )
+      if (!data.accessToken || !data.refreshToken) {
+        consola.error('Error generating client accessToken.')
+        return
+      }
 
-        if (save) {
-          config.set('clientAccessToken', data.accessToken)
-          config.set('refreshToken', data.refreshToken)
-        }
+      consola.success(
+        'Generated new tokens: \n\n' +
+          `\t* clientAccessToken:  ${data.accessToken} \n` +
+          `\t* refreshToken:  ${data.refreshToken}`
+      )
 
-        return coppyToClipboard(data.accessToken, 'Client access token')
-      })
-      .catch(err => {
-        return consola.error(
-          `Error generating client accessToken: ${
-            err.detail || err.title || err.statusText
-          }`
-        )
-      })
+      if (save) {
+        config.set('clientAccessToken', data.accessToken)
+        config.set('refreshToken', data.refreshToken)
+      }
+
+      coppyToClipboard(data.accessToken, 'Client access token')
+    })
   }
 }
 

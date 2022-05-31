@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 'use strict'
 
 const consola = require('consola')
@@ -12,9 +13,10 @@ class UserKeysCommand extends Command {
     const { args, flags } = this.parse(UserKeysCommand)
 
     if (!user || !accessToken) {
-      return consola.error(
+      consola.error(
         'User is not authenticated. Use login command to start a new session.'
       )
+      return
     }
 
     switch (args.operation) {

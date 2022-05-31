@@ -1,8 +1,10 @@
+/* eslint-disable consistent-return */
 'use strict'
 
-const ora = require('ora')
 const consola = require('consola')
-const fetch = require('node-fetch').default
+const { fetcher } = require('../utils')
+const { isFormatValid } = require('../validator')
+
 const inquirer = require('inquirer')
 
 const config = require('../config')
@@ -34,7 +36,12 @@ async function infoCluster({ accessToken, clusterId }) {
 
   if (!clusterId) {
     const prompt = await inquirer.prompt([
-      { name: 'clusterId', message: 'Enter the cluster id', type: 'text' }
+      {
+        name: 'clusterId',
+        message: 'Enter the cluster id',
+        type: 'text',
+        validate: input => isFormatValid('cluster', input)
+      }
     ])
     // eslint-disable-next-line no-param-reassign
     clusterId = prompt.clusterId
@@ -44,56 +51,30 @@ async function infoCluster({ accessToken, clusterId }) {
     }
   }
 
-  const Authorization = `Bearer ${accessToken}`
   const env = config.get('env') || 'prod'
-  const serviceUrl = config.get(`services.${env}.nodes.url`)
-  const url = `${serviceUrl}/users/me/clusters/${clusterId}`
-  const spinner = ora().start()
+  const url = `${config.get(
+    `services.${env}.nodes.url`
+  )}/users/me/clusters/${clusterId}`
 
-  const params = {
-    method: 'GET',
-    headers: { Authorization }
-  }
-  fetch(url, params)
-    .then(res => {
-      spinner.stop()
-
-      if (res.status === 401) {
-        return consola.error('Unauthorized')
-      }
-
-      if (res.status === 403) {
-        return consola.error('Your session has expired', res.status)
-      }
-
-      if (res.status === 404) {
-        return consola.error(
-          'Error retrieving cluster information, requested resource not found'
-        )
-      }
-
-      if (res.status !== 200) {
-        return consola.error(
-          `Error retrieving the cluster: ${res.status} || ${res.statusText}`
-        )
-      }
-      return res.json()
-    })
-    .then(res => {
-      process.stdout.write('\n')
-      consola.success(`Retrieved cluster with id ${clusterId}
-      * ID:\t\t${res.id}
-      * Name:\t\t${res.alias || res.name}
-      * Chain:\t\t${res.chain}
-      * Network:\t\t${res.network}
-      * Version:\t\t${res.serviceData.software}
-      * Performance:\t${res.serviceData.performance}
-      * Domain:\t\t${res.domain}
-      * Capacity:\t\t${res.onDemandCapacity}:${res.capacity}
-      * Region:\t\t${res.region}
-      * State:\t\t${getState(res)}${getCreds(res)}`)
-    })
-    .catch(err => consola.error(`Error retrieving the cluster: ${err}.`))
+  return fetcher(url, 'GET', accessToken).then(res => {
+    if (!res.ok) {
+      consola.error(`Error retrieving cluster: ${res.status}`)
+      return
+    }
+    const data = res.data
+    process.stdout.write('\n')
+    consola.success(`Retrieved cluster with id ${clusterId}
+      * ID:\t\t${data.id}
+      * Name:\t\t${data.alias || data.name}
+      * Chain:\t\t${data.chain}
+      * Network:\t\t${data.network}
+      * Version:\t\t${data.serviceData.software}
+      * Performance:\t${data.serviceData.performance}
+      * Domain:\t\t${data.domain}
+      * Capacity:\t\t${data.onDemandCapacity}:${data.capacity}
+      * Region:\t\t${data.region}
+      * State:\t\t${getState(data)}${getCreds(data)}`)
+  })
 }
 
 module.exports = infoCluster
