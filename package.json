@@ -24,11 +24,12 @@
     "start": "node bin/run",
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint .",
-    "lint": "eslint .",
     "lint:fix": "eslint --fix .",
     "prepack": "oclif-dev manifest && oclif-dev readme",
     "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-    "version": "oclif-dev readme && git add README.md"
+    "version": "oclif-dev readme && git add README.md",
+    "format:check": "prettier --check .",
+    "lint": "eslint --cache ."
   },
   "dependencies": {
     "@bloq/cloud-sdk": "1.0.2",
@@ -78,8 +79,18 @@
   "eslintConfig": {
     "extends": [
       "bloq",
-      "bloq/node",
       "prettier"
+    ],
+    "overrides": [
+      {
+        "files": [
+          "*.spec.js"
+        ],
+        "extends": [
+          "bloq/mocha",
+          "prettier"
+        ]
+      }
     ],
     "root": true
   },
