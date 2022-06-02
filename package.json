@@ -79,6 +79,7 @@
   "eslintConfig": {
     "extends": [
       "bloq",
+      "bloq/node",
       "prettier"
     ],
     "overrides": [
