@@ -15,16 +15,16 @@ const inquirer = require('inquirer')
  */
 async function removeClientKey(user, accessToken, flags) {
   consola.info(`Removing client key for user ${user}.`)
-  let { clientId } = flags
+  let { keyId } = flags
 
-  if (!clientId) {
+  if (!keyId) {
     const prompt = await inquirer.prompt([
-      { name: 'clientId', message: 'Enter the client-key id', type: 'text' }
+      { name: 'keyId', message: 'Enter the client-key id', type: 'text' }
     ])
 
-    clientId = prompt.clientId
-    if (!clientId) {
-      consola.error('Missing client id')
+    keyId = prompt.keyId
+    if (!keyId) {
+      consola.error('Missing client key id')
       return
     }
   }
@@ -32,7 +32,7 @@ async function removeClientKey(user, accessToken, flags) {
   const { confirmation } = await inquirer.prompt([
     {
       name: 'confirmation',
-      message: `You will remove client key with id ${clientId}. Do you want to continue?`,
+      message: `You will remove client key with id ${keyId}. Do you want to continue?`,
       type: 'confirm',
       default: false
     }
@@ -46,7 +46,7 @@ async function removeClientKey(user, accessToken, flags) {
   const env = config.get('env') || 'prod'
   const url = `${config.get(
     `services.${env}.accounts.url`
-  )}/users/me/client-keys/${clientId}`
+  )}/users/me/client-keys/${keyId}`
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
     if (!res.ok) {
@@ -61,7 +61,7 @@ async function removeClientKey(user, accessToken, flags) {
       return
     }
 
-    consola.success(`Removed client key with id ${clientId}`)
+    consola.success(`Removed client key with id ${keyId}`)
   })
 }
 

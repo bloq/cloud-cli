@@ -72,28 +72,35 @@ class LoginCommand extends Command {
     return fetch(url, params)
       .then(res => {
         spinner.stop()
-
         if (res.status === 401 || res.status === 403) {
-          consola.error('The username or password you entered is incorrect')
-          return
+          return {
+            ok: false,
+            status: res.status,
+            message: 'The username or password you entered is incorrect'
+          }
         }
 
         if (res.status !== 200) {
-          consola.error(
-            `Error retrieving access token: ${res.statusText || res.status}`
-          )
-          return
+          return {
+            ok: false,
+            status: res.status,
+            message: `Error retrieving access token: ${
+              res.statusText || res.status
+            }`
+          }
         }
-
-        return res.json().then(data => ({ ok: true, status: res.status, data }))
+        return res.json().then(res => ({
+          ok: true,
+          status: 200,
+          accessToken: res.accessToken
+        }))
       })
       .then(res => {
         if (!res.ok) {
           consola.error(`${res.message} (${res.status})`)
-          return
+          return res
         }
-
-        config.set('accessToken', res.data.accessToken)
+        config.set('accessToken', res.accessToken)
         consola.success('Login success. Your session expires in 12h.')
       })
   }

@@ -64,7 +64,7 @@ ARGUMENTS
   OPERATION  (create|list|remove) [default: list] Specify the type of client-keys operation to run
 
 OPTIONS
-  -i, --clientId=clientId  client id
+  -i, --keyId=keyId  client key id, used by `remove` operation only
 ```
 
 _See code: [src/commands/client-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v3.1.0/src/commands/client-keys.js)_
