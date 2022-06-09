@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 'use strict'
 
 const config = require('../config')
@@ -23,7 +22,7 @@ async function removeClientKey(user, accessToken, flags) {
       { name: 'keyId', message: 'Enter the client-key id', type: 'text' }
     ])
 
-    keyId = prompt.clientKeyId
+    keyId = prompt.keyId
     if (!keyId) {
       consola.error('Missing client key id')
       return

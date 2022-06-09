@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 /* eslint-disable no-shadow */
 'use strict'
 
