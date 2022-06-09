@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-shadow */
 'use strict'
 
@@ -33,7 +34,10 @@ class ClientKeysCommand extends Command {
 ClientKeysCommand.description = 'Manage your Bloq client key(s)'
 
 ClientKeysCommand.flags = {
-  clientId: flags.string({ char: 'i', description: 'client id' })
+  keyId: flags.string({
+    char: 'i',
+    description: 'client key id, used with `remove` operation.'
+  })
 }
 
 ClientKeysCommand.args = [
