@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 'use strict'
 
 const consola = require('consola')
@@ -16,38 +15,38 @@ const config = require('../config')
  * @param {Object} params.clusterId Cluster ID
  * @returns {Promise} The remove cluster promise
  */
-async function removeCluster({ accessToken, clusterId, force }) {
+async function removeCluster({ accessToken, force, ...flags }) {
   consola.info('Removing cluster')
 
-  if (!clusterId) {
-    const prompt = await inquirer.prompt([
-      {
-        name: 'clusterId',
-        message: 'Enter the cluster id',
-        type: 'text',
-        validate: input => isFormatValid('cluster', input)
-      }
-    ])
-
-    // eslint-disable-next-line no-param-reassign
-    clusterId = prompt.clusterId
-    if (!clusterId) {
-      consola.error('Missing cluster id')
-      return
-    }
-  }
-
-  const { confirmation } = await inquirer.prompt([
+  const prompt = await inquirer.prompt([
     {
-      name: 'confirmation',
-      message: `You will remove the cluster with id ${clusterId}. Do you want to continue?`,
+      name: 'clusterId',
+      message: 'Enter the cluster id',
+      type: 'text',
+      when: () => !flags.clusterId,
+      validate: input => isFormatValid('cluster', input)
+    },
+    {
+      name: 'yes',
+      message: `You will remove the cluster. Do you want to continue?`,
       type: 'confirm',
-      default: false
+      default: false,
+      when: () => !flags.yes
     }
   ])
 
-  if (!confirmation) {
-    consola.error('Remove cluster was canceled.')
+  const { yes, clusterId } = {
+    ...flags,
+    ...prompt
+  }
+
+  if (!clusterId) {
+    consola.error('Missing cluster id')
+    return
+  }
+
+  if (!yes) {
+    consola.error('No action taken')
     return
   }
 
