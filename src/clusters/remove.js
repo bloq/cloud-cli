@@ -53,7 +53,7 @@ async function removeCluster({ accessToken, force, ...flags }) {
   const env = config.get('env') || 'prod'
   const serviceUrl = config.get(`services.${env}.nodes.url`)
   const url = force
-    ? `${serviceUrl}/users/me/clusters/${clusterId}?force=${force}`
+    ? `${serviceUrl}/clusters/${clusterId}`
     : `${serviceUrl}/users/me/clusters/${clusterId}`
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
