@@ -74,7 +74,7 @@ async function createCluster(params) {
 
     const data = res.data
 
-    if (typeof alias !== undefined) {
+    if (typeof alias !== 'undefined') {
       const bodyAlias = JSON.stringify({ alias })
       const urlAlias = `${config.get(
         `services.${env}.nodes.url`

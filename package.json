@@ -8,7 +8,7 @@
   "homepage": "https://github.com/bloqpriv/cloud-cli",
   "bugs": "https://github.com/bloqpriv/cloud-cli/issues",
   "license": "MIT",
-  "author": "Ignacio Anaya <ignacio@bloq.com>",
+  "author": "Bloq",
   "files": [
     "/bin",
     "/npm-shrinkwrap.json",

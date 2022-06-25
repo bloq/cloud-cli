@@ -31,9 +31,7 @@ const getCreds = body =>
  * @param {Object} params.clusterId Cluster ID
  * @returns {Promise} The information cluster promise
  */
-async function infoCluster({ accessToken, clusterId }) {
-  consola.info('Retrieving cluster information')
-
+async function infoCluster({ accessToken, clusterId, json }) {
   if (!clusterId) {
     const prompt = await inquirer.prompt([
       {
@@ -61,9 +59,15 @@ async function infoCluster({ accessToken, clusterId }) {
       consola.error(`Error retrieving cluster: ${res.status}`)
       return
     }
+
     const data = res.data
-    process.stdout.write('\n')
-    consola.success(`Retrieved cluster with id ${clusterId}
+
+    if (typeof json !== 'undefined') {
+      console.log(JSON.stringify(data))
+    } else {
+      consola.info('Retrieving cluster information')
+      process.stdout.write('\n')
+      consola.success(`Retrieved cluster with id ${clusterId}
       * ID:\t\t${data.id}
       * Name:\t\t${data.alias || data.name}
       * Chain:\t\t${data.chain}
@@ -74,6 +78,7 @@ async function infoCluster({ accessToken, clusterId }) {
       * Capacity:\t\t${data.onDemandCapacity}:${data.capacity}
       * Region:\t\t${data.region}
       * State:\t\t${getState(data)}${getCreds(data)}`)
+    }
   })
 }
 
