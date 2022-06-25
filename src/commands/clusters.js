@@ -56,6 +56,11 @@ ClusterCommand.flags = {
     char: 'o',
     description: 'on-demand capacity'
   }),
+  alias: flags.string({
+    char: 'n',
+    description: 'set cluster alias',
+    required: false
+  }),
   all: flags.boolean({
     char: 'a',
     description: 'list all clusters, started and stopped',

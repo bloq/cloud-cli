@@ -20,11 +20,19 @@ const CLUSTER_MAX_CAPACITY = 10
  * @param {Object} params.authType Authentication type
  * @param {Object} params.capacity Clusters total capacity
  * @param {Object} params.onDemandCapacity Clusters on-demand capacity
- * @returns {Promise} The create cluster promise
+ * @param {Object} params.alias Clusters alias
+
+* @returns {Promise} The create cluster promise
  */
 async function createCluster(params) {
-  const { accessToken, authType, capacity, onDemandCapacity, serviceId } =
-    params
+  const {
+    accessToken,
+    authType,
+    capacity,
+    onDemandCapacity,
+    serviceId,
+    alias
+  } = params
 
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
@@ -63,7 +71,21 @@ async function createCluster(params) {
       consola.error(`Error initializing the new cluster: ${res.status}`)
       return
     }
+
     const data = res.data
+
+    if (typeof alias !== undefined) {
+      const bodyAlias = JSON.stringify({ alias })
+      const urlAlias = `${config.get(
+        `services.${env}.nodes.url`
+      )}/users/me/clusters/${data.id}/alias`
+      fetcher(urlAlias, 'POST', accessToken, bodyAlias)
+        .then(() => {
+          consola.success('Cluster alias set:', alias)
+        })
+        .catch(err => consola.success('Error setting the alias: ', err.message))
+    }
+
     const creds =
       data.auth.type === 'jwt'
         ? `
