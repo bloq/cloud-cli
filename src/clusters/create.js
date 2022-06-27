@@ -61,34 +61,34 @@ async function createCluster(params) {
 
   consola.info(`Creating a new cluster from service ${serviceId}.`)
 
-  const json = { serviceId, authType, capacity, onDemandCapacity }
+  const json = { serviceId, authType, capacity, onDemandCapacity, alias }
   const body = JSON.stringify(json)
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/clusters`
 
-  return fetcher(url, 'POST', accessToken, body)
-    .then(res => {
-      if (!res.ok) {
-        consola.error(`Error initializing the new cluster: ${res.status}`)
-        return
-      }
+  return fetcher(url, 'POST', accessToken, body).then(res => {
+    if (!res.ok) {
+      consola.error(`Error initializing the new cluster: ${res.status}`)
+      return
+    }
 
-      const data = res.data
-      const creds =
-        data.auth.type === 'jwt'
-          ? `
+    const data = res.data
+    const creds =
+      data.auth.type === 'jwt'
+        ? `
     * Auth:\t\tJWT`
-          : data.auth.type === 'basic'
-          ? `
+        : data.auth.type === 'basic'
+        ? `
     * User:\t\t${data.auth.user}
     * Password:\t\t${data.auth.pass}`
-          : `
+        : `
     * Auth:\t\tnone`
 
-      process.stdout.write('\n')
-      consola.success(`Initialized new cluster from service ${serviceId}
+    process.stdout.write('\n')
+    consola.success(`Initialized new cluster from service ${serviceId}
     * ID:\t\t${data.id}
     * Name:\t\t${data.name}
+    * Alias:\t\t${data.alias}
     * Chain:\t\t${data.chain}
     * Network:\t\t${data.network}
     * Version:\t\t${data.serviceData.software}
@@ -97,24 +97,8 @@ async function createCluster(params) {
     * Capacity:\t\t${data.onDemandCapacity}:${data.capacity}
     * Region:\t\t${data.region}
     * State:\t\t${data.state}${creds} \n`)
-
-      coppyToClipboard(data.id, 'Cluster id')
-
-      return data.id
-    })
-    .then(res => {
-      if (typeof alias !== 'undefined') {
-        const bodyAlias = JSON.stringify({ alias })
-        const urlAlias = `${config.get(
-          `services.${env}.nodes.url`
-        )}/users/me/clusters/${res.id}/alias`
-        return fetcher(urlAlias, 'POST', accessToken, bodyAlias)
-          .then(() => {
-            consola.success(`Cluster alias set:\t${alias}\n\n`)
-          })
-          .catch(err => consola.error('Error setting the alias: ', err.message))
-      }
-    })
+    coppyToClipboard(data.id, 'Cluster id')
+  })
 }
 
 module.exports = createCluster
