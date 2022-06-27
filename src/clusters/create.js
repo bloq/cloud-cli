@@ -66,40 +66,27 @@ async function createCluster(params) {
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/clusters`
 
-  return fetcher(url, 'POST', accessToken, body).then(res => {
-    if (!res.ok) {
-      consola.error(`Error initializing the new cluster: ${res.status}`)
-      return
-    }
+  return fetcher(url, 'POST', accessToken, body)
+    .then(res => {
+      if (!res.ok) {
+        consola.error(`Error initializing the new cluster: ${res.status}`)
+        return
+      }
 
-    const data = res.data
-
-    if (typeof alias !== 'undefined') {
-      const bodyAlias = JSON.stringify({ alias })
-      const urlAlias = `${config.get(
-        `services.${env}.nodes.url`
-      )}/users/me/clusters/${data.id}/alias`
-      fetcher(urlAlias, 'POST', accessToken, bodyAlias)
-        .then(() => {
-          consola.success('Cluster alias set:', alias)
-        })
-        .catch(err => consola.success('Error setting the alias: ', err.message))
-    }
-
-    const creds =
-      data.auth.type === 'jwt'
-        ? `
+      const data = res.data
+      const creds =
+        data.auth.type === 'jwt'
+          ? `
     * Auth:\t\tJWT`
-        : data.auth.type === 'basic'
-        ? `
+          : data.auth.type === 'basic'
+          ? `
     * User:\t\t${data.auth.user}
     * Password:\t\t${data.auth.pass}`
-        : `
+          : `
     * Auth:\t\tnone`
 
-    coppyToClipboard(data.id, 'Cluster id')
-    process.stdout.write('\n')
-    consola.success(`Initialized new cluster from service ${serviceId}
+      process.stdout.write('\n')
+      consola.success(`Initialized new cluster from service ${serviceId}
     * ID:\t\t${data.id}
     * Name:\t\t${data.name}
     * Chain:\t\t${data.chain}
@@ -109,8 +96,25 @@ async function createCluster(params) {
     * Domain:\t\t${data.domain}
     * Capacity:\t\t${data.onDemandCapacity}:${data.capacity}
     * Region:\t\t${data.region}
-    * State:\t\t${data.state}${creds}\n\n`)
-  })
+    * State:\t\t${data.state}${creds} \n`)
+
+      coppyToClipboard(data.id, 'Cluster id')
+
+      return data.id
+    })
+    .then(res => {
+      if (typeof alias !== 'undefined') {
+        const bodyAlias = JSON.stringify({ alias })
+        const urlAlias = `${config.get(
+          `services.${env}.nodes.url`
+        )}/users/me/clusters/${res.id}/alias`
+        return fetcher(urlAlias, 'POST', accessToken, bodyAlias)
+          .then(() => {
+            consola.success(`Cluster alias set:\t${alias}\n\n`)
+          })
+          .catch(err => consola.error('Error setting the alias: ', err.message))
+      }
+    })
 }
 
 module.exports = createCluster

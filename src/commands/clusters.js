@@ -57,7 +57,7 @@ ClusterCommand.flags = {
     description: 'on-demand capacity'
   }),
   alias: flags.string({
-    char: 'n',
+    char: 'l',
     description: 'set cluster alias',
     required: false
   }),

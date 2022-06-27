@@ -61,13 +61,12 @@ async function listClusters({ accessToken, all, allClusters, sort }) {
         id,
         chain,
         network,
-        alias,
-        name,
-        state: state === 'started' && updatingService ? 'updating' : state,
-        health: `${Math.round((healthCount / capacity) * 100)}%`,
+        'name/alias': alias || name,
+        'state': state === 'started' && updatingService ? 'updating' : state,
+        'health': `${Math.round((healthCount / capacity) * 100)}%`,
         createdAt,
-        version: serviceData.software,
-        performance: serviceData.performance
+        'version': serviceData.software,
+        'performance': serviceData.performance
       }
 
       if (all) {
