@@ -20,11 +20,19 @@ const CLUSTER_MAX_CAPACITY = 10
  * @param {Object} params.authType Authentication type
  * @param {Object} params.capacity Clusters total capacity
  * @param {Object} params.onDemandCapacity Clusters on-demand capacity
- * @returns {Promise} The create cluster promise
+ * @param {Object} params.alias Clusters alias
+
+* @returns {Promise} The create cluster promise
  */
 async function createCluster(params) {
-  const { accessToken, authType, capacity, onDemandCapacity, serviceId } =
-    params
+  const {
+    accessToken,
+    authType,
+    capacity,
+    onDemandCapacity,
+    serviceId,
+    alias
+  } = params
 
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
@@ -53,7 +61,7 @@ async function createCluster(params) {
 
   consola.info(`Creating a new cluster from service ${serviceId}.`)
 
-  const json = { serviceId, authType, capacity, onDemandCapacity }
+  const json = { serviceId, authType, capacity, onDemandCapacity, alias }
   const body = JSON.stringify(json)
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/clusters`
@@ -63,6 +71,7 @@ async function createCluster(params) {
       consola.error(`Error initializing the new cluster: ${res.status}`)
       return
     }
+
     const data = res.data
     const creds =
       data.auth.type === 'jwt'
@@ -75,11 +84,11 @@ async function createCluster(params) {
         : `
     * Auth:\t\tnone`
 
-    coppyToClipboard(data.id, 'Cluster id')
     process.stdout.write('\n')
     consola.success(`Initialized new cluster from service ${serviceId}
     * ID:\t\t${data.id}
     * Name:\t\t${data.name}
+    * Alias:\t\t${data.alias}
     * Chain:\t\t${data.chain}
     * Network:\t\t${data.network}
     * Version:\t\t${data.serviceData.software}
@@ -87,7 +96,8 @@ async function createCluster(params) {
     * Domain:\t\t${data.domain}
     * Capacity:\t\t${data.onDemandCapacity}:${data.capacity}
     * Region:\t\t${data.region}
-    * State:\t\t${data.state}${creds}\n\n`)
+    * State:\t\t${data.state}${creds} \n`)
+    coppyToClipboard(data.id, 'Cluster id')
   })
 }
 
