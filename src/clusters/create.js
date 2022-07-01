@@ -90,7 +90,7 @@ async function createCluster(params) {
     consola.success(`Initialized new cluster from service ${serviceId}
     * ID:\t\t${data.id}
     * Name:\t\t${data.name}
-    * Alias:\t\t${data.alias}
+    * Alias:\t\t${data.alias || ''}
     * Chain:\t\t${data.chain}
     * Network:\t\t${data.network}
     * Version:\t\t${data.serviceData.software}
