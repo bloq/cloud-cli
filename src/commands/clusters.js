@@ -58,7 +58,7 @@ ClusterCommand.flags = {
   }),
   alias: flags.string({
     char: 'l',
-    description: 'set cluster alias',
+    description: 'set or update cluster alias',
     required: false
   }),
   all: flags.boolean({

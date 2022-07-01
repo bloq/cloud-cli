@@ -11,7 +11,9 @@ const env = config.get('env')
 const serviceUrl = config.get(`services.${env}.nodes.url`)
 
 const getConfirmationMessage = flags =>
-  flags.abort
+  flags.alias
+    ? `You will set the cluster alias to '${flags.alias}'`
+    : flags.abort
     ? 'You will cancel the current service update process of the cluster'
     : `You will update the cluster's ${
         flags.serviceId ? `service to ${flags.serviceId} and ` : ''
@@ -35,6 +37,7 @@ const getUrlAndMethod = ({ abort, clusterId }) => ({
  * @param {Object} params.clusterId Cluster ID
  * @param {Object} params.onDemandCapacity Clusters on-demand capacity
  * @param {Object} params.serviceId Service ID
+ * @param {Object} params.alias Clusters alias
  * @returns {Promise} The update cluster promise
  */
 async function updateCluster({ accessToken, ...flags }) {
@@ -57,28 +60,44 @@ async function updateCluster({ accessToken, ...flags }) {
     }
   ])
 
-  const { yes, clusterId, capacity, onDemandCapacity, serviceId, abort } = {
+  const {
+    yes,
+    clusterId,
+    capacity,
+    onDemandCapacity,
+    serviceId,
+    abort,
+    alias
+  } = {
     ...flags,
     ...prompt
   }
 
   if (!yes) {
-    consola.error('No action taken')
+    consola.info('No action taken')
     return null
   }
 
-  const { method, url } = getUrlAndMethod({ abort, clusterId })
-  const body = abort
-    ? null
-    : JSON.stringify({ capacity, onDemandCapacity, serviceId })
+  let method, url, body
+
+  if (typeof alias !== 'undefined') {
+    body = JSON.stringify({ alias })
+    ;(url = `${serviceUrl}/users/me/clusters/${clusterId}/alias`),
+      (method = 'POST')
+  } else {
+    ;({ method, url } = getUrlAndMethod({ abort, clusterId }))
+    body = abort
+      ? null
+      : JSON.stringify({ capacity, onDemandCapacity, serviceId })
+  }
 
   return fetcher(url, method, accessToken, body).then(res => {
     if (!res.ok) {
-      consola.error(`Error updating the service: ${res.status}`)
+      consola.error(`Error updating the service: ${res.message || res.status}`)
       return
     }
 
-    consola.success(`Service ${serviceId} disabled successfully`)
+    consola.success(`Cluster ${clusterId} updated successfully`)
   })
 }
 

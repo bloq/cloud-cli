@@ -68,7 +68,9 @@ async function createCluster(params) {
 
   return fetcher(url, 'POST', accessToken, body).then(res => {
     if (!res.ok) {
-      consola.error(`Error initializing the new cluster: ${res.status}`)
+      consola.error(
+        `Error initializing the new cluster: ${res.message || res.status}`
+      )
       return
     }
 
