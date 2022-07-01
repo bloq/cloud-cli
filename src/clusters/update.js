@@ -82,10 +82,10 @@ async function updateCluster({ accessToken, ...flags }) {
 
   if (typeof alias !== 'undefined') {
     body = JSON.stringify({ alias })
-    ;(url = `${serviceUrl}/users/me/clusters/${clusterId}/alias`),
-      (method = 'POST')
+    method = 'POST'
+    (url = `${serviceUrl}/users/me/clusters/${clusterId}/alias`)
   } else {
-    ;({ method, url } = getUrlAndMethod({ abort, clusterId }))
+    ({ method, url } = getUrlAndMethod({ abort, clusterId }))
     body = abort
       ? null
       : JSON.stringify({ capacity, onDemandCapacity, serviceId })
