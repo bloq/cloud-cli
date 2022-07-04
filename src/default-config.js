@@ -5,7 +5,7 @@ const { version } = require('../package.json')
 module.exports = {
   port: '3000',
   version,
-  passwordEntropy: 95,
+  passwordEntropy: '95',
 
   env: 'prod',
 
