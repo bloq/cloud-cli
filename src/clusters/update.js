@@ -85,7 +85,7 @@ async function updateCluster({ accessToken, ...flags }) {
     method = 'POST'
     url = `${serviceUrl}/users/me/clusters/${clusterId}/alias`
   } else {
-    { method, url } = getUrlAndMethod({ abort, clusterId })
+    ({ method, url } = getUrlAndMethod({ abort, clusterId }))
     body = abort
       ? null
       : JSON.stringify({ capacity, onDemandCapacity, serviceId })
