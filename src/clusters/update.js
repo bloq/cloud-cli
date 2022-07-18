@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -40,8 +40,10 @@ const getUrlAndMethod = ({ abort, clusterId }) => ({
  * @param {Object} params.alias Clusters alias
  * @returns {Promise} The update cluster promise
  */
-async function updateCluster({ accessToken, ...flags }) {
-  consola.info('Updating cluster')
+async function updateCluster({ accessToken, json, ...flags }) {
+  const isJson = typeof json !== 'undefined'
+
+  !isJson && consola.info('Updating cluster')
 
   const prompt = await inquirer.prompt([
     {
@@ -74,7 +76,7 @@ async function updateCluster({ accessToken, ...flags }) {
   }
 
   if (!yes) {
-    consola.info('No action taken')
+    formatResponse(isJson, 'No action taken', true)
     return null
   }
 
@@ -85,7 +87,7 @@ async function updateCluster({ accessToken, ...flags }) {
     method = 'POST'
     url = `${serviceUrl}/users/me/clusters/${clusterId}/alias`
   } else {
-    ({ method, url } = getUrlAndMethod({ abort, clusterId }))
+    ;({ method, url } = getUrlAndMethod({ abort, clusterId }))
     body = abort
       ? null
       : JSON.stringify({ capacity, onDemandCapacity, serviceId })
@@ -93,11 +95,14 @@ async function updateCluster({ accessToken, ...flags }) {
 
   return fetcher(url, method, accessToken, body).then(res => {
     if (!res.ok) {
-      consola.error(`Error updating the service: ${res.message || res.status}`)
+      formatResponse(
+        isJson,
+        `Error updating the service: ${res.message || res.status}`
+      )
       return
     }
 
-    consola.success(`Cluster ${clusterId} updated successfully`)
+    formatResponse(isJson, `Cluster ${clusterId} updated successfully`, true)
   })
 }
 

@@ -12,7 +12,7 @@ class ClusterCommand extends Command {
 
     switch (args.operation) {
       case 'chains':
-        return clusters.chains()
+        return clusters.chains(_flags)
 
       case 'create':
         return clusters.create({ accessToken, ..._flags })

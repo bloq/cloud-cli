@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -11,17 +11,28 @@ const config = require('../config')
  *
  * @returns {Promise} The chains promise
  */
-async function getChains() {
-  consola.info('Retrieving list of available blockchains.')
+async function getChains({ json }) {
+  const isJson = typeof json !== 'undefined'
+
+  !isJson && consola.info('Retrieving list of available blockchains.')
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/chains/cluster`
 
   return fetcher(url, 'GET').then(res => {
     if (!res.ok) {
-      consola.error(`Error retrieving available blockchains: ${res.message}`)
+      formatResponse(
+        isJson,
+        `Error retrieving available blockchains: ${res.message}`
+      )
       return
     }
+
+    if (isJson) {
+      console.log(JSON.stringify(res.data, null, 2))
+      return
+    }
+
     // eslint-disable-next-line no-console
     console.table(res.data)
   })

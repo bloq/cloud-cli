@@ -3,7 +3,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -17,8 +17,10 @@ const config = require('../config')
  * @param {Object} params.nodeId Node ID
  * @returns {Promise} The remove node promise
  */
-async function removeNode({ accessToken, nodeId }) {
-  consola.info('Removing node')
+async function removeNode({ accessToken, nodeId, json }) {
+  const isJson = typeof json !== 'undefined'
+
+  !isJson && consola.info(`Removing node`)
 
   if (!nodeId) {
     const prompt = await inquirer.prompt([
@@ -32,7 +34,7 @@ async function removeNode({ accessToken, nodeId }) {
 
     nodeId = prompt.nodeId
     if (!nodeId) {
-      consola.error('Missing node id')
+      formatResponse(isJson, 'Missing node id')
       return
     }
   }
@@ -47,7 +49,7 @@ async function removeNode({ accessToken, nodeId }) {
   ])
 
   if (!confirmation) {
-    consola.error('Remove node was canceled.')
+    formatResponse(isJson, 'Remove node was canceled.', true)
     return
   }
 
@@ -58,11 +60,11 @@ async function removeNode({ accessToken, nodeId }) {
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(`Error removing the node: ${res.status}`)
+      formatResponse(isJson, `Error removing the node: ${res.status}`)
       return
     }
 
-    consola.success(`Node with id ${nodeId} removed successfully`)
+    formatResponse(isJson, `Node with id ${nodeId} removed successfully`, true)
   })
 }
 

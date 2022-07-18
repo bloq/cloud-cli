@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const lodash = require('lodash')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -14,19 +14,27 @@ const config = require('../config')
  * @param {string} params.sort Key used to sort the output
  * @returns {Promise} The services promise
  */
-async function getServices({ sort }) {
-  consola.info('Retrieving list of available services')
+async function getServices({ sort, json }) {
+  const isJson = typeof json !== 'undefined'
+
+  !isJson && consola.info('Retrieving list of available services')
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/services/cluster`
 
   return fetcher(url, 'GET').then(res => {
     if (!res.ok) {
-      consola.error(`Error retrieving available services: ${res.message}`)
+      formatResponse(isJson, `Error retrieving all services: ${res.message}`)
       return
     }
 
     const data = res.data
+
+    if (isJson) {
+      console.log(JSON.stringify(data, null, 2))
+      return
+    }
+
     process.stdout.write('\n')
     // eslint-disable-next-line no-console
     console.table(

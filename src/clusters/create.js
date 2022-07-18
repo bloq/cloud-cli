@@ -2,7 +2,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse } = require('../utils')
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
@@ -31,50 +31,62 @@ async function createCluster(params) {
     capacity,
     onDemandCapacity,
     serviceId,
-    alias
+    alias,
+    json
   } = params
+
+  const isJson = typeof json !== 'undefined'
 
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
-    consola.error('Only admin users can create clusters with the CLI')
+    formatResponse(isJson, 'Only admin users can create clusters with the CLI')
     return
   }
 
   if (!serviceId) {
-    consola.error('Missing service id value (-s or --serviceId)')
+    formatResponse(isJson, 'Missing service id value (-s or --serviceId)')
     return
   }
 
   if (capacity < CLUSTER_MIN_CAPACITY || capacity > CLUSTER_MAX_CAPACITY) {
-    consola.error(
+    formatResponse(
+      isJson,
       `Wrong cluster capacity. Capacity should be between ${CLUSTER_MIN_CAPACITY} and ${CLUSTER_MAX_CAPACITY}`
     )
     return
   }
 
   if (onDemandCapacity < 1 || onDemandCapacity > capacity) {
-    consola.error(
-      `Wrong on-demand cluster capacity. Capacity should be between ${1} and ${capacity}`
+    formatResponse(
+      isJson,
+      `Wrong cluster capacity. Capacity should be between ${CLUSTER_MIN_CAPACITY} and ${CLUSTER_MAX_CAPACITY}`
     )
     return
   }
 
-  consola.info(`Creating a new cluster from service ${serviceId}.`)
+  !isJson && consola.info(`Creating a new cluster from service ${serviceId}.`)
 
-  const json = { serviceId, authType, capacity, onDemandCapacity, alias }
-  const body = JSON.stringify(json)
+  const jsonBody = { serviceId, authType, capacity, onDemandCapacity, alias }
+  const body = JSON.stringify(jsonBody)
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/clusters`
 
   return fetcher(url, 'POST', accessToken, body).then(res => {
     if (!res.ok) {
-      consola.error(
+      formatResponse(
+        isJson,
         `Error initializing the new cluster: ${res.message || res.status}`
       )
       return
     }
 
     const data = res.data
+
+    if (isJson) {
+      console.log(JSON.stringify(data, null, 2))
+      return
+    }
+
     const creds =
       data.auth.type === 'jwt'
         ? `

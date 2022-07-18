@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const lodash = require('lodash')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -18,8 +18,9 @@ const config = require('../config')
 
  * @returns {Promise} The information cluster promise
  */
-async function listClusters({ accessToken, all, allClusters, sort }) {
-  consola.info('Retrieving clusters...')
+async function listClusters({ accessToken, all, allClusters, sort, json }) {
+  const isJson = typeof json !== 'undefined'
+  !isJson && consola.info('Retrieving clusters...')
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}${
@@ -28,7 +29,7 @@ async function listClusters({ accessToken, all, allClusters, sort }) {
 
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(`Error retrieving all clusters: ${res.status}`)
+      formatResponse(isJson, `Error retrieving all clusters: ${res.status}`)
       return
     }
 
@@ -38,7 +39,7 @@ async function listClusters({ accessToken, all, allClusters, sort }) {
     }
     if (!body.length) {
       const user = `${config.get('user')}`
-      consola.success(`No clusters were found for user ${user}`)
+      formatResponse(isJson, `No clusters were found for user ${user}`, true)
       return
     }
 
@@ -83,6 +84,10 @@ async function listClusters({ accessToken, all, allClusters, sort }) {
       body = body.filter(n => n.state !== 'stopped')
     }
 
+    if (isJson) {
+      console.log(JSON.stringify(body, null, 2))
+      return
+    }
     consola.success(`Got ${body.length} clusters:`)
     process.stdout.write('\n')
     // eslint-disable-next-line no-console
