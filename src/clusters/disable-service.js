@@ -1,6 +1,6 @@
 'use strict'
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -41,11 +41,11 @@ async function disable({ accessToken, json, ...flags }) {
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
     if (!res.ok) {
-      formatResponse(isJson, `Error disabling the service: ${res.status}`)
+      formatErrorResponse(isJson, `Error disabling the service: ${res.status}`)
       return
     }
 
-    formatResponse(isJson, `Service ${serviceId} disabled successfully`, true)
+    formatResponse(isJson, `Service ${serviceId} disabled successfully`)
   })
 }
 

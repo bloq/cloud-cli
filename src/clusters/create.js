@@ -2,7 +2,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
@@ -39,17 +39,20 @@ async function createCluster(params) {
 
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
-    formatResponse(isJson, 'Only admin users can create clusters with the CLI')
+    formatErrorResponse(
+      isJson,
+      'Only admin users can create clusters with the CLI'
+    )
     return
   }
 
   if (!serviceId) {
-    formatResponse(isJson, 'Missing service id value (-s or --serviceId)')
+    formatErrorResponse(isJson, 'Missing service id value (-s or --serviceId)')
     return
   }
 
   if (capacity < CLUSTER_MIN_CAPACITY || capacity > CLUSTER_MAX_CAPACITY) {
-    formatResponse(
+    formatErrorResponse(
       isJson,
       `Wrong cluster capacity. Capacity should be between ${CLUSTER_MIN_CAPACITY} and ${CLUSTER_MAX_CAPACITY}`
     )
@@ -57,7 +60,7 @@ async function createCluster(params) {
   }
 
   if (onDemandCapacity < 1 || onDemandCapacity > capacity) {
-    formatResponse(
+    formatErrorResponse(
       isJson,
       `Wrong cluster capacity. Capacity should be between ${CLUSTER_MIN_CAPACITY} and ${CLUSTER_MAX_CAPACITY}`
     )
@@ -73,7 +76,7 @@ async function createCluster(params) {
 
   return fetcher(url, 'POST', accessToken, body).then(res => {
     if (!res.ok) {
-      formatResponse(
+      formatErrorResponse(
         isJson,
         `Error initializing the new cluster: ${res.message || res.status}`
       )
@@ -83,7 +86,7 @@ async function createCluster(params) {
     const data = res.data
 
     if (isJson) {
-      console.log(JSON.stringify(data, null, 2))
+      formatResponse(isJson, data)
       return
     }
 

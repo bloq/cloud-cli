@@ -2,7 +2,7 @@
 
 const config = require('../config')
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const inquirer = require('inquirer')
 
 /**
@@ -56,19 +56,22 @@ async function removeClientKey({ user, accessToken, json, ...flags }) {
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
     if (!res.ok) {
-      formatResponse(isJson, `Error removing the client-key: ${res.message}`)
+      formatErrorResponse(
+        isJson,
+        `Error removing the client-key: ${res.message}`
+      )
       return
     }
 
     if (res.status !== 204) {
-      formatResponse(
+      formatErrorResponse(
         isJson,
         `Error removing client-key: ${res.status || res.statusText}.`
       )
       return
     }
 
-    formatResponse(isJson, `Removed client key with id ${keyId}`, true)
+    formatResponse(isJson, `Removed client key with id ${keyId}`)
   })
 }
 

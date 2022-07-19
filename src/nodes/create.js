@@ -2,7 +2,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
@@ -22,12 +22,15 @@ async function createNode({ accessToken, serviceId, authType, json }) {
 
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
-    formatResponse(isJson, 'Only admin users can create nodes with the CLI')
+    formatErrorResponse(
+      isJson,
+      'Only admin users can create nodes with the CLI'
+    )
     return
   }
 
   if (!serviceId) {
-    formatResponse(isJson, 'Missing service id value (-s or --serviceId)')
+    formatErrorResponse(isJson, 'Missing service id value (-s or --serviceId)')
     return
   }
 
@@ -41,7 +44,7 @@ async function createNode({ accessToken, serviceId, authType, json }) {
   return fetcher(url, 'POST', accessToken, body).then(res => {
     if (!res.ok) {
       if (res.status === 404) {
-        formatResponse(
+        formatErrorResponse(
           isJson,
           'Error initializing the new node, requested resource not found'
         )
@@ -49,14 +52,17 @@ async function createNode({ accessToken, serviceId, authType, json }) {
       }
 
       if (res.status !== 201) {
-        formatResponse(
+        formatErrorResponse(
           isJson,
           `Error initializing the new node: ${res.statusText || res.status}`
         )
         return
       }
 
-      formatResponse(isJson, `Error initializing the new node: ${res.status}`)
+      formatErrorResponse(
+        isJson,
+        `Error initializing the new node: ${res.status}`
+      )
       return
     }
 
@@ -69,22 +75,16 @@ async function createNode({ accessToken, serviceId, authType, json }) {
     * Password:\t\t${auth.pass}`
 
     if (isJson) {
-      console.log(
-        JSON.stringify(
-          {
-            id,
-            chain,
-            network,
-            version: serviceData.software,
-            performance: serviceData.performance,
-            state,
-            ip,
-            creds
-          },
-          null,
-          2
-        )
-      )
+      formatResponse(isJson, {
+        id,
+        chain,
+        network,
+        version: serviceData.software,
+        performance: serviceData.performance,
+        state,
+        ip,
+        creds
+      })
       return
     }
 

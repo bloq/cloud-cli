@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -24,7 +24,7 @@ async function listNodes({ accessToken, all, json }) {
 
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      formatResponse(isJson, `Error retrieving nodes: ${res.status}`)
+      formatErrorResponse(isJson, `Error retrieving nodes: ${res.status}`)
       return
     }
     let body = res.data
@@ -34,7 +34,7 @@ async function listNodes({ accessToken, all, json }) {
 
     if (!body.length) {
       const user = `${config.get('user')}`
-      formatResponse(isJson, `No nodes were found for user ${user}`, true)
+      formatResponse(isJson, `No nodes were found for user ${user}`)
       return
     }
     body = body.map(function ({
@@ -69,7 +69,7 @@ async function listNodes({ accessToken, all, json }) {
     }
 
     if (isJson) {
-      console.log(JSON.stringify(body, null, 2))
+      formatResponse(isJson, body)
       return
     }
 

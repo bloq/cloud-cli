@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const lodash = require('lodash')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -22,7 +22,7 @@ async function getServices({ json }) {
 
   return fetcher(url, 'GET').then(res => {
     if (!res.ok) {
-      formatResponse(
+      formatErrorResponse(
         isJson,
         `Error retrieving available services: ${res.status}`
       )
@@ -31,7 +31,7 @@ async function getServices({ json }) {
     let body = res.data
 
     if (isJson) {
-      console.log(JSON.stringify(body, null, 2))
+      formatResponse(isJson, body)
       return
     }
 

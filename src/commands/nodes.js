@@ -24,7 +24,7 @@ class NodesCommand extends Command {
         return nodes.chains(flags)
 
       case 'services':
-        return nodes.services({ ...flags })
+        return nodes.services(flags)
 
       default:
         return nodes.list({ accessToken, ...flags })

@@ -2,7 +2,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 const inquirer = require('inquirer')
 const config = require('../config')
@@ -44,7 +44,7 @@ async function infoCluster({ accessToken, clusterId, json }) {
     // eslint-disable-next-line no-param-reassign
     clusterId = prompt.clusterId
     if (!clusterId) {
-      formatResponse(isJson, 'Missing cluster id')
+      formatErrorResponse(isJson, 'Missing cluster id')
       return
     }
   }
@@ -56,14 +56,14 @@ async function infoCluster({ accessToken, clusterId, json }) {
 
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      formatResponse(isJson, `Error retrieving cluster: ${res.status}`)
+      formatErrorResponse(isJson, `Error retrieving cluster: ${res.status}`)
       return
     }
 
     const data = res.data
 
     if (isJson) {
-      console.log(JSON.stringify(data, null, 2))
+      formatResponse(isJson, data)
       return
     }
 

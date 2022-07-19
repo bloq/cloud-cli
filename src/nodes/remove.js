@@ -3,7 +3,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -34,7 +34,7 @@ async function removeNode({ accessToken, nodeId, json }) {
 
     nodeId = prompt.nodeId
     if (!nodeId) {
-      formatResponse(isJson, 'Missing node id')
+      formatErrorResponse(isJson, 'Missing node id')
       return
     }
   }
@@ -49,7 +49,7 @@ async function removeNode({ accessToken, nodeId, json }) {
   ])
 
   if (!confirmation) {
-    formatResponse(isJson, 'Remove node was canceled.', true)
+    formatResponse(isJson, 'Remove node was canceled.')
     return
   }
 
@@ -60,11 +60,11 @@ async function removeNode({ accessToken, nodeId, json }) {
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
     if (!res.ok) {
-      formatResponse(isJson, `Error removing the node: ${res.status}`)
+      formatErrorResponse(isJson, `Error removing the node: ${res.status}`)
       return
     }
 
-    formatResponse(isJson, `Node with id ${nodeId} removed successfully`, true)
+    formatResponse(isJson, `Node with id ${nodeId} removed successfully`)
   })
 }
 

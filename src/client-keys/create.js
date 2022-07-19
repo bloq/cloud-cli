@@ -3,7 +3,12 @@
 const consola = require('consola')
 const inquirer = require('inquirer')
 const config = require('../config')
-const { coppyToClipboard, fetcher, formatResponse } = require('../utils')
+const {
+  coppyToClipboard,
+  fetcher,
+  formatResponse,
+  formatErrorResponse
+} = require('../utils')
 
 /**
  *  Creates a new pair of client keys
@@ -35,7 +40,7 @@ async function createClientKey({ user, accessToken, json }) {
 
   return fetcher(url, 'POST', accessToken).then(res => {
     if (!res.ok) {
-      formatResponse(
+      formatErrorResponse(
         isJson,
         `Error creating new pair of client keys: ${res.status}`
       )
@@ -43,25 +48,26 @@ async function createClientKey({ user, accessToken, json }) {
     }
 
     if (isJson) {
-      console.log(JSON.stringify(res.data, null, 2))
-    } else {
-      process.stdout.write('\n')
-      consola.success(`Generated new client keys:
-      * Client ID:\t${res.data.clientId}
-      * Client Secret:\t${res.data.clientSecret}
-      `)
-
-      consola.warn(
-        'You will NOT be able to see your client secret again. Remember to copy it and keep it safe.'
-      )
-
-      if (save) {
-        config.set('clientId', res.data.clientId)
-        config.set('clientSecret', res.data.clientSecret)
-      }
-
-      coppyToClipboard(res.data.clientSecret, 'Client secret')
+      formatResponse(isJson, res.data)
+      return
     }
+
+    process.stdout.write('\n')
+    consola.success(`Generated new client keys:
+    * Client ID:\t${res.data.clientId}
+    * Client Secret:\t${res.data.clientSecret}
+    `)
+
+    consola.warn(
+      'You will NOT be able to see your client secret again. Remember to copy it and keep it safe.'
+    )
+
+    if (save) {
+      config.set('clientId', res.data.clientId)
+      config.set('clientSecret', res.data.clientSecret)
+    }
+
+    coppyToClipboard(res.data.clientSecret, 'Client secret')
   })
 }
 

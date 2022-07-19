@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const lodash = require('lodash')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -29,7 +29,10 @@ async function listClusters({ accessToken, all, allClusters, sort, json }) {
 
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      formatResponse(isJson, `Error retrieving all clusters: ${res.status}`)
+      formatErrorResponse(
+        isJson,
+        `Error retrieving all clusters: ${res.status}`
+      )
       return
     }
 
@@ -37,9 +40,10 @@ async function listClusters({ accessToken, all, allClusters, sort, json }) {
     if (!body) {
       return
     }
+
     if (!body.length) {
       const user = `${config.get('user')}`
-      formatResponse(isJson, `No clusters were found for user ${user}`, true)
+      formatErrorResponse(isJson, `No clusters were found for user ${user}`)
       return
     }
 
@@ -85,7 +89,7 @@ async function listClusters({ accessToken, all, allClusters, sort, json }) {
     }
 
     if (isJson) {
-      console.log(JSON.stringify(body, null, 2))
+      formatResponse(isJson, body)
       return
     }
     consola.success(`Got ${body.length} clusters:`)

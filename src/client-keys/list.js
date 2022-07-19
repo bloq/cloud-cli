@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const config = require('../config')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 require('console.table')
 
 /**
@@ -24,21 +24,20 @@ async function listClientKeys({ user, accessToken, json }) {
 
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      formatResponse(isJson, `Error listing client keys: ${res.status}`)
+      formatErrorResponse(isJson, `Error listing client keys: ${res.status}`)
       return
     }
     if (!res.data.length) {
       const userId = `${config.get('user')}`
-      formatResponse(
+      formatErrorResponse(
         isJson,
-        `No client-keys were found for user ${userId}`,
-        true
+        `No client-keys were found for user ${userId}`
       )
       return
     }
 
     if (isJson) {
-      console.log(JSON.stringify(res.data, null, 2))
+      formatResponse(isJson, res.data)
       return
     }
 

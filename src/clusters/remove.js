@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -43,12 +43,12 @@ async function removeCluster({ accessToken, force, json, ...flags }) {
   }
 
   if (!clusterId) {
-    formatResponse(isJson, 'Missing cluster id')
+    formatErrorResponse(isJson, 'Missing cluster id')
     return
   }
 
   if (!yes) {
-    formatResponse(isJson, 'No action taken', true)
+    formatResponse(isJson, 'No action taken')
     return
   }
 
@@ -60,15 +60,11 @@ async function removeCluster({ accessToken, force, json, ...flags }) {
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
     if (!res.ok) {
-      formatResponse(isJson, `Error removing the cluster: ${res.message}`)
+      formatErrorResponse(isJson, `Error removing the cluster: ${res.message}`)
       return
     }
 
-    formatResponse(
-      isJson,
-      `Cluster with ID ${clusterId} removed successfully`,
-      true
-    )
+    formatResponse(isJson, `Cluster with ID ${clusterId} removed successfully`)
   })
 }
 

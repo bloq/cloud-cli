@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -21,7 +21,7 @@ async function getChains({ json }) {
 
   return fetcher(url, 'GET').then(res => {
     if (!res.ok) {
-      formatResponse(
+      formatErrorResponse(
         isJson,
         `Error retrieving available blockchains: ${res.status}`
       )
@@ -29,7 +29,7 @@ async function getChains({ json }) {
     }
 
     if (isJson) {
-      console.log(JSON.stringify(res.data, null, 2))
+      formatResponse(isJson, res.data)
       return
     }
 

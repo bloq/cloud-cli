@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -76,7 +76,7 @@ async function updateCluster({ accessToken, json, ...flags }) {
   }
 
   if (!yes) {
-    formatResponse(isJson, 'No action taken', true)
+    formatResponse(isJson, 'No action taken')
     return null
   }
 
@@ -95,14 +95,14 @@ async function updateCluster({ accessToken, json, ...flags }) {
 
   return fetcher(url, method, accessToken, body).then(res => {
     if (!res.ok) {
-      formatResponse(
+      formatErrorResponse(
         isJson,
         `Error updating the service: ${res.message || res.status}`
       )
       return
     }
 
-    formatResponse(isJson, `Cluster ${clusterId} updated successfully`, true)
+    formatResponse(isJson, `Cluster ${clusterId} updated successfully`)
   })
 }
 

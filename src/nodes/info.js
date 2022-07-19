@@ -2,7 +2,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -45,7 +45,7 @@ async function infoNode({ accessToken, nodeId, json }) {
   // eslint-disable-next-line consistent-return
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      formatResponse(
+      formatErrorResponse(
         isJson,
         `Error retrieving node information, requested resource not found: ${res.status}`
       )
@@ -70,24 +70,18 @@ async function infoNode({ accessToken, nodeId, json }) {
     * Password:\t\t${auth.pass}`
 
     if (isJson) {
-      console.log(
-        JSON.stringify(
-          {
-            id,
-            createdAt,
-            stoppedAt,
-            chain,
-            network,
-            version: serviceData.software,
-            performance: serviceData.performance,
-            state,
-            ip,
-            creds
-          },
-          null,
-          2
-        )
-      )
+      formatResponse(isJson, {
+        id,
+        createdAt,
+        stoppedAt,
+        chain,
+        network,
+        version: serviceData.software,
+        performance: serviceData.performance,
+        state,
+        ip,
+        creds
+      })
       return
     }
 

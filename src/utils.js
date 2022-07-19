@@ -74,19 +74,21 @@ const fetcher = (url, method, accessToken, body) => {
   })
 }
 
-const formatResponse = (isJson, message, ok = false) => {
-  // console.log('returned ok:', ok)
-  // console.log('isjson ok:', isJson)
-
+const returnResponse = (isJson, ok, message) => {
   isJson
     ? console.log(JSON.stringify({ ok, message }, null, 2))
-    : ok
-    ? consola.success(message)
     : consola.error(message)
 }
+
+const formatResponse = (isJson, message) =>
+  returnResponse(isJson, true, message)
+
+const formatErrorResponse = (isJson, message) =>
+  returnResponse(isJson, false, message)
 
 module.exports = {
   coppyToClipboard,
   fetcher,
-  formatResponse
+  formatResponse,
+  formatErrorResponse
 }
