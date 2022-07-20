@@ -2,7 +2,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
@@ -17,42 +17,52 @@ const { coppyToClipboard } = require('../utils')
  * @param {Object} params.authType Authentication type
  * @returns {Promise} The create node promise
  */
-async function createNode({ accessToken, serviceId, authType }) {
+async function createNode({ accessToken, serviceId, authType, json }) {
+  const isJson = typeof json !== 'undefined'
+
   const payload = jwtDecode(accessToken)
   if (!payload.aud.includes('manager')) {
-    consola.error('Only admin users can create nodes with the CLI')
+    formatErrorResponse(
+      isJson,
+      'Only admin users can create nodes with the CLI'
+    )
     return
   }
 
   if (!serviceId) {
-    consola.error('Missing service id value (-s or --serviceId)')
+    formatErrorResponse(isJson, 'Missing service id value (-s or --serviceId)')
     return
   }
 
-  consola.info(`Initializing a new node from service ${serviceId}`)
+  !isJson && consola.info(`Initializing a new node from service ${serviceId}`)
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
-  const json = { serviceId, authType }
-  const body = JSON.stringify(json)
+  const jsonBody = { serviceId, authType }
+  const body = JSON.stringify(jsonBody)
 
   return fetcher(url, 'POST', accessToken, body).then(res => {
     if (!res.ok) {
       if (res.status === 404) {
-        consola.error(
+        formatErrorResponse(
+          isJson,
           'Error initializing the new node, requested resource not found'
         )
         return
       }
 
       if (res.status !== 201) {
-        consola.error(
+        formatErrorResponse(
+          isJson,
           `Error initializing the new node: ${res.statusText || res.status}`
         )
         return
       }
 
-      consola.error(`Error initializing the new node: ${res.status}`)
+      formatErrorResponse(
+        isJson,
+        `Error initializing the new node: ${res.status}`
+      )
       return
     }
 
@@ -63,6 +73,20 @@ async function createNode({ accessToken, serviceId, authType }) {
         ? '* Auth:\t\tJWT'
         : `* User:\t\t${auth.user}
     * Password:\t\t${auth.pass}`
+
+    if (isJson) {
+      formatResponse(isJson, {
+        id,
+        chain,
+        network,
+        version: serviceData.software,
+        performance: serviceData.performance,
+        state,
+        ip,
+        creds
+      })
+      return
+    }
 
     coppyToClipboard(id, 'Node id')
     process.stdout.write('\n')

@@ -2,7 +2,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -16,8 +16,10 @@ const config = require('../config')
  * @param {Object} params.nodeId Node ID
  * @returns {Promise} The information node promise
  */
-async function infoNode({ accessToken, nodeId }) {
-  consola.info(`Retrieving node with ID ${nodeId}.`)
+async function infoNode({ accessToken, nodeId, json }) {
+  const isJson = typeof json !== 'undefined'
+
+  !isJson && consola.info(`Retrieving node with ID ${nodeId}.`)
 
   if (!nodeId) {
     const prompt = await inquirer.prompt([
@@ -43,7 +45,8 @@ async function infoNode({ accessToken, nodeId }) {
   // eslint-disable-next-line consistent-return
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(
+      formatErrorResponse(
+        isJson,
         `Error retrieving node information, requested resource not found: ${res.status}`
       )
       return
@@ -65,6 +68,22 @@ async function infoNode({ accessToken, nodeId }) {
         ? '* Auth:\t\tJWT'
         : `* User:\t\t${auth.user}
     * Password:\t\t${auth.pass}`
+
+    if (isJson) {
+      formatResponse(isJson, {
+        id,
+        createdAt,
+        stoppedAt,
+        chain,
+        network,
+        version: serviceData.software,
+        performance: serviceData.performance,
+        state,
+        ip,
+        creds
+      })
+      return
+    }
 
     process.stdout.write('\n')
 

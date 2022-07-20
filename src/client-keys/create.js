@@ -3,36 +3,55 @@
 const consola = require('consola')
 const inquirer = require('inquirer')
 const config = require('../config')
-const { coppyToClipboard, fetcher } = require('../utils')
+const {
+  coppyToClipboard,
+  fetcher,
+  formatResponse,
+  formatErrorResponse
+} = require('../utils')
 
 /**
  *  Creates a new pair of client keys
  *
  * @param  {string} user the user email or id
  * @param  {string} accessToken local access token
+ * @param  {string} json return json output
  * @returns {undefined}
  */
-async function createClientKey(user, accessToken) {
-  consola.info(`Creating new pair of client keys for user ${user}.`)
-
-  const { save } = await inquirer.prompt([
-    {
-      name: 'save',
-      message: 'Do you want bcl to store your tokens locally for future usage?',
-      type: 'confirm'
-    }
-  ])
+async function createClientKey({ user, accessToken, json }) {
+  const isJson = typeof json !== 'undefined'
+  !isJson && consola.info(`Creating new pair of client keys for user ${user}.`)
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(
     `services.${env}.accounts.url`
   )}/users/me/client-keys`
 
+  const { save } =
+    !isJson &&
+    (await inquirer.prompt([
+      {
+        name: 'save',
+        message:
+          'Do you want bcl to store your tokens locally for future usage?',
+        type: 'confirm'
+      }
+    ]))
+
   return fetcher(url, 'POST', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(`Error creating new pair of client keys: ${res.status}`)
+      formatErrorResponse(
+        isJson,
+        `Error creating new pair of client keys: ${res.status}`
+      )
       return
     }
+
+    if (isJson) {
+      formatResponse(isJson, res.data)
+      return
+    }
+
     process.stdout.write('\n')
     consola.success(`Generated new client keys:
     * Client ID:\t${res.data.clientId}

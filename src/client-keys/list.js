@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const config = require('../config')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 require('console.table')
 
 /**
@@ -10,10 +10,12 @@ require('console.table')
  *
  * @param  {string} user the user email or id
  * @param  {string} accessToken local access token
+ * @param  {string} json json output flag
  * @returns {undefined}
  */
-async function listClientKeys(user, accessToken) {
-  consola.info(`Getting client keys for user ${user}.`)
+async function listClientKeys({ user, accessToken, json }) {
+  const isJson = typeof json !== 'undefined'
+  !isJson && consola.info(`Getting client keys for user ${user}.`)
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(
@@ -22,14 +24,20 @@ async function listClientKeys(user, accessToken) {
 
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(`Error listing client keys: ${res.status}`)
+      formatErrorResponse(isJson, `Error listing client keys: ${res.status}`)
       return
     }
     if (!res.data.length) {
       const userId = `${config.get('user')}`
-      consola.success(`No client-keys were found for user ${userId}`)
+      formatResponse(isJson, `No client-keys were found for user ${userId}`)
       return
     }
+
+    if (isJson) {
+      formatResponse(isJson, res.data)
+      return
+    }
+
     consola.success(`Retrieved ${res.data.length} client keys`)
     process.stdout.write('\n')
     // eslint-disable-next-line no-console

@@ -21,11 +21,11 @@ class ClientKeysCommand extends Command {
     const { args, flags } = this.parse(ClientKeysCommand)
     switch (args.operation) {
       case 'create':
-        return clientKeys.create(user, accessToken)
+        return clientKeys.create({ user, accessToken, ...flags })
       case 'remove':
-        return clientKeys.remove(user, accessToken, flags)
+        return clientKeys.remove({ user, accessToken, ...flags })
       default:
-        return clientKeys.list(user, accessToken)
+        return clientKeys.list({ user, accessToken, ...flags })
     }
   }
 }
@@ -36,6 +36,12 @@ ClientKeysCommand.flags = {
   keyId: flags.string({
     char: 'i',
     description: 'client key id, used with `remove` operation.'
+  }),
+  json: flags.boolean({ char: 'j', description: 'JSON output' }),
+  yes: flags.boolean({
+    char: 'y',
+    description: 'answer "yes" to prompts',
+    default: false
   })
 }
 

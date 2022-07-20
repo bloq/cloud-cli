@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const lodash = require('lodash')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -12,18 +12,28 @@ const config = require('../config')
  *
  * @returns {Promise}
  */
-async function getServices() {
-  consola.info('Retrieving list of available services.')
+async function getServices({ json }) {
+  const isJson = typeof json !== 'undefined'
+
+  !isJson && consola.info('Retrieving list of available services.')
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/services/nodes`
 
   return fetcher(url, 'GET').then(res => {
     if (!res.ok) {
-      consola.error(`Error retrieving available services: ${res.status}`)
+      formatErrorResponse(
+        isJson,
+        `Error retrieving available services: ${res.status}`
+      )
       return
     }
     let body = res.data
+
+    if (isJson) {
+      formatResponse(isJson, body)
+      return
+    }
 
     process.stdout.write('\n')
     // eslint-disable-next-line no-console

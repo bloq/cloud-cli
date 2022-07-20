@@ -2,7 +2,7 @@
 
 const config = require('../config')
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const inquirer = require('inquirer')
 
 /**
@@ -13,33 +13,43 @@ const inquirer = require('inquirer')
  * @param  {Object} flags set of options retrieved by cli
  * @returns {undefined}
  */
-async function removeClientKey(user, accessToken, flags) {
-  consola.info(`Removing client key for user ${user}.`)
-  let { keyId } = flags
+async function removeClientKey({ user, accessToken, json, ...flags }) {
+  const isJson = typeof json !== 'undefined'
 
-  if (!keyId) {
+  let keyId = flags.keyId
+
+  if (!isJson) {
+    consola.info(`Removing client key for user ${user}.`)
+
     const prompt = await inquirer.prompt([
-      { name: 'keyId', message: 'Enter the client-key id', type: 'text' }
+      {
+        name: 'keyId',
+        message: 'Enter the client-key id',
+        type: 'text',
+        when: () => !flags.keyId
+      },
+      {
+        name: 'yes',
+        message: `You will remove client key. Do you want to continue?`,
+        type: 'confirm',
+        default: false,
+        when: () => !flags.yes
+      }
     ])
 
-    keyId = prompt.keyId
-    if (!keyId) {
-      consola.error('Missing client key id')
+    const { yes } = {
+      ...flags,
+      ...prompt
+    }
+
+    if (!yes) {
+      formatResponse(isJson, 'No action taken')
       return
     }
   }
 
-  const { confirmation } = await inquirer.prompt([
-    {
-      name: 'confirmation',
-      message: `You will remove client key with id ${keyId}. Do you want to continue?`,
-      type: 'confirm',
-      default: false
-    }
-  ])
-
-  if (!confirmation) {
-    consola.error('Remove client key was canceled.')
+  if (!keyId) {
+    formatErrorResponse(isJson, 'Missing client key id')
     return
   }
 
@@ -50,18 +60,22 @@ async function removeClientKey(user, accessToken, flags) {
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(`Error removing the client-key: ${res.message}`)
+      formatErrorResponse(
+        isJson,
+        `Error removing the client-key: ${res.message}`
+      )
       return
     }
 
     if (res.status !== 204) {
-      consola.error(
+      formatErrorResponse(
+        isJson,
         `Error removing client-key: ${res.status || res.statusText}.`
       )
       return
     }
 
-    consola.success(`Removed client key with id ${keyId}`)
+    formatResponse(isJson, `Removed client key with id ${keyId}`)
   })
 }
 

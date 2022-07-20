@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -15,8 +15,10 @@ const config = require('../config')
  * @param {Object} params.clusterId Cluster ID
  * @returns {Promise} The remove cluster promise
  */
-async function removeCluster({ accessToken, force, ...flags }) {
-  consola.info('Removing cluster')
+async function removeCluster({ accessToken, force, json, ...flags }) {
+  const isJson = typeof json !== 'undefined'
+
+  !isJson && consola.info('Removing cluster')
 
   const prompt = await inquirer.prompt([
     {
@@ -41,12 +43,12 @@ async function removeCluster({ accessToken, force, ...flags }) {
   }
 
   if (!clusterId) {
-    consola.error('Missing cluster id')
+    formatErrorResponse(isJson, 'Missing cluster id')
     return
   }
 
   if (!yes) {
-    consola.error('No action taken')
+    formatResponse(isJson, 'No action taken')
     return
   }
 
@@ -58,11 +60,11 @@ async function removeCluster({ accessToken, force, ...flags }) {
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(`Error removing the cluster: ${res.message}`)
+      formatErrorResponse(isJson, `Error removing the cluster: ${res.message}`)
       return
     }
 
-    consola.success(`Cluster with ID ${clusterId} removed successfully`)
+    formatResponse(isJson, `Cluster with ID ${clusterId} removed successfully`)
   })
 }
 

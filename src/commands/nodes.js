@@ -21,10 +21,10 @@ class NodesCommand extends Command {
         return nodes.info({ accessToken, ...flags })
 
       case 'chains':
-        return nodes.chains()
+        return nodes.chains(flags)
 
       case 'services':
-        return nodes.services()
+        return nodes.services(flags)
 
       default:
         return nodes.list({ accessToken, ...flags })
@@ -47,6 +47,7 @@ NodesCommand.flags = {
     default: false,
     required: false
   }),
+  json: flags.boolean({ char: 'j', description: 'JSON output' }),
   nodeId: flags.string({ char: 'i', description: 'node id' })
 }
 

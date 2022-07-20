@@ -2,11 +2,9 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
-
 const inquirer = require('inquirer')
-
 const config = require('../config')
 
 const getState = body =>
@@ -32,6 +30,8 @@ const getCreds = body =>
  * @returns {Promise} The information cluster promise
  */
 async function infoCluster({ accessToken, clusterId, json }) {
+  const isJson = typeof json !== 'undefined'
+
   if (!clusterId) {
     const prompt = await inquirer.prompt([
       {
@@ -44,7 +44,7 @@ async function infoCluster({ accessToken, clusterId, json }) {
     // eslint-disable-next-line no-param-reassign
     clusterId = prompt.clusterId
     if (!clusterId) {
-      consola.error('Missing cluster id')
+      formatErrorResponse(isJson, 'Missing cluster id')
       return
     }
   }
@@ -56,29 +56,30 @@ async function infoCluster({ accessToken, clusterId, json }) {
 
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(`Error retrieving cluster: ${res.status}`)
+      formatErrorResponse(isJson, `Error retrieving cluster: ${res.status}`)
       return
     }
 
     const data = res.data
 
-    if (typeof json !== 'undefined') {
-      console.log(JSON.stringify(data))
-    } else {
-      consola.info('Retrieving cluster information')
-      process.stdout.write('\n')
-      consola.success(`Retrieved cluster with id ${clusterId}
-      * ID:\t\t${data.id}
-      * Name:\t\t${data.alias || data.name}
-      * Chain:\t\t${data.chain}
-      * Network:\t\t${data.network}
-      * Version:\t\t${data.serviceData.software}
-      * Performance:\t${data.serviceData.performance}
-      * Domain:\t\t${data.domain}
-      * Capacity:\t\t${data.onDemandCapacity}:${data.capacity}
-      * Region:\t\t${data.region}
-      * State:\t\t${getState(data)}${getCreds(data)}`)
+    if (isJson) {
+      formatResponse(isJson, data)
+      return
     }
+
+    consola.info('Retrieving cluster information')
+    process.stdout.write('\n')
+    consola.success(`Retrieved cluster with id ${clusterId}
+    * ID:\t\t${data.id}
+    * Name:\t\t${data.alias || data.name}
+    * Chain:\t\t${data.chain}
+    * Network:\t\t${data.network}
+    * Version:\t\t${data.serviceData.software}
+    * Performance:\t${data.serviceData.performance}
+    * Domain:\t\t${data.domain}
+    * Capacity:\t\t${data.onDemandCapacity}:${data.capacity}
+    * Region:\t\t${data.region}
+    * State:\t\t${getState(data)}${getCreds(data)}`)
   })
 }
 

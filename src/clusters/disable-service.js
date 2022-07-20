@@ -1,6 +1,6 @@
 'use strict'
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -14,8 +14,10 @@ const config = require('../config')
  * @param {Object} params.serviceId Service ID
  * @returns {Promise} The update service promise
  */
-async function disable({ accessToken, ...flags }) {
-  consola.info('Disabling service')
+async function disable({ accessToken, json, ...flags }) {
+  const isJson = typeof json !== 'undefined'
+
+  !isJson && consola.info('Disabling service')
 
   const prompt = await inquirer.prompt([
     {
@@ -33,16 +35,17 @@ async function disable({ accessToken, ...flags }) {
   }
 
   const env = config.get('env')
-  const url = config.get(
-    `services.${env}.nodes.url/services/cluster/${serviceId}`
-  )
+  const url = `${config.get(
+    `services.${env}.nodes.url`
+  )}/services/cluster/${serviceId}`
 
   return fetcher(url, 'DELETE', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(`Error disabling the service: ${res.status}`)
+      formatErrorResponse(isJson, `Error disabling the service: ${res.status}`)
       return
     }
-    consola.success(`Service ${serviceId} disabled successfully`)
+
+    formatResponse(isJson, `Service ${serviceId} disabled successfully`)
   })
 }
 

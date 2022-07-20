@@ -1,7 +1,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -14,15 +14,17 @@ const config = require('../config')
  * @param {Object} params.all Boolean defining if it should show killed nodes
  * @returns {Promise} The information nodes promise
  */
-async function listNodes({ accessToken, all }) {
-  consola.info('Retrieving all nodes')
+async function listNodes({ accessToken, all, json }) {
+  const isJson = typeof json !== 'undefined'
+
+  !isJson && consola.info('Retrieving all nodes')
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
 
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(`Error retrieving nodes: ${res.status}`)
+      formatErrorResponse(isJson, `Error retrieving nodes: ${res.status}`)
       return
     }
     let body = res.data
@@ -32,7 +34,7 @@ async function listNodes({ accessToken, all }) {
 
     if (!body.length) {
       const user = `${config.get('user')}`
-      consola.info(`No nodes were found for user ${user}`)
+      formatResponse(isJson, `No nodes were found for user ${user}`)
       return
     }
     body = body.map(function ({
@@ -64,6 +66,11 @@ async function listNodes({ accessToken, all }) {
 
     if (!all) {
       body = body.filter(n => n.state !== 'stopped')
+    }
+
+    if (isJson) {
+      formatResponse(isJson, body)
+      return
     }
 
     consola.success(`Got ${body.length} nodes:`)
