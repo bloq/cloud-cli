@@ -77,6 +77,8 @@ const fetcher = (url, method, accessToken, body) => {
 const returnResponse = (isJson, ok, message) => {
   isJson
     ? console.log(JSON.stringify({ ok, message }, null, 2))
+    : ok
+    ? consola.info(message)
     : consola.error(message)
 }
 

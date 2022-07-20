@@ -16,36 +16,40 @@ const inquirer = require('inquirer')
 async function removeClientKey({ user, accessToken, json, ...flags }) {
   const isJson = typeof json !== 'undefined'
 
-  !isJson && consola.info(`Removing client key for user ${user}.`)
+  let keyId = flags.keyId
 
-  const prompt = await inquirer.prompt([
-    {
-      name: 'keyId',
-      message: 'Enter the client-key id',
-      type: 'text',
-      when: () => !flags.keyId
-    },
-    {
-      name: 'yes',
-      message: `You will remove client key. Do you want to continue?`,
-      type: 'confirm',
-      default: false,
-      when: () => !flags.yes
+  if (!isJson) {
+    consola.info(`Removing client key for user ${user}.`)
+
+    const prompt = await inquirer.prompt([
+      {
+        name: 'keyId',
+        message: 'Enter the client-key id',
+        type: 'text',
+        when: () => !flags.keyId
+      },
+      {
+        name: 'yes',
+        message: `You will remove client key. Do you want to continue?`,
+        type: 'confirm',
+        default: false,
+        when: () => !flags.yes
+      }
+    ])
+
+    const { yes } = {
+      ...flags,
+      ...prompt
     }
-  ])
 
-  const { yes, keyId } = {
-    ...flags,
-    ...prompt
+    if (!yes) {
+      formatResponse(isJson, 'No action taken')
+      return
+    }
   }
 
   if (!keyId) {
-    consola.error('Missing client key id')
-    return
-  }
-
-  if (!yes) {
-    consola.error('No action taken')
+    formatErrorResponse(isJson, 'Missing client key id')
     return
   }
 

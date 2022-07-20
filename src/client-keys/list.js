@@ -29,10 +29,7 @@ async function listClientKeys({ user, accessToken, json }) {
     }
     if (!res.data.length) {
       const userId = `${config.get('user')}`
-      formatErrorResponse(
-        isJson,
-        `No client-keys were found for user ${userId}`
-      )
+      formatResponse(isJson, `No client-keys were found for user ${userId}`)
       return
     }
 
