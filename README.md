@@ -49,7 +49,6 @@ USAGE
 - [`bcl signup`](#bcl-signup)
 - [`bcl status`](#bcl-status)
 - [`bcl update-password`](#bcl-update-password)
-- [`bcl user-keys OPERATION`](#bcl-user-keys-operation)
 - [`bcl verify`](#bcl-verify)
 
 ## `bcl client-keys OPERATION`
@@ -252,24 +251,6 @@ USAGE
 ```
 
 _See code: [src/commands/update-password.js](https://github.com/bloqpriv/cloud-cli/blob/v3.1.0/src/commands/update-password.js)_
-
-## `bcl user-keys OPERATION`
-
-Manage your Bloq user key(s)
-
-```
-USAGE
-  $ bcl user-keys OPERATION
-
-ARGUMENTS
-  OPERATION  (create|list|remove|info) [default: list] Specify the type of user-keys operation to run
-
-OPTIONS
-  -i, --keyId=keyId   key id
-  -t, --type=bit|pgp  key type
-```
-
-_See code: [src/commands/user-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v3.1.0/src/commands/user-keys.js)_
 
 ## `bcl verify`
 
