@@ -3,7 +3,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher } = require('../utils')
+const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
 const { Command, flags } = require('@oclif/command')
 const config = require('../config')
 require('console.table')
@@ -14,21 +14,24 @@ class EventsCommand extends Command {
     const accessToken = config.get('accessToken')
     const { flags } = this.parse(EventsCommand)
 
+    const isJson = typeof flags.json !== 'undefined'
+
     if (!user || !accessToken) {
-      consola.error(
+      formatErrorResponse(
+        isJson,
         'User is not authenticated. Use login command to start a new session.'
       )
       return
     }
 
-    consola.info(`Retrieving events for user ${user}`)
+    !isJson && consola.info(`Retrieving events for user ${user}`)
 
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/users/me/events`
 
     return fetcher(url, 'GET', accessToken).then(res => {
       if (!res.ok) {
-        consola.error(`Error retrieving events: ${res.status}`)
+        formatErrorResponse(isJson, `Error retrieving events: ${res.status}`)
         return
       }
 
@@ -47,6 +50,11 @@ class EventsCommand extends Command {
         )
       }
 
+      if (isJson) {
+        formatResponse(isJson, events)
+        return
+      }
+
       consola.success(`Retrieved ${events.length} events:`)
       process.stdout.write('\n')
       // eslint-disable-next-line no-console
@@ -58,7 +66,8 @@ class EventsCommand extends Command {
 EventsCommand.description = 'Get Bloq daily events'
 
 EventsCommand.flags = {
-  service: flags.string({ char: 's', description: 'service name' })
+  service: flags.string({ char: 's', description: 'service name' }),
+  json: flags.boolean({ char: 'j', description: 'JSON output' })
 }
 
 module.exports = EventsCommand

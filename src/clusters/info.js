@@ -63,7 +63,29 @@ async function infoCluster({ accessToken, clusterId, json }) {
     const data = res.data
 
     if (isJson) {
-      formatResponse(isJson, data)
+      const auth =
+        data.auth.type === 'jwt'
+          ? { auth: 'JWT' }
+          : data.auth.type === 'basic'
+          ? { user: data.auth.user, password: data.auth.pass }
+          : { auth: 'none' }
+
+      const response = {
+        id: data.id,
+        name: data.name,
+        alias: data.alias || '',
+        chain: data.chain,
+        network: data.network,
+        version: data.serviceData.software,
+        performance: data.serviceData.performance,
+        domain: data.domain,
+        capacity: `${data.onDemandCapacity}:${data.capacity}`,
+        region: data.region,
+        state: data.state,
+        auth
+      }
+
+      formatResponse(isJson, response)
       return
     }
 

@@ -29,7 +29,12 @@ async function getChains({ json }) {
     }
 
     if (isJson) {
-      formatResponse(isJson, res.data)
+      const data = res.data.map(({ chain, network, software }) => ({
+        chain,
+        network,
+        software
+      }))
+      formatResponse(isJson, data)
       return
     }
 

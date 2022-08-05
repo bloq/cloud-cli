@@ -29,29 +29,27 @@ async function getServices({ json }) {
       return
     }
     let body = res.data
-
+    const response = lodash.sortBy(
+      body
+        .filter(s => !s.disabled)
+        .map(({ chain, id, metadata, vendor, network }) => ({
+          chain,
+          network,
+          software: metadata.software,
+          performance: metadata.performance,
+          region: vendor.region,
+          id
+        })),
+      ['chain', 'network', 'software', 'performance', 'region']
+    )
     if (isJson) {
-      formatResponse(isJson, body)
+      formatResponse(isJson, response)
       return
     }
 
     process.stdout.write('\n')
     // eslint-disable-next-line no-console
-    console.table(
-      lodash.sortBy(
-        body
-          .filter(s => !s.disabled)
-          .map(({ chain, id, metadata, vendor, network }) => ({
-            chain,
-            network,
-            software: metadata.software,
-            performance: metadata.performance,
-            region: vendor.region,
-            id
-          })),
-        ['chain', 'network', 'software', 'performance', 'region']
-      )
-    )
+    console.table(response)
   })
 }
 

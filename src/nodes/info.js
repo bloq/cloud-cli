@@ -63,13 +63,13 @@ async function infoNode({ accessToken, nodeId, json }) {
       stoppedAt,
       createdAt
     } = body
-    const creds =
-      auth.type === 'jwt'
-        ? '* Auth:\t\tJWT'
-        : `* User:\t\t${auth.user}
-    * Password:\t\t${auth.pass}`
 
     if (isJson) {
+      const creds =
+        auth.type === 'jwt'
+          ? { auth: 'JWT' }
+          : { user: auth.user, password: auth.pass }
+
       formatResponse(isJson, {
         id,
         createdAt,
@@ -86,6 +86,12 @@ async function infoNode({ accessToken, nodeId, json }) {
     }
 
     process.stdout.write('\n')
+
+    const creds =
+      auth.type === 'jwt'
+        ? '* Auth:\t\tJWT'
+        : `* User:\t\t${auth.user}
+    * Password:\t\t${auth.pass}`
 
     consola.success(`Retrieved node with id ${nodeId}
     * ID:\t\t${id}

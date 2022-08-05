@@ -3,7 +3,9 @@
 const URL = require('url').URL
 const consola = require('consola')
 const fetch = require('node-fetch').default
-const { Command } = require('@oclif/command')
+
+const { formatErrorResponse, formatResponse } = require('../utils')
+const { Command, flags } = require('@oclif/command')
 const config = require('../config')
 require('console.table')
 
@@ -55,7 +57,10 @@ const timePromise = (url, name) =>
 
 class StatusCommand extends Command {
   async run() {
-    consola.info(`Retrieving Bloq status: ${env}`)
+    const { flags } = this.parse(StatusCommand)
+    const isJson = typeof flags.json !== 'undefined'
+
+    !isJson && consola.info(`Retrieving Bloq status: ${env}`)
 
     Promise.all([
       Promise.race([
@@ -68,15 +73,22 @@ class StatusCommand extends Command {
       ])
     ])
       .then(res => {
+        if (isJson) {
+          formatResponse(isJson, res)
+          return
+        }
         // eslint-disable-next-line no-console
         console.table(res)
       })
       .catch(function (err) {
-        consola.error(err)
+        formatErrorResponse(isJson, err)
       })
   }
 }
 
 StatusCommand.description = 'Get Bloq services status'
+StatusCommand.flags = {
+  json: flags.boolean({ char: 'j', description: 'JSON output' })
+}
 
 module.exports = StatusCommand

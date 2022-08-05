@@ -48,7 +48,12 @@ NodesCommand.flags = {
     required: false
   }),
   json: flags.boolean({ char: 'j', description: 'JSON output' }),
-  nodeId: flags.string({ char: 'i', description: 'node id' })
+  nodeId: flags.string({ char: 'i', description: 'node id' }),
+  yes: flags.boolean({
+    char: 'y',
+    description: 'answer "yes" to prompts',
+    default: false
+  })
 }
 
 NodesCommand.args = [

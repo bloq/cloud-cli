@@ -68,13 +68,12 @@ async function createNode({ accessToken, serviceId, authType, json }) {
 
     const { id, auth, state, chain, network, serviceData, ip } = res.data
 
-    const creds =
-      auth.type === 'jwt'
-        ? '* Auth:\t\tJWT'
-        : `* User:\t\t${auth.user}
-    * Password:\t\t${auth.pass}`
-
     if (isJson) {
+      const creds =
+        auth.type === 'jwt'
+          ? { auth: 'JWT' }
+          : { user: auth.user, password: auth.pass }
+
       formatResponse(isJson, {
         id,
         chain,
@@ -83,10 +82,16 @@ async function createNode({ accessToken, serviceId, authType, json }) {
         performance: serviceData.performance,
         state,
         ip,
-        creds
+        auth: creds
       })
       return
     }
+
+    const creds =
+      auth.type === 'jwt'
+        ? '* Auth:\t\tJWT'
+        : `* User:\t\t${auth.user}
+           * Password:\t\t${auth.pass}`
 
     coppyToClipboard(id, 'Node id')
     process.stdout.write('\n')

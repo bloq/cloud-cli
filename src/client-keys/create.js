@@ -48,7 +48,11 @@ async function createClientKey({ user, accessToken, json }) {
     }
 
     if (isJson) {
-      formatResponse(isJson, res.data)
+      const data = {
+        clientId: res.data.clientId,
+        clientSecret: res.data.clientSecret
+      }
+      formatResponse(isJson, data)
       return
     }
 

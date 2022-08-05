@@ -34,7 +34,11 @@ async function listClientKeys({ user, accessToken, json }) {
     }
 
     if (isJson) {
-      formatResponse(isJson, res.data)
+      const data = res.data.map(({ id, createdAt }) => ({
+        id,
+        createdAt
+      }))
+      formatResponse(isJson, data)
       return
     }
 

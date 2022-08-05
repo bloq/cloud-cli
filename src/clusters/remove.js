@@ -25,8 +25,8 @@ async function removeCluster({ accessToken, force, json, ...flags }) {
       name: 'clusterId',
       message: 'Enter the cluster id',
       type: 'text',
-      when: () => !flags.clusterId,
-      validate: input => isFormatValid('cluster', input)
+      validate: input => isFormatValid('cluster', input),
+      when: () => !flags.clusterId
     },
     {
       name: 'yes',
