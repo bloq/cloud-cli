@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const lodash = require('lodash')
-const { fetcher, formatErrorResponse } = require('../utils')
+const { fetcher, formatErrorResponse, formatResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -52,7 +52,7 @@ async function getServices({ sort, json }) {
     )
 
     if (isJson) {
-      console.log(data)
+      formatResponse(isJson, data)
       return
     }
 
