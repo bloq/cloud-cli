@@ -113,7 +113,7 @@ OPTIONS
 
 EXAMPLE
 
-1. Know which service is the cluster to create from, pick its `id`:
+1. In order to know which service is the cluster to create from, pick its `id`:
 
 ```bash
 $ bcl clusters services
@@ -254,7 +254,7 @@ OPTIONS
 
 EXAMPLE
 
-1. Know which service is the node to create from, pick its `id`:
+1. In order to know which service is the node to create from, pick its `id`:
 
 ```bash
 $ bcl nodes services
