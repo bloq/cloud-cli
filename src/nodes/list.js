@@ -1,7 +1,12 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
+const {
+  fetcher,
+  formatResponse,
+  formatErrorResponse,
+  formatOutput
+} = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -17,7 +22,7 @@ const config = require('../config')
 async function listNodes({ accessToken, all, json }) {
   const isJson = typeof json !== 'undefined'
 
-  !isJson && consola.info('Retrieving all nodes')
+  !isJson && consola.info('Retrieving all nodes\n')
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/nodes`
@@ -68,15 +73,8 @@ async function listNodes({ accessToken, all, json }) {
       body = body.filter(n => n.state !== 'stopped')
     }
 
-    if (isJson) {
-      formatResponse(isJson, body)
-      return
-    }
-
-    consola.success(`Got ${body.length} nodes:`)
-    process.stdout.write('\n')
-    // eslint-disable-next-line no-console
-    console.table(body)
+    !isJson && consola.success(`Got ${body.length} nodes:\n`)
+    formatOutput(isJson, body)
   })
 }
 

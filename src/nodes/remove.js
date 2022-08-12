@@ -20,7 +20,7 @@ const config = require('../config')
 async function removeNode({ accessToken, json, ...flags }) {
   const isJson = typeof json !== 'undefined'
 
-  !isJson && consola.info(`Removing node`)
+  !isJson && consola.info(`Removing node\n`)
 
   const prompt = await inquirer.prompt([
     {

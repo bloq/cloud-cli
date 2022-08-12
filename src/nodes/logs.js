@@ -2,12 +2,7 @@
 'use strict'
 
 const consola = require('consola')
-const {
-  fetcher,
-  formatErrorResponse,
-  formatOutput,
-  formatCredentials
-} = require('../utils')
+const { fetcher, formatErrorResponse, formatOutput } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -21,10 +16,10 @@ const config = require('../config')
  * @param {Object} params.nodeId Node ID
  * @returns {Promise} The information node promise
  */
-async function infoNode({ accessToken, nodeId, json }) {
+async function logsNode({ accessToken, nodeId, json, lines = 100 }) {
   const isJson = typeof json !== 'undefined'
 
-  !isJson && consola.info(`Retrieving node with ID ${nodeId}.`)
+  !isJson && consola.info(`Retrieving logs from node ID ${nodeId}.`)
 
   if (!nodeId) {
     const prompt = await inquirer.prompt([
@@ -33,11 +28,18 @@ async function infoNode({ accessToken, nodeId, json }) {
         message: 'Enter the node id',
         type: 'text',
         validate: input => isFormatValid('node', input)
+      },
+      {
+        name: 'lines',
+        message: 'Max lines to retrieve',
+        type: 'number',
+        default: 100
       }
     ])
+
     nodeId = prompt.nodeId
     if (!nodeId) {
-      consola.error('Missing node id')
+      formatErrorResponse(isJson, 'Missing node id')
       return
     }
   }
@@ -45,33 +47,22 @@ async function infoNode({ accessToken, nodeId, json }) {
   const env = config.get('env') || 'prod'
   const url = `${config.get(
     `services.${env}.nodes.url`
-  )}/users/me/nodes/${nodeId}`
+  )}/users/me/nodes/${nodeId}/logs?lines=${lines}`
 
   // eslint-disable-next-line consistent-return
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
       formatErrorResponse(
         isJson,
-        `Error retrieving node information, requested resource not found: ${res.status}`
+        `Error retrieving node logs, requested resource not found: ${res.status}`
       )
       return
     }
 
-    const data = {
-      id: res.data.id,
-      createdAt: res.data.createdAt,
-      stoppedAt: res.data.stoppedAt,
-      chain: res.data.chain,
-      network: res.data.network,
-      version: res.data.serviceData.software,
-      performance: res.data.serviceData.performance,
-      state: res.data.state,
-      ip: res.data.ip,
-      ...formatCredentials(res.data.auth)
-    }
-
+    const data = { logs: res.data.data.replace('\\U00002', '\n') }
+    !isJson && consola.success('Retrieved logs from node:')
     formatOutput(isJson, data)
   })
 }
 
-module.exports = infoNode
+module.exports = logsNode

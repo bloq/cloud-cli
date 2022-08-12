@@ -88,9 +88,37 @@ const formatResponse = (isJson, message) =>
 const formatErrorResponse = (isJson, message) =>
   returnResponse(isJson, false, message)
 
+const formatCredentials = authObj => {
+  let res = { auth: authObj.type }
+  if (authObj.type === 'basic') {
+    res = { auth: authObj.type, user: authObj.user, password: authObj.pass }
+  }
+
+  return res
+}
+
+const capitalize = str =>
+  `${str[0].toUpperCase()}${str.slice(1)}:`.padEnd(24, ' ')
+
+const formatOutput = (isJson, dataObj) => {
+  if (!isJson) {
+    if (!Array.isArray(dataObj)) {
+      for (const key in dataObj) {
+        console.log(`* ${capitalize(key)}${dataObj[key] ?? ''}`)
+      }
+    } else {
+      console.table(dataObj)
+    }
+  } else {
+    console.log(JSON.stringify(dataObj, null, 2))
+  }
+}
+
 module.exports = {
   coppyToClipboard,
   fetcher,
+  formatCredentials,
+  formatOutput,
   formatResponse,
   formatErrorResponse
 }

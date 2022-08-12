@@ -11,7 +11,7 @@ const config = require('../config')
 
 class VerifyCommand extends Command {
   async run() {
-    consola.info('Verifyng your Bloq account.')
+    consola.info('Verifying your Bloq account.')
     const { flags } = this.parse(VerifyCommand)
     let { user, token } = flags
 

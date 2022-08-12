@@ -3,7 +3,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
+const { fetcher, formatErrorResponse, formatOutput } = require('../utils')
 const { Command, flags } = require('@oclif/command')
 const config = require('../config')
 require('console.table')
@@ -24,7 +24,7 @@ class EventsCommand extends Command {
       return
     }
 
-    !isJson && consola.info(`Retrieving events for user ${user}`)
+    !isJson && consola.info(`Retrieving events for user ${user}\n`)
 
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/users/me/events`
@@ -35,9 +35,7 @@ class EventsCommand extends Command {
         return
       }
 
-      const data = res.data
-
-      let events = data.map(({ id, service, serviceData, createdAt }) => ({
+      let events = res.data.map(({ id, service, serviceData, createdAt }) => ({
         id,
         service,
         serviceData: JSON.stringify(serviceData),
@@ -50,15 +48,8 @@ class EventsCommand extends Command {
         )
       }
 
-      if (isJson) {
-        formatResponse(isJson, events)
-        return
-      }
-
-      consola.success(`Retrieved ${events.length} events:`)
-      process.stdout.write('\n')
-      // eslint-disable-next-line no-console
-      console.table(events)
+      !isJson && consola.success(`Retrieved ${events.length} events:\n`)
+      formatOutput(isJson, events)
     })
   }
 }

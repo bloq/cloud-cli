@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const lodash = require('lodash')
-const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
+const { fetcher, formatOutput, formatErrorResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -15,7 +15,7 @@ const config = require('../config')
 async function getServices({ json }) {
   const isJson = typeof json !== 'undefined'
 
-  !isJson && consola.info('Retrieving list of available services.')
+  !isJson && consola.info('Retrieving list of available services.\n')
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/services/nodes`
@@ -28,9 +28,9 @@ async function getServices({ json }) {
       )
       return
     }
-    let body = res.data
-    const response = lodash.sortBy(
-      body
+
+    const data = lodash.sortBy(
+      res.data
         .filter(s => !s.disabled)
         .map(({ chain, id, metadata, vendor, network }) => ({
           chain,
@@ -42,14 +42,8 @@ async function getServices({ json }) {
         })),
       ['chain', 'network', 'software', 'performance', 'region']
     )
-    if (isJson) {
-      formatResponse(isJson, response)
-      return
-    }
 
-    process.stdout.write('\n')
-    // eslint-disable-next-line no-console
-    console.table(response)
+    formatOutput(isJson, data)
   })
 }
 

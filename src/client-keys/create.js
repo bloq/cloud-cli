@@ -6,7 +6,7 @@ const config = require('../config')
 const {
   coppyToClipboard,
   fetcher,
-  formatResponse,
+  formatOutput,
   formatErrorResponse
 } = require('../utils')
 
@@ -47,31 +47,25 @@ async function createClientKey({ user, accessToken, json }) {
       return
     }
 
-    if (isJson) {
-      const data = {
-        clientId: res.data.clientId,
-        clientSecret: res.data.clientSecret
-      }
-      formatResponse(isJson, data)
-      return
+    const data = {
+      clientId: res.data.clientId,
+      clientSecret: res.data.clientSecret
     }
 
-    process.stdout.write('\n')
-    consola.success(`Generated new client keys:
-    * Client ID:\t${res.data.clientId}
-    * Client Secret:\t${res.data.clientSecret}
-    `)
+    if (!isJson) {
+      consola.warn(
+        'You will NOT be able to see your client secret again. Remember to copy it and keep it safe.'
+      )
+      coppyToClipboard(res.data.clientSecret, 'Client secret')
+      consola.success(`Generated new client keys:`)
+    }
 
-    consola.warn(
-      'You will NOT be able to see your client secret again. Remember to copy it and keep it safe.'
-    )
+    formatOutput(isJson, data)
 
     if (save) {
       config.set('clientId', res.data.clientId)
       config.set('clientSecret', res.data.clientSecret)
     }
-
-    coppyToClipboard(res.data.clientSecret, 'Client secret')
   })
 }
 

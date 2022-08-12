@@ -2,7 +2,12 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatErrorResponse, formatResponse } = require('../utils')
+const {
+  fetcher,
+  formatErrorResponse,
+
+  formatOutput
+} = require('../utils')
 const inquirer = require('inquirer')
 const { Command, flags } = require('@oclif/command')
 
@@ -63,27 +68,20 @@ class ClientTokenCommand extends Command {
         )
         return
       }
-      const data = res.data
 
-      if (!data.accessToken || !data.refreshToken) {
+      if (!res.data.accessToken || !res.data.refreshToken) {
         formatErrorResponse(isJson, 'Error generating client accessToken.')
         return
       }
 
-      if (isJson) {
-        const response = {
-          accessToken: data.accessToken,
-          refreshToken: data.refreshToken
-        }
-        formatResponse(isJson, response)
-        return
+      !isJson && consola.success('Generated new tokens:\n')
+
+      const data = {
+        accessToken: res.data.accessToken,
+        refreshToken: res.data.refreshToken
       }
 
-      consola.success(
-        'Generated new tokens: \n\n' +
-          `\t* clientAccessToken:  ${data.accessToken} \n` +
-          `\t* refreshToken:  ${data.refreshToken}`
-      )
+      formatOutput(isJson, data)
 
       if (save) {
         config.set('clientAccessToken', data.accessToken)

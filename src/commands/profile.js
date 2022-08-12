@@ -4,7 +4,7 @@
 const consola = require('consola')
 const { fetcher } = require('../utils')
 const { Command, flags } = require('@oclif/command')
-const { formatErrorResponse, formatResponse } = require('../utils')
+const { formatErrorResponse, formatOutput } = require('../utils')
 const config = require('../config')
 
 class ProfileCommand extends Command {
@@ -36,20 +36,16 @@ class ProfileCommand extends Command {
         )
         return
       }
-      const { verifiedAt, id, displayName, email } = res.data
 
-      if (isJson) {
-        const data = { id, displayName, email, verified: verifiedAt }
-        formatResponse(isJson, data)
-        return
+      const data = {
+        id: res.data.id,
+        displayName: res.data.displayName,
+        email: res.data.email,
+        verified: res.data.verifiedAt
       }
 
-      consola.success(`Retrieved user profile:
-      * id:\t\t${id}
-      * displayName:\t${displayName}
-      * email:\t${email}
-      * verified:\t${!!verifiedAt}
-    `)
+      !isJson && consola.success(`Retrieved user profile:\n`)
+      formatOutput(isJson, data)
     })
   }
 }

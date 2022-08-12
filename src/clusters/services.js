@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const lodash = require('lodash')
-const { fetcher, formatErrorResponse, formatResponse } = require('../utils')
+const { fetcher, formatErrorResponse, formatOutput } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -17,7 +17,7 @@ const config = require('../config')
 async function getServices({ sort, json }) {
   const isJson = typeof json !== 'undefined'
 
-  !isJson && consola.info('Retrieving list of available services')
+  !isJson && consola.info('Retrieving list of available services\n')
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/services/cluster`
@@ -51,14 +51,7 @@ async function getServices({ sort, json }) {
       ]
     )
 
-    if (isJson) {
-      formatResponse(isJson, data)
-      return
-    }
-
-    process.stdout.write('\n')
-    // eslint-disable-next-line no-console
-    console.table(data)
+    formatOutput(isJson, data)
   })
 }
 

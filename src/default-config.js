@@ -27,14 +27,14 @@ module.exports = {
         statusEndpoint: '/'
       },
       nodes: {
-        url: 'https://nodes.bloqclouddev.com',
+        url: 'http://localhost:4002',
         statusEndpoint: '/'
       }
     },
 
     local: {
       accounts: {
-        url: 'http://localhost:4000',
+        url: 'https://accounts.bloqclouddev.com',
         statusEndpoint: '/'
       },
       nodes: {

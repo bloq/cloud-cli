@@ -2,24 +2,15 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
+const {
+  fetcher,
+  formatErrorResponse,
+  formatCredentials,
+  formatOutput
+} = require('../utils')
 const { isFormatValid } = require('../validator')
 const inquirer = require('inquirer')
 const config = require('../config')
-
-const getState = body =>
-  body.state === 'started' && body.updatingService ? 'updating' : body.state
-
-const getCreds = body =>
-  body.auth.type === 'jwt'
-    ? `
-    * Auth:\t\tJWT`
-    : body.auth.type === 'basic'
-    ? `
-    * User:\t\t${body.auth.user}
-    * Password:\t\t${body.auth.pass}`
-    : `
-    * Auth:\t\tnone`
 
 /**
  * Retrieves cluster information by ID
@@ -49,6 +40,8 @@ async function infoCluster({ accessToken, clusterId, json }) {
     }
   }
 
+  !isJson && consola.info('Retrieving cluster information\n')
+
   const env = config.get('env') || 'prod'
   const url = `${config.get(
     `services.${env}.nodes.url`
@@ -60,48 +53,25 @@ async function infoCluster({ accessToken, clusterId, json }) {
       return
     }
 
-    const data = res.data
+    const getState = body =>
+      body.state === 'started' && body.updatingService ? 'updating' : body.state
 
-    if (isJson) {
-      const auth =
-        data.auth.type === 'jwt'
-          ? { auth: 'JWT' }
-          : data.auth.type === 'basic'
-          ? { user: data.auth.user, password: data.auth.pass }
-          : { auth: 'none' }
-
-      const response = {
-        id: data.id,
-        name: data.name,
-        alias: data.alias || '',
-        chain: data.chain,
-        network: data.network,
-        version: data.serviceData.software,
-        performance: data.serviceData.performance,
-        domain: data.domain,
-        capacity: `${data.onDemandCapacity}:${data.capacity}`,
-        region: data.region,
-        state: data.state,
-        auth
-      }
-
-      formatResponse(isJson, response)
-      return
+    const data = {
+      id: res.data.id,
+      name: res.data.name,
+      alias: res.data.alias,
+      chain: res.data.chain,
+      network: res.data.network,
+      version: res.data.serviceData.software,
+      performance: res.data.serviceData.performance,
+      domain: res.data.domain,
+      capacity: `${res.data.onDemandCapacity}:${res.data.capacity}`,
+      region: res.data.region,
+      state: `${getState(res.data)}`,
+      ...formatCredentials(res.data.auth)
     }
 
-    consola.info('Retrieving cluster information')
-    process.stdout.write('\n')
-    consola.success(`Retrieved cluster with id ${clusterId}
-    * ID:\t\t${data.id}
-    * Name:\t\t${data.alias || data.name}
-    * Chain:\t\t${data.chain}
-    * Network:\t\t${data.network}
-    * Version:\t\t${data.serviceData.software}
-    * Performance:\t${data.serviceData.performance}
-    * Domain:\t\t${data.domain}
-    * Capacity:\t\t${data.onDemandCapacity}:${data.capacity}
-    * Region:\t\t${data.region}
-    * State:\t\t${getState(data)}${getCreds(data)}`)
+    formatOutput(isJson, data)
   })
 }
 
