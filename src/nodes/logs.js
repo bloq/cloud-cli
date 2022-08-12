@@ -2,7 +2,7 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatErrorResponse, formatOutput } = require('../utils')
+const { fetcher } = require('../utils')
 const { isFormatValid } = require('../validator')
 
 const inquirer = require('inquirer')
@@ -16,11 +16,7 @@ const config = require('../config')
  * @param {Object} params.nodeId Node ID
  * @returns {Promise} The information node promise
  */
-async function logsNode({ accessToken, nodeId, json, lines = 100 }) {
-  const isJson = typeof json !== 'undefined'
-
-  !isJson && consola.info(`Retrieving logs from node ID ${nodeId}.`)
-
+async function logsNode({ accessToken, nodeId, lines = 100 }) {
   if (!nodeId) {
     const prompt = await inquirer.prompt([
       {
@@ -39,7 +35,7 @@ async function logsNode({ accessToken, nodeId, json, lines = 100 }) {
 
     nodeId = prompt.nodeId
     if (!nodeId) {
-      formatErrorResponse(isJson, 'Missing node id')
+      consola.warning('Missing node id')
       return
     }
   }
@@ -52,16 +48,13 @@ async function logsNode({ accessToken, nodeId, json, lines = 100 }) {
   // eslint-disable-next-line consistent-return
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      formatErrorResponse(
-        isJson,
+      consola.error(
         `Error retrieving node logs, requested resource not found: ${res.status}`
       )
       return
     }
 
-    const data = { logs: res.data.data.replace('\\U00002', '\n') }
-    !isJson && consola.success('Retrieved logs from node:')
-    formatOutput(isJson, data)
+    console.log(res.data.data)
   })
 }
 
