@@ -1,29 +1,32 @@
 /* eslint-disable consistent-return */
 /* eslint-disable no-shadow */
 'use strict'
-const ora = require('ora')
 const fetch = require('node-fetch').default
+const { formatResponse, formatErrorResponse } = require('../utils')
+
 const consola = require('consola')
 const inquirer = require('inquirer')
 const config = require('../config')
 
 const { Command, flags } = require('@oclif/command')
 
-function saveUser(user) {
+function saveUser(user, isJson) {
   config.set('user', user)
-  consola.info(
-    'Account saved. Next time you only need -p flag (--password) to login.'
-  )
+  !isJson &&
+    consola.info(
+      'Account saved. Next time you only need -p flag (--password) to login.'
+    )
 }
 
 class LoginCommand extends Command {
   async run() {
-    consola.info('☁️  Welcome to Bloq!')
     const { flags } = this.parse(LoginCommand)
     let { user, password } = flags
+    const isJson = typeof flags.json !== 'undefined'
+    !isJson && consola.info('☁️  Welcome to Bloq!')
 
     if (user) {
-      saveUser(user)
+      saveUser(user, isJson)
     } else {
       user = config.get('user')
       if (!user) {
@@ -36,11 +39,11 @@ class LoginCommand extends Command {
         ])
 
         user = prompt.user
-        saveUser(user)
+        saveUser(user, isJson)
       }
     }
 
-    consola.info(`Login with user ${user}`)
+    !isJson && consola.info(`Login with user ${user}`)
 
     if (!password) {
       const prompt = await inquirer.prompt([
@@ -49,7 +52,7 @@ class LoginCommand extends Command {
 
       password = prompt.password
       if (!password) {
-        consola.error('Missing password')
+        formatErrorResponse.error(isJson, 'Missing password')
         return
       }
     }
@@ -59,8 +62,6 @@ class LoginCommand extends Command {
     ).toString('base64')}`
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/auth`
-    const spinner = ora().start()
-
     const params = {
       method: 'POST',
       headers: {
@@ -71,7 +72,6 @@ class LoginCommand extends Command {
 
     return fetch(url, params)
       .then(res => {
-        spinner.stop()
         if (res.status === 401 || res.status === 403) {
           return {
             ok: false,
@@ -89,6 +89,7 @@ class LoginCommand extends Command {
             }`
           }
         }
+
         return res.json().then(res => ({
           ok: true,
           status: 200,
@@ -97,20 +98,20 @@ class LoginCommand extends Command {
       })
       .then(res => {
         if (!res.ok) {
-          consola.error(`${res.message} (${res.status})`)
-          return res
+          formatErrorResponse(isJson, `${res.message} (${res.status})`)
+          return
         }
         config.set('accessToken', res.accessToken)
-        consola.success('Login success. Your session expires in 12h.')
+        formatResponse(isJson, 'Login success. Your session expires in 12h.')
       })
   }
 }
 
 LoginCommand.description = 'Login to your Bloq account'
-
 LoginCommand.flags = {
   user: flags.string({ char: 'u', description: 'email address or account id' }),
-  password: flags.string({ char: 'p', description: 'password' })
+  password: flags.string({ char: 'p', description: 'password' }),
+  json: flags.boolean({ char: 'j', description: 'JSON output' })
 }
 
 module.exports = LoginCommand

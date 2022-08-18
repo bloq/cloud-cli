@@ -3,7 +3,8 @@
 
 const consola = require('consola')
 const { fetcher } = require('../utils')
-const { Command } = require('@oclif/command')
+const { Command, flags } = require('@oclif/command')
+const { formatErrorResponse, formatOutput } = require('../utils')
 const config = require('../config')
 
 class ProfileCommand extends Command {
@@ -11,34 +12,47 @@ class ProfileCommand extends Command {
     const user = config.get('user')
     const accessToken = config.get('accessToken')
 
+    const { flags } = this.parse(ProfileCommand)
+    const isJson = typeof flags.json !== 'undefined'
+
     if (!user || !accessToken) {
-      consola.error(
+      formatErrorResponse(
+        isJson,
         'User is not authenticated. Use login command to start a new session.'
       )
       return
     }
 
-    consola.info(`Retrieving profile for user ${user}`)
+    !isJson && consola.info(`Retrieving profile for user ${user}`)
+
     const env = config.get('env') || 'prod'
     const url = `${config.get(`services.${env}.accounts.url`)}/users/me`
 
     return fetcher(url, 'GET', accessToken).then(res => {
       if (!res.ok) {
-        consola.error(`Error trying to get user profile: ${res.status}`)
+        formatErrorResponse(
+          isJson,
+          `Error trying to get user profile: ${res.status}`
+        )
         return
       }
-      const { verifiedAt, id, displayName, email } = res.data
 
-      consola.success(`Retrieved user profile:
-      * id:\t\t${id}
-      * displayName:\t${displayName}
-      * email:\t${email}
-      * verified:\t${!!verifiedAt}
-    `)
+      const data = {
+        id: res.data.id,
+        displayName: res.data.displayName,
+        email: res.data.email,
+        verified: res.data.verifiedAt
+      }
+
+      !isJson && consola.success(`Retrieved user profile:\n`)
+      formatOutput(isJson, data)
     })
   }
 }
 
 ProfileCommand.description = 'Retrieve user profile'
+ProfileCommand.flags = {
+  json: flags.boolean({ char: 'j', description: 'JSON output' })
+}
 
 module.exports = ProfileCommand

@@ -2,7 +2,7 @@
 
 const consola = require('consola')
 const lodash = require('lodash')
-const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
+const { fetcher, formatErrorResponse, formatOutput } = require('../utils')
 require('console.table')
 
 const config = require('../config')
@@ -88,14 +88,8 @@ async function listClusters({ accessToken, all, allClusters, sort, json }) {
       body = body.filter(n => n.state !== 'stopped')
     }
 
-    if (isJson) {
-      formatResponse(isJson, body)
-      return
-    }
-    consola.success(`Got ${body.length} clusters:`)
-    process.stdout.write('\n')
-    // eslint-disable-next-line no-console
-    console.table(lodash.sortBy(body, sort.split(',') || 'createdAt'))
+    !isJson && consola.success(`Got ${body.length} clusters:\n`)
+    formatOutput(isJson, lodash.sortBy(body, sort.split(',') || 'createdAt'))
   })
 }
 

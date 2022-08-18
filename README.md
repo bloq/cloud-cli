@@ -64,6 +64,7 @@ ARGUMENTS
 
 OPTIONS
   -i, --keyId=keyId  client key id, used by `remove` operation only
+  -j, --json         retrieves the data in JSON format
 ```
 
 _See code: [src/commands/client-keys.js](https://github.com/bloqpriv/cloud-cli/blob/v3.1.0/src/commands/client-keys.js)_
@@ -75,6 +76,10 @@ Generate new client token(s)
 ```
 USAGE
   $ bcl client-token
+
+OPTIONS
+  -j, --json         retrieves the data in JSON format
+
 ```
 
 _See code: [src/commands/client-token.js](https://github.com/bloqpriv/cloud-cli/blob/v3.1.0/src/commands/client-token.js)_
@@ -92,17 +97,55 @@ ARGUMENTS
              operation to run
 
 OPTIONS
-  -A, --allClusters                        list all clusters from every user (admins only)
-  -S, --sort=sort                          results sorting key
   -a, --all                                list all clusters, started and stopped
+  -A, --allClusters                        list all clusters from every user (admins only)
   -c, --capacity=capacity                  [default: 2] capacity
+  -F, --force                              force remove cluster from any user (admins only)
   -i, --clusterId=clusterId                cluster id
-  -j, --json                               JSON output
+  -j, --json                               retrieves the data in JSON format
   -o, --onDemandCapacity=onDemandCapacity  on-demand capacity
   -s, --serviceId=serviceId                service id
+  -S, --sort=sort                          results sorting key
   -t, --authType=(jwt|basic|none)          [default: basic] auth type: jwt, basic or none
   -y, --yes                                answer "yes" to prompts
   --abort                                  Abort an (update) operation
+```
+
+EXAMPLE
+
+1. In order to know which service is the cluster to create from, pick its `id`:
+
+```bash
+$ bcl clusters services
+
+chain      network  software                    performance  region        id
+---------  -------  --------------------------  -----------  ------------  --------------------------------------------
+algorand   mainnet  algorand-participation-2.6  standard     eu-central-1  service-a2827f0d-c159-5c84-83d2-4f782082517c
+algorand   mainnet  algorand-participation-2.6  standard     us-east-1     service-49e1296f-58f3-5202-89e1-f196f0fc7581
+algorand   mainnet  algorand-relay-2.6          standard     af-south-1    service-2a3a59ab-aae7-54a3-88dc-b985d4d3de04
+eth        testnet  geth-1.9                    high         us-east-1     service-9fa6e67b-3110-56c7-bf54-943c24603655
+
+```
+
+2. Run the create command: `bcl clusters create -s service-a2827f0d-c159-5c84-83d2-4f782082517c`
+
+```bash
+ℹ Creating a new cluster from service service-9fa6e67b-3110-56c7-bf54-943c24603655.
+
+✔ Initialized new cluster from service service-9fa6e67b-3110-56c7-bf54-943c24603655
+    * ID:               cluster-74401735-eba3-46fa-8908-0000000000
+    * Name:             cake-harvest-chronic
+    * Alias:
+    * Chain:            eth
+    * Network:          testnet
+    * Version:          geth-1.9
+    * Performance:      high
+    * Domain:           cake-harvest-chronic.bloqcloudcluster.com
+    * Capacity:         2:2
+    * Region:           us-east-1
+    * State:            started
+    * User:             xxxx
+    * Password:         yyyy
 ```
 
 _See code: [src/commands/clusters.js](https://github.com/bloqpriv/cloud-cli/blob/v3.1.0/src/commands/clusters.js)_
@@ -140,6 +183,7 @@ USAGE
   $ bcl events
 
 OPTIONS
+  -j, --json             retrieves the data in JSON format
   -s, --service=service  service name
 ```
 
@@ -202,8 +246,44 @@ ARGUMENTS
 OPTIONS
   -a, --all                   list all nodes
   -i, --nodeId=nodeId         node id
+  -j, --json                  retrieves the data in JSON format
   -s, --serviceId=serviceId   service id
   -t, --authType=(jwt|basic)  [default: basic] auth type (jwt or basic)
+  -y, --yes                   answer "yes" to prompts
+```
+
+EXAMPLE
+
+1. In order to know which service is the node to create from, pick its `id`:
+
+```bash
+$ bcl nodes services
+
+chain  network  software       performance  region     id
+-----  -------  -------------  -----------  ---------  --------------------------------------------
+btc    testnet  core-0.17      standard     us-east-1  service-3a78db51-de2d-5199-aa74-a4e0089cf913
+eth    mainnet  geth-1.8       high         us-east-1  service-29c6d43a-3256-51c0-95e8-145ba3db2d37
+eth    mainnet  geth-1.8       standard     us-east-1  service-4341ce4f-9fc9-594b-a70e-4a151b8df202
+eth    mainnet  geth-1.9       high         us-east-1  service-e5616f94-2828-5178-a548-c4a861fb29e7
+eth    mainnet  geth-1.9       standard     us-east-1  service-6c56ad66-d970-5296-84ce-94a8042b2a96
+
+```
+
+2. Run the node creation command: `bcl nodes create -s service-4341ce4f-9fc9-594b-a70e-4a151b8df202`
+
+```bash
+ℹ Initializing a new node from service service-4341ce4f-9fc9-594b-a70e-4a151b8df202
+
+✔ Initialized new node from service service-4341ce4f-9fc9-594b-a70e-4a151b8df202
+    * ID:               node-a9fc799a-771c-4121-bfb2-0000000
+    * Chain:            eth
+    * Network:          mainnet
+    * Version:          geth-1.8
+    * Performance:      standard
+    * State:            started
+    * IP:               44.204.125.130
+    * User:             xxxxx
+    * Password:         yyyyy
 ```
 
 _See code: [src/commands/nodes.js](https://github.com/bloqpriv/cloud-cli/blob/v3.1.0/src/commands/nodes.js)_
@@ -215,6 +295,9 @@ Retrieve user profile
 ```
 USAGE
   $ bcl profile
+
+OPTIONS
+  -j, --json                  retrieves the data in JSON format
 ```
 
 _See code: [src/commands/profile.js](https://github.com/bloqpriv/cloud-cli/blob/v3.1.0/src/commands/profile.js)_
@@ -237,6 +320,9 @@ Get Bloq services status
 ```
 USAGE
   $ bcl status
+
+OPTIONS
+  -j, --json                  retrieves the data in JSON format
 ```
 
 _See code: [src/commands/status.js](https://github.com/bloqpriv/cloud-cli/blob/v3.1.0/src/commands/status.js)_

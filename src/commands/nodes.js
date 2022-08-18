@@ -20,6 +20,9 @@ class NodesCommand extends Command {
       case 'info':
         return nodes.info({ accessToken, ...flags })
 
+      case 'logs':
+        return nodes.logs({ accessToken, ...flags })
+
       case 'chains':
         return nodes.chains(flags)
 
@@ -48,7 +51,13 @@ NodesCommand.flags = {
     required: false
   }),
   json: flags.boolean({ char: 'j', description: 'JSON output' }),
-  nodeId: flags.string({ char: 'i', description: 'node id' })
+  nodeId: flags.string({ char: 'i', description: 'node id' }),
+  yes: flags.boolean({
+    char: 'y',
+    description: 'answer "yes" to prompts',
+    default: false
+  }),
+  lines: flags.integer({ char: 'l', description: 'max lines to retrieve' })
 }
 
 NodesCommand.args = [
@@ -57,7 +66,7 @@ NodesCommand.args = [
     required: true,
     description: 'Specify the type of nodes operation to run',
     default: 'list',
-    options: ['create', 'list', 'remove', 'info', 'chains', 'services']
+    options: ['create', 'list', 'remove', 'info', 'logs', 'chains', 'services']
   }
 ]
 

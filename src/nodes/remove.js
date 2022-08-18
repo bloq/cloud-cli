@@ -17,39 +17,40 @@ const config = require('../config')
  * @param {Object} params.nodeId Node ID
  * @returns {Promise} The remove node promise
  */
-async function removeNode({ accessToken, nodeId, json }) {
+async function removeNode({ accessToken, json, ...flags }) {
   const isJson = typeof json !== 'undefined'
 
-  !isJson && consola.info(`Removing node`)
+  !isJson && consola.info(`Removing node\n`)
 
-  if (!nodeId) {
-    const prompt = await inquirer.prompt([
-      {
-        name: 'nodeId',
-        message: 'Enter the node id',
-        type: 'text',
-        validate: input => isFormatValid('node', input)
-      }
-    ])
-
-    nodeId = prompt.nodeId
-    if (!nodeId) {
-      formatErrorResponse(isJson, 'Missing node id')
-      return
-    }
-  }
-
-  const { confirmation } = await inquirer.prompt([
+  const prompt = await inquirer.prompt([
     {
-      name: 'confirmation',
-      message: `You will remove the node with id ${nodeId}. Do you want to continue?`,
+      name: 'nodeId',
+      message: 'Enter the node id',
+      type: 'text',
+      validate: input => isFormatValid('node', input),
+      when: () => !flags.nodeId
+    },
+    {
+      name: 'yes',
+      message: `You will remove the node. Do you want to continue?`,
       type: 'confirm',
-      default: false
+      default: false,
+      when: () => !flags.yes
     }
   ])
 
-  if (!confirmation) {
-    formatResponse(isJson, 'Remove node was canceled.')
+  const { yes, nodeId } = {
+    ...flags,
+    ...prompt
+  }
+
+  if (!nodeId) {
+    formatErrorResponse(isJson, 'Missing node id')
+    return
+  }
+
+  if (!yes) {
+    formatResponse(isJson, 'Remove node cancelled')
     return
   }
 

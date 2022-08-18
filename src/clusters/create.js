@@ -2,7 +2,12 @@
 'use strict'
 
 const consola = require('consola')
-const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
+const {
+  fetcher,
+  formatErrorResponse,
+  formatCredentials,
+  formatOutput
+} = require('../utils')
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
@@ -21,8 +26,7 @@ const CLUSTER_MAX_CAPACITY = 10
  * @param {Object} params.capacity Clusters total capacity
  * @param {Object} params.onDemandCapacity Clusters on-demand capacity
  * @param {Object} params.alias Clusters alias
-
-* @returns {Promise} The create cluster promise
+ * @returns {Promise} The create cluster promise
  */
 async function createCluster(params) {
   const {
@@ -67,7 +71,7 @@ async function createCluster(params) {
     return
   }
 
-  !isJson && consola.info(`Creating a new cluster from service ${serviceId}.`)
+  !isJson && consola.info(`Creating a new cluster from service ${serviceId}.\n`)
 
   const jsonBody = { serviceId, authType, capacity, onDemandCapacity, alias }
   const body = JSON.stringify(jsonBody)
@@ -83,38 +87,27 @@ async function createCluster(params) {
       return
     }
 
-    const data = res.data
-
-    if (isJson) {
-      formatResponse(isJson, data)
-      return
+    const data = {
+      id: res.data.id,
+      name: res.data.name,
+      alias: res.data.alias,
+      chain: res.data.chain,
+      network: res.data.network,
+      version: res.data.serviceData.software,
+      performance: res.data.serviceData.performance,
+      domain: res.data.domain,
+      capacity: `${res.data.onDemandCapacity}:${res.data.capacity}`,
+      region: res.data.region,
+      state: res.data.state,
+      ...formatCredentials(res.data.auth)
     }
 
-    const creds =
-      data.auth.type === 'jwt'
-        ? `
-    * Auth:\t\tJWT`
-        : data.auth.type === 'basic'
-        ? `
-    * User:\t\t${data.auth.user}
-    * Password:\t\t${data.auth.pass}`
-        : `
-    * Auth:\t\tnone`
+    formatOutput(isJson, data)
 
-    process.stdout.write('\n')
-    consola.success(`Initialized new cluster from service ${serviceId}
-    * ID:\t\t${data.id}
-    * Name:\t\t${data.name}
-    * Alias:\t\t${data.alias || ''}
-    * Chain:\t\t${data.chain}
-    * Network:\t\t${data.network}
-    * Version:\t\t${data.serviceData.software}
-    * Performance:\t${data.serviceData.performance}
-    * Domain:\t\t${data.domain}
-    * Capacity:\t\t${data.onDemandCapacity}:${data.capacity}
-    * Region:\t\t${data.region}
-    * State:\t\t${data.state}${creds} \n`)
-    coppyToClipboard(data.id, 'Cluster id')
+    if (!isJson) {
+      consola.success(`Initialized new cluster from service ${serviceId}\n`)
+      coppyToClipboard(data.id, 'Cluster id')
+    }
   })
 }
 

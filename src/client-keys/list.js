@@ -2,7 +2,12 @@
 
 const consola = require('consola')
 const config = require('../config')
-const { fetcher, formatResponse, formatErrorResponse } = require('../utils')
+const {
+  fetcher,
+  formatResponse,
+  formatErrorResponse,
+  formatOutput
+} = require('../utils')
 require('console.table')
 
 /**
@@ -33,15 +38,17 @@ async function listClientKeys({ user, accessToken, json }) {
       return
     }
 
-    if (isJson) {
-      formatResponse(isJson, res.data)
-      return
+    const data = res.data.map(({ id, createdAt }) => ({
+      id,
+      createdAt
+    }))
+
+    if (!isJson) {
+      consola.success(`Retrieved ${res.data.length} client keys:`)
+      process.stdout.write('\n')
     }
 
-    consola.success(`Retrieved ${res.data.length} client keys`)
-    process.stdout.write('\n')
-    // eslint-disable-next-line no-console
-    console.table(res.data)
+    formatOutput(isJson, data)
   })
 }
 
