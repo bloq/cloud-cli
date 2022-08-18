@@ -52,10 +52,6 @@ ClusterCommand.flags = {
     description: 'capacity',
     default: 2
   }),
-  onDemandCapacity: flags.integer({
-    char: 'o',
-    description: 'on-demand capacity'
-  }),
   alias: flags.string({
     char: 'l',
     description: 'set or update cluster alias',

@@ -17,9 +17,7 @@ const getConfirmationMessage = flags =>
     ? 'You will cancel the current service update process of the cluster'
     : `You will update the cluster's ${
         flags.serviceId ? `service to ${flags.serviceId} and ` : ''
-      }capacity to ${flags.capacity} total and ${
-        flags.onDemandCapacity
-      } on-demand`
+      }capacity to ${flags.capacity} total`
 
 const getUrlAndMethod = ({ abort, clusterId }) => ({
   method: abort ? 'delete' : 'patch',
@@ -35,7 +33,6 @@ const getUrlAndMethod = ({ abort, clusterId }) => ({
  * @param {Object} params.accessToken Account access token
  * @param {Object} params.capacity Clusters total capacity
  * @param {Object} params.clusterId Cluster ID
- * @param {Object} params.onDemandCapacity Clusters on-demand capacity
  * @param {Object} params.serviceId Service ID
  * @param {Object} params.alias Clusters alias
  * @returns {Promise} The update cluster promise
@@ -62,15 +59,7 @@ async function updateCluster({ accessToken, json, ...flags }) {
     }
   ])
 
-  const {
-    yes,
-    clusterId,
-    capacity,
-    onDemandCapacity,
-    serviceId,
-    abort,
-    alias
-  } = {
+  const { yes, clusterId, capacity, serviceId, abort, alias } = {
     ...flags,
     ...prompt
   }
@@ -88,9 +77,7 @@ async function updateCluster({ accessToken, json, ...flags }) {
     url = `${serviceUrl}/users/me/clusters/${clusterId}/alias`
   } else {
     ;({ method, url } = getUrlAndMethod({ abort, clusterId }))
-    body = abort
-      ? null
-      : JSON.stringify({ capacity, onDemandCapacity, serviceId })
+    body = abort ? null : JSON.stringify({ capacity, serviceId })
   }
 
   return fetcher(url, method, accessToken, body).then(res => {

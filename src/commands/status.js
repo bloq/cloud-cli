@@ -14,7 +14,7 @@ const services = config.get('services')
 
 const accountsUrl = new URL(
   services[env].accounts.statusEndpoint,
-  'https://accounts.bloqclouddev.com'
+  services[env].accounts.url
 )
 
 const nodesUrl = new URL(
