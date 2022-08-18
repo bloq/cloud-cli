@@ -48,13 +48,11 @@ async function logsNode({ accessToken, nodeId, lines = 100 }) {
   // eslint-disable-next-line consistent-return
   return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
-      consola.error(
-        `Error retrieving node logs, requested resource not found: ${res.status}`
-      )
+      consola.error(`Error retrieving node logs: ${res.message}`)
       return
     }
 
-    console.log(res.data.data)
+    console.log(res.data)
   })
 }
 

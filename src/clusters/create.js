@@ -24,20 +24,11 @@ const CLUSTER_MAX_CAPACITY = 10
  * @param {Object} params.serviceId Service ID
  * @param {Object} params.authType Authentication type
  * @param {Object} params.capacity Clusters total capacity
- * @param {Object} params.onDemandCapacity Clusters on-demand capacity
  * @param {Object} params.alias Clusters alias
  * @returns {Promise} The create cluster promise
  */
 async function createCluster(params) {
-  const {
-    accessToken,
-    authType,
-    capacity,
-    onDemandCapacity,
-    serviceId,
-    alias,
-    json
-  } = params
+  const { accessToken, authType, capacity, serviceId, alias, json } = params
 
   const isJson = typeof json !== 'undefined'
 
@@ -63,17 +54,9 @@ async function createCluster(params) {
     return
   }
 
-  if (onDemandCapacity < 1 || onDemandCapacity > capacity) {
-    formatErrorResponse(
-      isJson,
-      `Wrong cluster capacity. Capacity should be between ${CLUSTER_MIN_CAPACITY} and ${CLUSTER_MAX_CAPACITY}`
-    )
-    return
-  }
-
   !isJson && consola.info(`Creating a new cluster from service ${serviceId}.\n`)
 
-  const jsonBody = { serviceId, authType, capacity, onDemandCapacity, alias }
+  const jsonBody = { serviceId, authType, capacity, alias }
   const body = JSON.stringify(jsonBody)
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/users/me/clusters`
@@ -96,7 +79,7 @@ async function createCluster(params) {
       version: res.data.serviceData.software,
       performance: res.data.serviceData.performance,
       domain: res.data.domain,
-      capacity: `${res.data.onDemandCapacity}:${res.data.capacity}`,
+      capacity: res.data.capacity,
       region: res.data.region,
       state: res.data.state,
       ...formatCredentials(res.data.auth)

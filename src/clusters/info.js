@@ -65,7 +65,7 @@ async function infoCluster({ accessToken, clusterId, json }) {
       version: res.data.serviceData.software,
       performance: res.data.serviceData.performance,
       domain: res.data.domain,
-      capacity: `${res.data.onDemandCapacity}:${res.data.capacity}`,
+      capacity: res.data.capacity,
       region: res.data.region,
       state: `${getState(res.data)}`,
       ...formatCredentials(res.data.auth)

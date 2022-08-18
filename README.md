@@ -103,7 +103,6 @@ OPTIONS
   -F, --force                              force remove cluster from any user (admins only)
   -i, --clusterId=clusterId                cluster id
   -j, --json                               retrieves the data in JSON format
-  -o, --onDemandCapacity=onDemandCapacity  on-demand capacity
   -s, --serviceId=serviceId                service id
   -S, --sort=sort                          results sorting key
   -t, --authType=(jwt|basic|none)          [default: basic] auth type: jwt, basic or none
