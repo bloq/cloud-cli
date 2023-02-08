@@ -6,6 +6,7 @@ const { fetcher, formatOutput, formatErrorResponse } = require('../utils')
 require('console.table')
 
 const config = require('../config')
+const accessToken = config.get('accessToken')
 
 /**
  *  Get all chains available
@@ -19,8 +20,7 @@ async function getServices({ json }) {
 
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/services/nodes`
-
-  return fetcher(url, 'GET').then(res => {
+  return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
       formatErrorResponse(
         isJson,

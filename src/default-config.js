@@ -34,7 +34,7 @@ module.exports = {
 
     local: {
       accounts: {
-        url: 'https://localhost:4000',
+        url: 'http://localhost:4000',
         statusEndpoint: '/'
       },
       nodes: {
