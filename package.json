@@ -49,7 +49,6 @@
     "country-region-data": "github:bloq/country-region-data#75dbb7c",
     "fast-password-entropy": "1.1.1",
     "inquirer": "8.2.2",
-    "jsonwebtoken": "9.0.0",
     "jwt-decode": "2.2.0",
     "lodash": "4.17.21",
     "node-fetch": "2.6.7",
