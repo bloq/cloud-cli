@@ -89,7 +89,10 @@ async function listClusters({ accessToken, all, allClusters, sort, json }) {
     }
 
     !isJson && consola.success(`Got ${body.length} clusters:\n`)
-    formatOutput(isJson, lodash.sortBy(body, sort.split(',') || 'createdAt'))
+    formatOutput(
+      isJson,
+      lodash.sortBy(body, sort ? sort.split(',') : 'createdAt')
+    )
   })
 }
 
