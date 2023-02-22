@@ -38,17 +38,14 @@ async function getServices({ sort, json }) {
           chain,
           network,
           software: metadata.software,
+          amiPrefix: metadata.amiPrefix,
           performance: metadata.performance,
           region: vendor.region,
           id
         })),
-      (sort && sort.split(',')) || [
-        'chain',
-        'network',
-        'software',
-        'performance',
-        'region'
-      ]
+      sort
+        ? sort.split(',')
+        : ['chain', 'network', 'software', 'performance', 'region']
     )
 
     formatOutput(isJson, data)
