@@ -6,6 +6,7 @@ const { fetcher, formatErrorResponse, formatOutput } = require('../utils')
 require('console.table')
 
 const config = require('../config')
+const accessToken = config.get('accessToken')
 
 /**
  * Retrieves cluster associated services
@@ -22,7 +23,7 @@ async function getServices({ sort, json }) {
   const env = config.get('env') || 'prod'
   const url = `${config.get(`services.${env}.nodes.url`)}/services/cluster`
 
-  return fetcher(url, 'GET').then(res => {
+  return fetcher(url, 'GET', accessToken).then(res => {
     if (!res.ok) {
       formatErrorResponse(
         isJson,
