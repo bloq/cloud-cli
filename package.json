@@ -6,8 +6,8 @@
     "bloq-cloud",
     "cli"
   ],
-  "homepage": "https://github.com/bloqpriv/cloud-cli",
-  "bugs": "https://github.com/bloqpriv/cloud-cli/issues",
+  "homepage": "https://github.com/bloq/cloud-cli",
+  "bugs": "https://github.com/bloq/cloud-cli/issues",
   "license": "MIT",
   "author": "Ignacio Anaya",
   "maintainers": [
@@ -24,7 +24,7 @@
   "bin": {
     "bcl": "./bin/run"
   },
-  "repository": "bloqpriv/cloud-cli",
+  "repository": "bloq/cloud-cli",
   "scripts": {
     "format:check": "prettier --check .",
     "lint:fix": "eslint --fix .",
