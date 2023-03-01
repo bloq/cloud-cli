@@ -39,7 +39,7 @@
   "dependencies": {
     "@oclif/command": "^1.8.16",
     "@oclif/config": "^1.18.2",
-    "@oclif/plugin-help": "^5.1.12",
+    "@oclif/plugin-help": "~5.1.12",
     "clipboardy": "^1.2.3",
     "conf": "^2.2.0",
     "conf-cli": "^0.1.9",
