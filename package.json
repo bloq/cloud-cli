@@ -3,16 +3,16 @@
   "version": "3.2.0",
   "description": "BloqCloud CLI",
   "keywords": [
-    "oclif"
+    "bloq-cloud",
+    "cli"
   ],
   "homepage": "https://github.com/bloqpriv/cloud-cli",
   "bugs": "https://github.com/bloqpriv/cloud-cli/issues",
   "license": "MIT",
-  "author": "Ignacio Anaya <ignacio@bloq.com>",
+  "author": "Ignacio Anaya",
   "maintainers": [
     "Gabriel Montes<gabriel@bloq.com>",
-    "John C. Vernaleo <johnv@bloq.com>",
-    "Leo Fernández <leo@bloq.com>"
+    "John C. Vernaleo <johnv@bloq.com>"
   ],
   "files": [
     "/bin",
@@ -26,36 +26,34 @@
   },
   "repository": "bloqpriv/cloud-cli",
   "scripts": {
-    "start": "node bin/run",
+    "format:check": "prettier --check .",
+    "lint:fix": "eslint --fix .",
+    "lint": "eslint --cache .",
     "postpack": "rm -f oclif.manifest.json",
     "posttest": "eslint .",
-    "lint:fix": "eslint --fix .",
     "prepack": "oclif-dev manifest && oclif-dev readme",
+    "start": "node bin/run",
     "test": "nyc mocha --forbid-only \"test/**/*.test.js\"",
-    "version": "oclif-dev readme && git add README.md",
-    "format:check": "prettier --check .",
-    "lint": "eslint --cache ."
+    "version": "oclif-dev readme && git add README.md"
   },
   "dependencies": {
-    "@bloq/cloud-sdk": "1.0.2",
-    "@oclif/command": "1.8.16",
-    "@oclif/config": "1.18.2",
-    "@oclif/plugin-help": "5.1.12",
-    "clipboardy": "1.2.3",
-    "conf": "2.2.0",
-    "conf-cli": "0.1.9",
-    "consola": "2.15.3",
-    "console.table": "0.10.0",
+    "@oclif/command": "^1.8.16",
+    "@oclif/config": "^1.18.2",
+    "@oclif/plugin-help": "^5.1.12",
+    "clipboardy": "^1.2.3",
+    "conf": "^2.2.0",
+    "conf-cli": "^0.1.9",
+    "consola": "^2.15.3",
+    "console.table": "^0.10.0",
     "country-region-data": "github:bloq/country-region-data#75dbb7c",
-    "fast-password-entropy": "1.1.1",
-    "inquirer": "8.2.2",
-    "jwt-decode": "2.2.0",
-    "lodash": "4.17.21",
-    "node-fetch": "2.6.7",
-    "ora": "3.4.0",
-    "postal-codes-js": "2.5.2",
-    "request": "2.88.2",
-    "update-notifier": "5.1.0"
+    "fast-password-entropy": "^1.1.1",
+    "inquirer": "^8.2.2",
+    "jwt-decode": "^2.2.0",
+    "lodash": "^4.17.21",
+    "node-fetch": "^2.6.7",
+    "ora": "^3.4.0",
+    "postal-codes-js": "^2.5.2",
+    "update-notifier": "^5.1.0"
   },
   "devDependencies": {
     "@oclif/dev-cli": "1.26.10",
@@ -108,6 +106,11 @@
   "lint-staged": {
     "*.js": "eslint --cache --fix",
     "*.{css,js,json,md}": "prettier --write"
+  },
+  "mocha": {
+    "recursive": true,
+    "reporter": "spec",
+    "timeout": 5000
   },
   "oclif": {
     "commands": "./src/commands",
