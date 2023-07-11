@@ -37,27 +37,33 @@ class NodesCommand extends Command {
 
 NodesCommand.description = 'Manage your Bloq nodes'
 NodesCommand.flags = {
-  serviceId: flags.string({ char: 's', description: 'service id' }),
-  authType: flags.enum({
-    char: 't',
-    description: 'auth type (jwt or basic)',
-    default: 'basic',
-    options: ['jwt', 'basic']
-  }),
   all: flags.boolean({
     char: 'a',
     description: 'list all nodes',
     default: false,
     required: false
   }),
+  allUsers: flags.boolean({
+    char: 'A',
+    description: 'list nodes from all user (admins only)',
+    default: false,
+    required: false
+  }),
+  authType: flags.enum({
+    char: 't',
+    description: 'auth type (jwt or basic)',
+    default: 'basic',
+    options: ['jwt', 'basic']
+  }),
   json: flags.boolean({ char: 'j', description: 'JSON output' }),
+  lines: flags.integer({ char: 'l', description: 'max lines to retrieve' }),
   nodeId: flags.string({ char: 'i', description: 'node id' }),
+  serviceId: flags.string({ char: 's', description: 'service id' }),
   yes: flags.boolean({
     char: 'y',
     description: 'answer "yes" to prompts',
     default: false
-  }),
-  lines: flags.integer({ char: 'l', description: 'max lines to retrieve' })
+  })
 }
 
 NodesCommand.args = [
