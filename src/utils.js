@@ -11,7 +11,7 @@ const ora = require('ora')
  * @param {string} value What to copy to the clipboard.
  * @param {string} name The name of what is being copied.
  */
-const coppyToClipboard = (value, name) =>
+const copyToClipboard = (value, name) =>
   clipboardy
     .write(value)
     .then(() => consola.info(`${name} was copied to the clipboard.`))
@@ -115,7 +115,7 @@ const formatOutput = (isJson, dataObj) => {
 }
 
 module.exports = {
-  coppyToClipboard,
+  copyToClipboard,
   fetcher,
   formatCredentials,
   formatOutput,

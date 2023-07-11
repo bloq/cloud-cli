@@ -4,7 +4,7 @@ const consola = require('consola')
 const inquirer = require('inquirer')
 const config = require('../config')
 const {
-  coppyToClipboard,
+  copyToClipboard,
   fetcher,
   formatOutput,
   formatErrorResponse
@@ -56,7 +56,7 @@ async function createClientKey({ user, accessToken, json }) {
       consola.warn(
         'You will NOT be able to see your client secret again. Remember to copy it and keep it safe.'
       )
-      coppyToClipboard(res.data.clientSecret, 'Client secret')
+      copyToClipboard(res.data.clientSecret, 'Client secret')
       consola.success(`Generated new client keys:`)
     }
 

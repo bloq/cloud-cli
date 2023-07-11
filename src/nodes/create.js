@@ -11,7 +11,7 @@ const {
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
-const { coppyToClipboard } = require('../utils')
+const { copyToClipboard } = require('../utils')
 
 /**
  * Creates a node from a service ID (Valid for admin users)
@@ -86,7 +86,7 @@ async function createNode({ accessToken, serviceId, authType, json }) {
 
     if (!isJson) {
       consola.success(`Initialized new node from service ${serviceId}\n`)
-      coppyToClipboard(res.data.id, 'Node id')
+      copyToClipboard(res.data.id, 'Node id')
     }
   })
 }
