@@ -114,11 +114,83 @@ const formatOutput = (isJson, dataObj) => {
   }
 }
 
+const getAuthHeader = ({ user, pass }) =>
+  `Basic ${Buffer.from(`${user}:${pass}`).toString('base64')}`
+
+const jsonRpcCall = function (url, method, params, auth) {
+  const options = {
+    method: 'POST',
+    headers: { 'content-type': 'application/json' }
+  }
+  if (auth.type === 'basic') {
+    options.headers.authorization = getAuthHeader(auth)
+  }
+  options.body = JSON.stringify({ jsonrpc: '2.0', method, params, id: 1 })
+  return fetch(url, options).then(res => res.json())
+}
+
+const getClientVersion = function ({ auth, chain, domain }) {
+  switch (chain) {
+    case 'avalanche':
+      return jsonRpcCall(
+        `https://${domain}:9650/ext/info`,
+        'info.getNodeVersion',
+        [],
+        auth
+      ).then(({ result }) => result.version)
+    case 'etc':
+    case 'eth':
+    case 'polygon':
+      return jsonRpcCall(
+        `https://${domain}:8545`,
+        'web3_clientVersion',
+        [],
+        auth
+      ).then(
+        ({ result }) =>
+          result && result.match(/^[A-Za-z]+\/?v[0-9.]+/)[0].replace(/\//g, ' ')
+      )
+    case 'algorand':
+      return fetch(`https://${domain}:8080/versions`, {
+        method: 'GET',
+        headers: { authorization: getAuthHeader(auth) }
+      })
+        .then(res => res.json())
+        .then(res => res.build)
+        .then(
+          ({ major, minor, build_number }) =>
+            `Algod v${major}.${minor}.${build_number}`
+        )
+
+    default:
+      return Promise.resolve('?')
+  }
+}
+
+const getArchiveStatus = function ({ auth, chain, domain }) {
+  switch (chain) {
+    case 'etc':
+    case 'eth':
+      return jsonRpcCall(
+        `https://${domain}:8545`,
+        'eth_getBalance',
+        ['0x1111111111111111111111111111111111111111', '0x1'],
+        auth
+      )
+        .then(({ error }) => !error)
+        .catch(() => null)
+    default:
+      return Promise.resolve(null)
+  }
+}
+
 module.exports = {
   copyToClipboard,
   fetcher,
   formatCredentials,
+  formatErrorResponse,
   formatOutput,
   formatResponse,
-  formatErrorResponse
+  getArchiveStatus,
+  getClientVersion
 }
