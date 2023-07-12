@@ -11,7 +11,7 @@ const {
 const jwtDecode = require('jwt-decode')
 
 const config = require('../config')
-const { coppyToClipboard } = require('../utils')
+const { copyToClipboard } = require('../utils')
 
 const CLUSTER_MIN_CAPACITY = 2
 const CLUSTER_MAX_CAPACITY = 10
@@ -89,7 +89,7 @@ async function createCluster(params) {
 
     if (!isJson) {
       consola.success(`Initialized new cluster from service ${serviceId}\n`)
-      coppyToClipboard(data.id, 'Cluster id')
+      copyToClipboard(data.id, 'Cluster id')
     }
   })
 }

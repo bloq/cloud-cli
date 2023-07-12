@@ -12,7 +12,7 @@ const inquirer = require('inquirer')
 const { Command, flags } = require('@oclif/command')
 
 const config = require('../config')
-const { coppyToClipboard } = require('../utils')
+const { copyToClipboard } = require('../utils')
 
 class ClientTokenCommand extends Command {
   async run() {
@@ -88,7 +88,7 @@ class ClientTokenCommand extends Command {
         config.set('refreshToken', data.refreshToken)
       }
 
-      coppyToClipboard(data.accessToken, 'Client access token')
+      copyToClipboard(data.accessToken, 'Client access token')
     })
   }
 }
